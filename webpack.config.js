@@ -42,6 +42,6 @@ module.exports = {
     historyApiFallback: true
   },
   resolve: {
-    extentions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx']
   }
 };
