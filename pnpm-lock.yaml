@@ -8,6 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@types/react':
+        specifier: ^18.3.5
+        version: 18.3.5
+      '@types/react-dom':
+        specifier: ^18.3.0
+        version: 18.3.0
       prop-types:
         specifier: ^15.8.1
         version: 15.8.1
@@ -20,6 +26,9 @@ importers:
       react-router-dom:
         specifier: ^6.26.1
         version: 6.26.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      typescript:
+        specifier: ^5.5.4
+        version: 5.5.4
     devDependencies:
       '@babel/core':
         specifier: ^7.25.2
@@ -62,7 +71,7 @@ importers:
         version: 8.4.45
       postcss-loader:
         specifier: ^8.1.1
-        version: 8.1.1(postcss@8.4.45)(webpack@5.94.0(webpack-cli@5.1.4))
+        version: 8.1.1(postcss@8.4.45)(typescript@5.5.4)(webpack@5.94.0(webpack-cli@5.1.4))
       prettier:
         specifier: ^3.3.3
         version: 3.3.3
@@ -853,11 +862,20 @@ packages:
   '@types/node@22.5.4':
     resolution: {integrity: sha512-FDuKUJQm/ju9fT/SeX/6+gBzoPzlVCzfzmGkwKvRHQVxi4BntVbyIwf6a4Xn62mrvndLiml6z/UBXIdEVjQLXg==}
 
+  '@types/prop-types@15.7.12':
+    resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
+
   '@types/qs@6.9.15':
     resolution: {integrity: sha512-uXHQKES6DQKKCLh441Xv/dwxOq1TVS3JPUMlEqoEglvlhR6Mxnlew/Xq/LRVHpLyk7iK3zODe1qYHIMltO7XGg==}
 
   '@types/range-parser@1.2.7':
     resolution: {integrity: sha512-hKormJbkJqzQGhziax5PItDUTMAM9uE2XXQmM37dyd4hVM+5aVl7oVxMVUiVQn2oCQFN/LKCZdvSM0pFRqbSmQ==}
+
+  '@types/react-dom@18.3.0':
+    resolution: {integrity: sha512-EhwApuTmMBmXuFOikhQLIBUn6uFg81SwLMOAUgodJF14SOBOCMdU04gDoYi0WOJJHD144TL32z4yDqCW3dnkQg==}
+
+  '@types/react@18.3.5':
+    resolution: {integrity: sha512-WeqMfGJLGuLCqHGYRGHxnKrXcTitc6L/nBUWfWPcTarG3t9PsquqUMuVeXZeca+mglY4Vo5GZjCi0A3Or2lnxA==}
 
   '@types/retry@0.12.2':
     resolution: {integrity: sha512-XISRgDJ2Tc5q4TRqvgJtzsRkFYNJzZrhTdtMoGVBttwzzQJkPnS3WWTFc7kuDRoPtPakl+T+OfdEUjYJj7Jbow==}
@@ -1302,6 +1320,9 @@ packages:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
     engines: {node: '>=4'}
     hasBin: true
+
+  csstype@3.1.3:
+    resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
 
   data-view-buffer@1.0.1:
     resolution: {integrity: sha512-0lht7OugA5x3iJLOWFhWK/5ehONdprk0ISXqVFn/NFrDu+cuc8iADFrGQz5BnRK7LLU3JmkbXSxaqX+/mXYtUA==}
@@ -2946,6 +2967,11 @@ packages:
     resolution: {integrity: sha512-/OxDN6OtAk5KBpGb28T+HZc2M+ADtvRxXrKKbUwtsLgdoxgX13hyy7ek6bFRl5+aBs2yZzB0c4CnQfAtVypW/g==}
     engines: {node: '>= 0.4'}
 
+  typescript@5.5.4:
+    resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
 
@@ -4123,9 +4149,20 @@ snapshots:
     dependencies:
       undici-types: 6.19.8
 
+  '@types/prop-types@15.7.12': {}
+
   '@types/qs@6.9.15': {}
 
   '@types/range-parser@1.2.7': {}
+
+  '@types/react-dom@18.3.0':
+    dependencies:
+      '@types/react': 18.3.5
+
+  '@types/react@18.3.5':
+    dependencies:
+      '@types/prop-types': 15.7.12
+      csstype: 3.1.3
 
   '@types/retry@0.12.2': {}
 
@@ -4599,12 +4636,14 @@ snapshots:
 
   core-util-is@1.0.3: {}
 
-  cosmiconfig@9.0.0:
+  cosmiconfig@9.0.0(typescript@5.5.4):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
+    optionalDependencies:
+      typescript: 5.5.4
 
   cross-spawn@7.0.3:
     dependencies:
@@ -4636,6 +4675,8 @@ snapshots:
   css-what@6.1.0: {}
 
   cssesc@3.0.0: {}
+
+  csstype@3.1.3: {}
 
   data-view-buffer@1.0.1:
     dependencies:
@@ -5804,9 +5845,9 @@ snapshots:
     optionalDependencies:
       postcss: 8.4.45
 
-  postcss-loader@8.1.1(postcss@8.4.45)(webpack@5.94.0(webpack-cli@5.1.4)):
+  postcss-loader@8.1.1(postcss@8.4.45)(typescript@5.5.4)(webpack@5.94.0(webpack-cli@5.1.4)):
     dependencies:
-      cosmiconfig: 9.0.0
+      cosmiconfig: 9.0.0(typescript@5.5.4)
       jiti: 1.21.6
       postcss: 8.4.45
       semver: 7.6.3
@@ -6420,6 +6461,8 @@ snapshots:
       has-proto: 1.0.3
       is-typed-array: 1.1.13
       possible-typed-array-names: 1.0.0
+
+  typescript@5.5.4: {}
 
   unbox-primitive@1.0.2:
     dependencies:
