@@ -6,9 +6,10 @@ interface TimerProps {
   longBreakTime: number;
   mode: 'work' | 'shortBreak' | 'longBreak';
   setMode: (mode: 'work' | 'shortBreak' | 'longBreak') => void;
+  darkMode: boolean;
 }
 
-const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, mode, setMode }) => {
+const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, mode, setMode, darkMode }) => {
   const [seconds, setSeconds] = useState<number>(workTime);
   const [isActive, setIsActive] = useState<boolean>(false);
 
@@ -53,7 +54,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white">
+    <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white dark:bg-white dark:text-gray-900">
       <div className="text-6xl mb-4">
         {Math.floor(seconds / 60)}:{seconds % 60 < 10 ? '0' : ''}{seconds % 60}
       </div>

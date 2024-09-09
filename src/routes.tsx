@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
-import Settings from './pages/Settings';
+import Settings from './pages/Settings/Settings';
 import NotFound from './pages/NotFound';
 
-const RoutesConfig: React.FC = () => {
+interface RoutesConfigProps {
+  darkMode: boolean;
+};
+
+const RoutesConfig: React.FC<RoutesConfigProps> = ({ darkMode }) => {
   const [workTime, setWorkTime] = useState<number>(
     Number(process.env.REACT_APP_WORK_TIME) || 1500
   );
@@ -56,14 +60,16 @@ const RoutesConfig: React.FC = () => {
       shortBreakTime={shortBreakTime}
       longBreakTime={longBreakTime}
       mode={mode}
-      setMode={setMode} />} />
+      setMode={setMode}
+      darkMode={darkMode} />} />
       <Route path="/settings" element={<Settings 
         workTime={workTime}
         shortBreakTime={shortBreakTime}
         longBreakTime={longBreakTime}
         onWorkTimeChange={handleWorkTimeChange}
         onShortBreakTimeChange={handleShortBreakTimeChange}
-        onLongBreakTimeChange={handleLongBreakTimeChange} />} />
+        onLongBreakTimeChange={handleLongBreakTimeChange}
+        darkMode={darkMode}  />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
