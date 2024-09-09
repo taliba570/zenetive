@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Settings from './pages/Settings/Settings';
 import NotFound from './pages/NotFound';
+import TaskList from './components/TaskList';
 
 interface RoutesConfigProps {
   darkMode: boolean;
@@ -10,13 +11,13 @@ interface RoutesConfigProps {
 
 const RoutesConfig: React.FC<RoutesConfigProps> = ({ darkMode }) => {
   const [workTime, setWorkTime] = useState<number>(
-    Number(process.env.REACT_APP_WORK_TIME) || 1500
+    Number(process.env.REACT_APP_WORK_TIME) | 1500
   );
   const [shortBreakTime, setShortBreakTime] = useState<number>(
-    Number(process.env.REACT_APP_SHORT_BREAK_TIME) || 300
+    Number(process.env.REACT_APP_SHORT_BREAK) | 300
   );
   const [longBreakTime, setLongBreakTime] = useState<number>(
-    Number(process.env.REACT_APP_LONG_BREAK_TIME) || 900
+    Number(process.env.REACT_APP_LONG_BREAK) | 900
   );
   const [mode, setMode] = useState<'work' | 'shortBreak' | 'longBreak'>('work');
 
@@ -56,12 +57,12 @@ const RoutesConfig: React.FC<RoutesConfigProps> = ({ darkMode }) => {
   return (
     <Routes>
       <Route path="/" element={<Home 
-      workTime={workTime}
-      shortBreakTime={shortBreakTime}
-      longBreakTime={longBreakTime}
-      mode={mode}
-      setMode={setMode}
-      darkMode={darkMode} />} />
+        workTime={workTime}
+        shortBreakTime={shortBreakTime}
+        longBreakTime={longBreakTime}
+        mode={mode}
+        setMode={setMode}
+        darkMode={darkMode} />} />
       <Route path="/settings" element={<Settings 
         workTime={workTime}
         shortBreakTime={shortBreakTime}
@@ -69,6 +70,8 @@ const RoutesConfig: React.FC<RoutesConfigProps> = ({ darkMode }) => {
         onWorkTimeChange={handleWorkTimeChange}
         onShortBreakTimeChange={handleShortBreakTimeChange}
         onLongBreakTimeChange={handleLongBreakTimeChange}
+        darkMode={darkMode}  />} />
+      <Route path="/todos" element={<TaskList
         darkMode={darkMode}  />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

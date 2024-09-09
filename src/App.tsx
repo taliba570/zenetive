@@ -20,18 +20,26 @@ const App: React.FC = () => {
             to="/"
             className={`px-4 py-2 rounded-md font-semibold transition-all duration-300 text-center ${
               location.pathname === '/'
-                ? 'bg-gradient-to-br from-purple-800 to-amber-900 text-white'
-                : 'text-gray-900 dark:text-white hover:bg-gradient-to-br hover:from-purple-800 hover:to-amber-900 hover:text-white'
+                ? 'bg-gradient-to-br from-[#b446cf] to-[#d60884] text-white'
+                : 'text-gray-900 dark:text-white hover:bg-gradient-to-br hover:from-[#d60884] hover:to-[#b446cf] hover:text-white'
             } `}
           >Timer</Link>
           <Link 
             to="/settings"
             className={`px-4 py-2 rounded-md font-semibold transition-all duration-300 text-center ${
               location.pathname === '/settings'
-                ? 'bg-gradient-to-br from-purple-800 to-amber-900 text-white'
-                : 'text-gray-900 dark:text-white hover:bg-gradient-to-br hover:from-purple-800 hover:to-amber-900 hover:text-white'
+                ? 'bg-gradient-to-br from-[#b446cf] to-[#d60884] text-white'
+                : 'text-gray-900 dark:text-white hover:bg-gradient-to-br hover:from-[#d60884] hover:to-[#b446cf] hover:text-white'
             }`}
           >Settings</Link>
+          <Link 
+            to="/todos"
+            className={`px-4 py-2 rounded-md font-semibold transition-all duration-300 text-center ${
+              location.pathname === '/todos'
+                ? 'bg-gradient-to-br from-[#b446cf] to-[#d60884] text-white'
+                : 'text-gray-900 dark:text-white hover:bg-gradient-to-br hover:from-[#d60884] hover:to-[#b446cf] hover:text-white'
+            }`}
+          >Todos</Link>
         </div>
         <div className='flex flex-grow justify-end'>
           <Switch isChecked={darkMode} onChange={toggleDarkMode} />

@@ -58,24 +58,67 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
       <div className="text-6xl mb-4">
         {Math.floor(seconds / 60)}:{seconds % 60 < 10 ? '0' : ''}{seconds % 60}
       </div>
-      <div className="space-x-4">
+      <div className="flex space-x-4 mt-6">
         <button
           onClick={toggleTimer}
-          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded"
+          className={`px-4 py-2 rounded-lg font-medium transition duration-300 transform active:scale-95 text-white 
+            ${
+              isActive
+                ? 'bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 active:bg-yellow-700'
+                : 'bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 active:bg-blue-700'
+            }
+          `}
         >
           {isActive ? 'Pause' : 'Start'}
         </button>
+
         <button
           onClick={resetTimer}
-          className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded"
+          className="px-4 py-2 rounded-lg font-medium transition duration-300 transform active:scale-95 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:from-red-500 hover:to-red-700 active:bg-red-700"
         >
           Reset
         </button>
       </div>
-      <div>
-        <button onClick={() => switchMode('work')}>Work</button>
-        <button onClick={() => switchMode('shortBreak')}>Short Break</button>
-        <button onClick={() => switchMode('longBreak')}>Long Break</button>
+
+      <div className="flex space-x-4 mt-4">
+        <button
+          onClick={() => switchMode('work')}
+          className={`px-4 py-2 rounded-lg font-medium transition duration-300 transform active:scale-95 text-white 
+            ${
+              mode === 'work'
+                ? 'bg-gradient-to-r from-green-400 via-green-500 to-green-600 active:bg-green-700 shadow-xl shadow-green-500/60'
+                : 'bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:from-green-500 hover:to-green-700'
+            }
+          `}
+        >
+          Work
+        </button>
+
+        <button
+          onClick={() => switchMode('shortBreak')}
+          className={`px-4 py-2 rounded-lg font-medium transition duration-300 transform active:scale-95 text-white 
+            ${
+              mode === 'shortBreak'
+                ? 'bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 active:bg-purple-700 shadow-xl shadow-purple-500/60'
+                : 'bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 hover:from-purple-500 hover:to-purple-700'
+            }
+          `}
+        >
+          Short Break
+        </button>
+
+        <button
+          onClick={() => switchMode('longBreak')}
+          className={`px-4 py-2 rounded-lg font-medium transition duration-300 transform active:scale-95 text-white 
+            ${
+              mode === 'longBreak'
+                ? 'bg-gradient-to-r from-pink-400 via-pink-500 to-pink-600 active:bg-pink-700 shadow-xl shadow-pink-500/60'
+                : 'bg-gradient-to-r from-pink-400 via-pink-500 to-pink-600 hover:from-pink-500 hover:to-pink-700'
+            }
+          `}
+        >
+          Long Break
+        </button>
       </div>
     </div>
   );
