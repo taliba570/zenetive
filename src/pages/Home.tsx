@@ -7,8 +7,9 @@ interface TimerProps {
   longBreakTime: number;
   mode: 'work' | 'shortBreak' | 'longBreak';
   setMode: (mode: 'work' | 'shortBreak' | 'longBreak') => void;
+  soundNotification: boolean;
 }
-const Home: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, mode, setMode }) => {
+const Home: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, mode, setMode, soundNotification }) => {
   return (
     <div>
       <Timer
@@ -16,7 +17,8 @@ const Home: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, m
         shortBreakTime={shortBreakTime}
         longBreakTime={longBreakTime}
         mode={mode}
-        setMode={setMode} />
+        setMode={setMode}
+        soundNotification={soundNotification} />
     </div>
   );
 };

@@ -20,6 +20,18 @@ const RoutesConfig: React.FC<RoutesConfigProps> = ({ darkMode }) => {
     Number(process.env.REACT_APP_LONG_BREAK) | 900
   );
   const [mode, setMode] = useState<'work' | 'shortBreak' | 'longBreak'>('work');
+  const [soundNotification, setSoundNotification] = useState<boolean>(() => {
+    const savedState = localStorage.getItem('soundNotification');
+    return savedState ? JSON.parse(savedState) : true;
+  });
+  
+  const handleSoundNotificationChange = () => {
+    setSoundNotification(() => !soundNotification);
+  }
+
+  useEffect(() => {
+    localStorage.setItem('soundNotification', JSON.stringify(soundNotification));
+  }, [soundNotification]);
 
   useEffect(() => {
     const savedSettings = localStorage.getItem('pomodoroSettings');
@@ -61,14 +73,17 @@ const RoutesConfig: React.FC<RoutesConfigProps> = ({ darkMode }) => {
         shortBreakTime={shortBreakTime}
         longBreakTime={longBreakTime}
         mode={mode}
-        setMode={setMode} />} />
+        setMode={setMode}
+        soundNotification={soundNotification} />} />
       <Route path="/settings" element={<Settings 
         workTime={workTime}
         shortBreakTime={shortBreakTime}
         longBreakTime={longBreakTime}
         onWorkTimeChange={handleWorkTimeChange}
         onShortBreakTimeChange={handleShortBreakTimeChange}
-        onLongBreakTimeChange={handleLongBreakTimeChange}  />} />
+        onLongBreakTimeChange={handleLongBreakTimeChange}
+        soundNotification={soundNotification}
+        handleSoundNotificationChange={handleSoundNotificationChange}  />} />
       <Route path="/todos" element={<TaskList />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { timeToSeconds, timeToMinutes } from '../../utils/formatTime';
 import './Settings.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGears } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faBellSlash, faGears } from '@fortawesome/free-solid-svg-icons';
 
 interface SettingsProps {
   workTime: number;
@@ -11,6 +11,8 @@ interface SettingsProps {
   onWorkTimeChange: (time: number) => void;
   onShortBreakTimeChange: (time: number) => void;
   onLongBreakTimeChange: (time: number) => void;
+  soundNotification: boolean;
+  handleSoundNotificationChange: () => void;
 }
 
 const Settings: React.FC<SettingsProps> = ({
@@ -19,7 +21,9 @@ const Settings: React.FC<SettingsProps> = ({
   longBreakTime,
   onWorkTimeChange,
   onShortBreakTimeChange,
-  onLongBreakTimeChange
+  onLongBreakTimeChange,
+  soundNotification,
+  handleSoundNotificationChange
 }) => {
 
   const handleWorkTimeChange = (time: number) => {
@@ -68,6 +72,26 @@ const Settings: React.FC<SettingsProps> = ({
             onChange={(e) => handleLongBreakTimeChange(Number(e.target.value))}
             className="px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
+        </div>
+
+        <div className="flex flex-row">
+          <div className="flex flex-grow">
+            <span className='text-xl text-gray-200 font-semibold'>Sound Notification</span>
+          </div>
+          <div className='flex'>
+            <label className='switch'>
+              <input type="checkbox" checked={soundNotification} onChange={handleSoundNotificationChange} />
+              <span className='slider'></span>
+              
+            </label>
+            <div className='pt-1'>
+              {
+                soundNotification ? 
+                  <FontAwesomeIcon icon={faBell} className='mx-2 text-2xl' /> : 
+                  <FontAwesomeIcon icon={faBellSlash} className='mx-1 text-2xl' />
+              }
+            </div>
+          </div>
         </div>
       </div>
     </div>
