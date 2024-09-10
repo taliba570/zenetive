@@ -13,6 +13,8 @@ import pomodoroEndSound from '../assets/sounds/pomodoroEndSound.mp3';
 import breakStartSound from '../assets/sounds/breakStart.mp3';
 import breakEndSound from '../assets/sounds/breakEnd.mp3';
 import { debounce } from '../utils/debouce';
+import Modal from './Modal/Modal';
+import Toast from './Toast/Toast';
 
 interface TimerProps {
   workTime: number;
@@ -25,6 +27,10 @@ interface TimerProps {
 const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, mode, setMode }) => {
   const [seconds, setSeconds] = useState<number>(workTime);
   const [isActive, setIsActive] = useState<boolean>(false);
+  const [changeMode, setChangeMode] = useState<'work' | 'shortBreak' | 'longBreak' | null>(null);
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const [toast, setToast] = useState<{message: string; type: 'success' | 'error' } | null>(null);
+
   const focusStartAudio = new Audio(focusStartSound);
   const pomodoroEndSoundAudio = new Audio(pomodoroEndSound);
   const breakStartAudio = new Audio(breakStartSound);
@@ -51,13 +57,11 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
     if (isActive && seconds > 0) {
       interval = setInterval(() => {
         setSeconds((prevSeconds) => prevSeconds - 1);
-        console.log(seconds);
       }, 1000);
     } else if (seconds === 0) {
       if (mode === 'work') deboucePlay(pomodoroEndSoundAudio);
       else if (mode === 'longBreak' || mode === 'shortBreak') deboucePlay(breakEndAudio);
       clearInterval(interval);
-      // alert(`${mode === 'work' ? 'Work' : 'Break'} session ended!`);
       setIsActive(false);
       setSeconds(workTime);
     }
@@ -88,11 +92,18 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
   };
 
   const switchMode = (newMode: 'work' | 'shortBreak' | 'longBreak') => {
-    if (isActive && seconds > 0) {
-      
-    }
     setIsActive(false);
     setMode(newMode);
+    closeModal();
+  };
+
+  const openModal = (selectedMode: 'work' | 'shortBreak' | 'longBreak') => {
+    setChangeMode(selectedMode);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
   };
 
   return (
@@ -126,7 +137,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
 
       <div className="flex space-x-4 mt-4">
         <button
-          onClick={() => switchMode('work')}
+          onClick={() => { if (isActive) openModal('work'); else switchMode('work') }}
           className={`px-4 py-2 rounded-lg font-medium transition duration-300 transform active:scale-95 text-white 
             ${
               mode === 'work'
@@ -140,7 +151,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
         </button>
 
         <button
-          onClick={() => switchMode('shortBreak')}
+          onClick={() => { if (isActive) openModal('shortBreak'); else switchMode('shortBreak') }}
           className={`px-4 py-2 rounded-lg font-medium transition duration-300 transform active:scale-95 text-white 
             ${
               mode === 'shortBreak'
@@ -154,7 +165,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
         </button>
 
         <button
-          onClick={() => switchMode('longBreak')}
+          onClick={() => { if (isActive) openModal('longBreak'); else switchMode('longBreak') }}
           className={`px-4 py-2 rounded-lg font-medium transition duration-300 transform active:scale-95 text-white 
             ${
               mode === 'longBreak'
@@ -168,6 +179,22 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
         </button>
       </div>
 
+      {/* Modal for confirmation before switching mode */}
+      {isModalOpen && (
+        <Modal 
+          isOpen={isModalOpen}
+          title={`Switch to ${changeMode} mode`}
+          message={`Are you sure you want to switch to ${changeMode} mode? This will reset the current session.`}
+          iconType='warning'
+          modalType='confirmation'
+          onConfirm={() => {
+            if (changeMode) switchMode(changeMode);
+          }}
+          onCancel={closeModal}
+        />
+      )}
+
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
     </div>
   );
 };
