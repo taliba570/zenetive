@@ -9,13 +9,14 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import './styles/App.css';
 import Switch from './components/Switch/Switch';
+import { useTheme } from './contexts/ThemeContext';
 
 const App: React.FC = () => {
   const location = useLocation();
-  const [darkMode, setDarkMode] = useState<boolean>(false);
+  const { darkMode, toggleTheme } = useTheme();
 
   const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
+    toggleTheme();
   };
 
   return (

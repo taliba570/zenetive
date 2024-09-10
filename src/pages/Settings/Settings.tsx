@@ -11,7 +11,6 @@ interface SettingsProps {
   onWorkTimeChange: (time: number) => void;
   onShortBreakTimeChange: (time: number) => void;
   onLongBreakTimeChange: (time: number) => void;
-  darkMode: boolean;
 }
 
 const Settings: React.FC<SettingsProps> = ({
@@ -20,8 +19,7 @@ const Settings: React.FC<SettingsProps> = ({
   longBreakTime,
   onWorkTimeChange,
   onShortBreakTimeChange,
-  onLongBreakTimeChange,
-  darkMode
+  onLongBreakTimeChange
 }) => {
 
   const handleWorkTimeChange = (time: number) => {
