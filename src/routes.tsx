@@ -61,18 +61,15 @@ const RoutesConfig: React.FC<RoutesConfigProps> = ({ darkMode }) => {
         shortBreakTime={shortBreakTime}
         longBreakTime={longBreakTime}
         mode={mode}
-        setMode={setMode}
-        darkMode={darkMode} />} />
+        setMode={setMode} />} />
       <Route path="/settings" element={<Settings 
         workTime={workTime}
         shortBreakTime={shortBreakTime}
         longBreakTime={longBreakTime}
         onWorkTimeChange={handleWorkTimeChange}
         onShortBreakTimeChange={handleShortBreakTimeChange}
-        onLongBreakTimeChange={handleLongBreakTimeChange}
-        darkMode={darkMode}  />} />
-      <Route path="/todos" element={<TaskList
-        darkMode={darkMode}  />} />
+        onLongBreakTimeChange={handleLongBreakTimeChange}  />} />
+      <Route path="/todos" element={<TaskList />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
