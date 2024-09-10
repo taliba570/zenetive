@@ -1,4 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faPlay, 
+  faPause, 
+  faRedo, 
+  faClock, 
+  faCoffee, 
+  faBook 
+} from '@fortawesome/free-solid-svg-icons';
+import focusStartSound from '../assets/sounds/startClickSound.mp3';
+import pomodoroEndSound from '../assets/sounds/pomodoroEndSound.mp3';
+import breakStartSound from '../assets/sounds/breakStart.mp3';
+import breakEndSound from '../assets/sounds/breakEnd.mp3';
+import { debounce } from '../utils/debouce';
 
 interface TimerProps {
   workTime: number;
@@ -12,6 +26,16 @@ interface TimerProps {
 const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, mode, setMode, darkMode }) => {
   const [seconds, setSeconds] = useState<number>(workTime);
   const [isActive, setIsActive] = useState<boolean>(false);
+  const focusStartAudio = new Audio(focusStartSound);
+  const pomodoroEndSoundAudio = new Audio(pomodoroEndSound);
+  const breakStartAudio = new Audio(breakStartSound);
+  const breakEndAudio = new Audio(breakEndSound);
+
+  const deboucePlay = debounce((audio: HTMLAudioElement) => {
+    audio.play().catch(error => {
+      console.error('Error playing audio:', error);
+    })
+  }, 200);
 
   useEffect(() => {
     if (mode === 'work') {
@@ -30,15 +54,30 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
         setSeconds((prevSeconds) => prevSeconds - 1);
       }, 1000);
     } else if (seconds === 0) {
+      if (mode === 'work') deboucePlay(pomodoroEndSoundAudio);
+      else if (mode === 'longBreak' || mode === 'shortBreak') deboucePlay(breakEndAudio);
       clearInterval(interval);
-      alert(`${mode === 'work' ? 'Work' : 'Break'} session ended!`);
+      // alert(`${mode === 'work' ? 'Work' : 'Break'} session ended!`);
       setIsActive(false);
+      setSeconds(workTime);
     }
     return () => clearInterval(interval);
   }, [isActive, seconds, mode]);
 
+  useEffect(() => {
+    const preloadAudio = () => {
+      new Audio(focusStartSound).load();
+      new Audio(pomodoroEndSound).load();
+      new Audio(breakStartSound).load();
+      new Audio(breakEndSound).load();
+    }
+    preloadAudio();
+  }, []);
+
   const toggleTimer = () => {
     setIsActive(!isActive);
+    if (!isActive && mode === 'work') deboucePlay(focusStartAudio);
+    else if (!isActive && (mode === 'shortBreak' || mode === 'longBreak')) deboucePlay(breakStartAudio);
   };
 
   const resetTimer = () => {
@@ -69,6 +108,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
             }
           `}
         >
+          <FontAwesomeIcon icon={isActive ? faPause : faPlay} className="mr-2" />
           {isActive ? 'Pause' : 'Start'}
         </button>
 
@@ -76,6 +116,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
           onClick={resetTimer}
           className="px-4 py-2 rounded-lg font-medium transition duration-300 transform active:scale-95 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:from-red-500 hover:to-red-700 active:bg-red-700"
         >
+          <FontAwesomeIcon icon={faRedo} className="mr-2" />
           Reset
         </button>
       </div>
@@ -91,6 +132,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
             }
           `}
         >
+          <FontAwesomeIcon icon={faClock} className="mr-2" />
           Work
         </button>
 
@@ -104,6 +146,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
             }
           `}
         >
+          <FontAwesomeIcon icon={faCoffee} className="mr-2" />
           Short Break
         </button>
 
@@ -117,9 +160,11 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
             }
           `}
         >
+          <FontAwesomeIcon icon={faBook} className="mr-2" />
           Long Break
         </button>
       </div>
+
     </div>
   );
 };

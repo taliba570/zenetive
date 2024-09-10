@@ -25,6 +25,10 @@ module.exports = {
       {
         test: /\.(png|jpg|jpeg|gif)$/i,
         type: 'assets/resource',
+      },
+      {
+        test: /\.(mp3|wav)$/,
+        use: 'file-loader',
       }
     ]
   },

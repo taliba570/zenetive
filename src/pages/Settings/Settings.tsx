@@ -1,6 +1,8 @@
 import React from 'react';
 import { timeToSeconds, timeToMinutes } from '../../utils/formatTime';
 import './Settings.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGears } from '@fortawesome/free-solid-svg-icons';
 
 interface SettingsProps {
   workTime: number;
@@ -37,7 +39,7 @@ const Settings: React.FC<SettingsProps> = ({
   return (
     <div className="flex flex-col items-center justify-center min-h-screen overflow-hidden bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
       <img src="/images/logo.png" alt="Logo" className='w-64 logo' />
-      <h1 className="text-3xl font-bold mb-6">Settings</h1>
+      <h1 className="text-3xl font-bold mb-6"><span><FontAwesomeIcon icon={faGears} className='pr-1' /></span>Settings</h1>
       
       <div className="w-full max-w-md space-y-6">
         <div className="flex flex-col">
