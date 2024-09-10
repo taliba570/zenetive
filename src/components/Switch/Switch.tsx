@@ -8,7 +8,7 @@ interface SwitchProps {
 
 const Switch: React.FC<SwitchProps> = ({isChecked, onChange}) => {
   return (
-    <div className='flex'>
+    <div className='flex mt-2'>
       <label className='switch'>
         <input type="checkbox" checked={isChecked} onChange={onChange} />
         <span className='slider'></span>

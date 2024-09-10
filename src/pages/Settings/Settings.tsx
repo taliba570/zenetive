@@ -76,7 +76,7 @@ const Settings: React.FC<SettingsProps> = ({
 
         <div className="flex flex-row">
           <div className="flex flex-grow">
-            <span className='text-xl text-gray-200 font-semibold'>Sound Notification</span>
+            <span className='text-lg font-medium text-gray-900 dark:text-gray-200'>Sound Notification</span>
           </div>
           <div className='flex'>
             <label className='switch'>
@@ -88,7 +88,7 @@ const Settings: React.FC<SettingsProps> = ({
               {
                 soundNotification ? 
                   <FontAwesomeIcon icon={faBell} className='mx-2 text-2xl' /> : 
-                  <FontAwesomeIcon icon={faBellSlash} className='mx-1 text-2xl' />
+                  <FontAwesomeIcon icon={faBellSlash} className='mx-1 text-gray-300 text-2xl' />
               }
             </div>
           </div>

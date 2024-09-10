@@ -33,21 +33,24 @@ const TaskListContainer: React.FC<TaskListContainerProps> = ({
           <li className='text-gray-900 dark:text-white text-center py-3 px-2 text-2xl'>
             🎉🎉 Huurrry! You have no pending task 🥳🥳!
           </li>
-        ) : tasks.map((task, index) => (
-            <TaskItem
-              key={index}
-              task={task}
-              isEditing={editingIndex === index}
-              isDeleting={deletingIndex === index}
-              taskText={editingIndex === index ? editedText : task.text}
-              setTaskText={setEditedText}
-              toggleCompletion={() => toggleTaskCompletion(index)}
-              onEdit={() => editTask(index)}
-              onDelete={() => deleteTask(index)}
-              onSave={() => saveTask(index)}
-              onCancelEdit={cancelEdit}
-            />
-      ))}
+        ) : tasks.map((task, index) => {
+          if (!task.isCompleted) {
+            return (
+              <TaskItem
+                key={index}
+                task={task}
+                isEditing={editingIndex === index}
+                isDeleting={deletingIndex === index}
+                taskText={editingIndex === index ? editedText : task.text}
+                setTaskText={setEditedText}
+                toggleCompletion={() => toggleTaskCompletion(index)}
+                onEdit={() => editTask(index)}
+                onDelete={() => deleteTask(index)}
+                onSave={() => saveTask(index)}
+                onCancelEdit={cancelEdit}
+              />
+            );
+          }})}
     </ul>
   );
 };

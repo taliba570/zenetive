@@ -30,6 +30,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
   const [isActive, setIsActive] = useState<boolean>(false);
   const [changeMode, setChangeMode] = useState<'work' | 'shortBreak' | 'longBreak' | null>(null);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const [resetCycleModalOpen, setResetCycleModalOpen] = useState<boolean>(false);
   const [toast, setToast] = useState<{message: string; type: 'success' | 'error' } | null>(null);
   const [completedCycles, setCompletedCycles] = useState(() => {
     const savedCycles = localStorage.getItem('completedCycles');
@@ -124,6 +125,15 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
     setModalOpen(false);
   };
 
+  const resetPomodoroCycle = () => {
+    setCompletedCycles(0);
+    setResetCycleModalOpen(false);
+  }
+
+  const closeResetCycleModal = () => {
+    setResetCycleModalOpen(false);
+  }
+
   return (
     <>
       <div className="w-full h-2 bg-gray-200 dark:bg-gray-600 overflow-hidden">
@@ -133,10 +143,12 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
         ></div>
       </div>
 
-      <div className='flex absolute text-white text-4xl bg-gradient-to-br from-[#b446cf] to-[#d60884] w-20 h-20 text-center justify-center rounded-full right-5 top-24 cursor-default'>
+      <div onClick={() => setResetCycleModalOpen(true)} className='group flex absolute text-white text-4xl bg-gradient-to-br from-[#b446cf] to-[#d60884] w-20 h-20 text-center justify-center rounded-full right-5 top-24 cursor-default'>
         <div className='flex justify-center m-auto pb-1'>
           {completedCycles}
         </div>
+        <span className="group-hover:opacity-100 text-lg transition-opacity bg-gradient-to-br from-[#b446cf] to-[#d60884] px-1 text-gray-100 rounded-md absolute left-1/2 
+        -translate-x-1/2 translate-y-full opacity-0 m-10 mx-auto">Pomodoros Completed</span>
       </div>
       
       <div className="flex flex-col items-center justify-center h-screen bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white">
@@ -223,6 +235,17 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
               if (changeMode) switchMode(changeMode);
             }}
             onCancel={closeModal}
+          />
+        )}
+        {resetCycleModalOpen && (
+          <Modal 
+          isOpen={resetCycleModalOpen}
+          title={`Reset Today's Progress`}
+          message={`Are you sure you want to reset today's progress?`}
+          iconType='warning'
+          modalType='confirmation'
+          onConfirm={() => resetPomodoroCycle()}
+          onCancel={closeResetCycleModal}
           />
         )}
 
