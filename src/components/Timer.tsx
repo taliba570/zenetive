@@ -138,16 +138,16 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
     <>
       <div className="w-full h-2 bg-gray-200 dark:bg-gray-600 overflow-hidden">
         <div
-          className="h-full shadow-lg bg-gradient-to-tr from-[#b446cf] to-[#d60884] transition-width duration-1000 ease-linear"
+          className="h-full shadow-lg bg-gradient-to-tr from-[#b446cf] to-[#2bc8f8] transition-width duration-1000 ease-linear"
           style={{ width: `${percentageTimeLeft}%` }}
         ></div>
       </div>
 
-      <div onClick={() => setResetCycleModalOpen(true)} className='group flex absolute text-white text-4xl bg-gradient-to-br from-[#b446cf] to-[#d60884] w-20 h-20 text-center justify-center rounded-full right-5 top-24 cursor-default'>
+      <div onClick={() => setResetCycleModalOpen(true)} className='group flex absolute text-white text-4xl bg-gradient-to-br from-[#b446cf] to-[#2bc8f8] w-20 h-20 text-center justify-center rounded-full right-5 top-24 cursor-default'>
         <div className='flex justify-center m-auto pb-1'>
           {completedCycles}
         </div>
-        <span className="group-hover:opacity-100 text-lg transition-opacity bg-gradient-to-br from-[#b446cf] to-[#d60884] px-1 text-gray-100 rounded-md absolute left-1/2 
+        <span className="group-hover:opacity-100 text-lg transition-opacity bg-gradient-to-br from-[#b446cf] to-[#2bc8f8] px-1 text-gray-100 rounded-md absolute left-1/2 
         -translate-x-1/2 translate-y-full opacity-0 m-10 mx-auto">Pomodoros Completed</span>
       </div>
       
@@ -179,10 +179,10 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
           </button>
         </div>
 
-        <div className="flex space-x-4 mt-4">
+        <div className="flex flex-row xxs:mx-auto xxs:items-center space-x-4 mt-4 xxs:flex-col">
           <button
             onClick={() => { if (isActive) openModal('work'); else switchMode('work') }}
-            className={`px-4 py-2 rounded-lg font-medium transition duration-300 transform active:scale-95 text-white 
+            className={`px-4 py-2 xxs:mt-5 xxs:mx-auto rounded-lg font-medium transition duration-300 transform active:scale-95 text-white 
               ${
                 mode === 'work'
                   ? 'bg-gradient-to-r from-green-400 via-green-500 to-green-600 active:bg-green-700 shadow-xl shadow-green-500/60'
@@ -196,7 +196,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
 
           <button
             onClick={() => { if (isActive) openModal('shortBreak'); else switchMode('shortBreak') }}
-            className={`px-4 py-2 rounded-lg font-medium transition duration-300 transform active:scale-95 text-white 
+            className={`px-4 py-2 xxs:mt-8 xxs:mx-auto rounded-lg font-medium transition duration-300 transform active:scale-95 text-white 
               ${
                 mode === 'shortBreak'
                   ? 'bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 active:bg-purple-700 shadow-xl shadow-purple-500/60'
@@ -210,7 +210,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
 
           <button
             onClick={() => { if (isActive) openModal('longBreak'); else switchMode('longBreak') }}
-            className={`px-4 py-2 rounded-lg font-medium transition duration-300 transform active:scale-95 text-white 
+            className={`px-4 py-2 xxs:mt-8 xxs:mx-auto rounded-lg font-medium transition duration-300 transform active:scale-95 text-white 
               ${
                 mode === 'longBreak'
                   ? 'bg-gradient-to-r from-pink-400 via-pink-500 to-pink-600 active:bg-pink-700 shadow-xl shadow-pink-500/60'

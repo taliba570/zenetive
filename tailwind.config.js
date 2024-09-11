@@ -11,7 +11,10 @@ module.exports = {
         'primary-dark': '#1a202c',
         'secondary-light': '#4fd1c5',
         'secondary-dark': '#2b6cb0'
-      }
+      },
+      screens: {
+        'xxs': { max: '540px' },
+      },
     },
   },
   plugins: [],

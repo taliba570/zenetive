@@ -20,7 +20,7 @@ const TaskInput: React.FC<TaskInputProps> = ({ taskInput, setTaskInput, addTask 
       />
       <button
         onClick={addTask}
-        className='p-2 bg-gradient-to-br from-[#b446cf] to-[#d60884] text-white rounded-lg font-semibold shadow-2xl hover:from-[#d60884] hover:to-[#b446cf] transition transform active:scale-95 flex items-center justify-center'
+        className='p-2 bg-gradient-to-br from-[#b446cf] to-[#2bc8f8] text-white rounded-lg font-semibold shadow-2xl hover:from-[#2bc8f8] hover:to-[#b446cf] transition transform active:scale-95 flex items-center justify-center'
       >
         <FontAwesomeIcon icon={faPlus} /> <span className='px-2'>Add</span>
       </button>

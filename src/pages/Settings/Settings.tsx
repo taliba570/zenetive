@@ -39,7 +39,7 @@ const Settings: React.FC<SettingsProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen overflow-hidden bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
+    <div className="flex flex-col items-center justify-center min-h-screen xxs:px-10 overflow-hidden bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
       <img src="/images/logo.png" alt="Logo" className='w-64 logo' />
       <h1 className="text-3xl font-bold mb-6"><span><FontAwesomeIcon icon={faGears} className='pr-1' /></span>Settings</h1>
       

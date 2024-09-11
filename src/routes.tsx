@@ -5,11 +5,7 @@ import Settings from './pages/Settings/Settings';
 import NotFound from './pages/NotFound';
 import TaskList from './components/TaskList';
 
-interface RoutesConfigProps {
-  darkMode: boolean;
-};
-
-const RoutesConfig: React.FC<RoutesConfigProps> = ({ darkMode }) => {
+const RoutesConfig: React.FC = () => {
   const [workTime, setWorkTime] = useState<number>(
     Number(process.env.REACT_APP_WORK_TIME) | 1500
   );
