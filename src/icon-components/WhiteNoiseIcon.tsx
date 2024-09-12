@@ -1,6 +1,6 @@
-import * as React from "react";
+import React, { FC, SVGProps } from 'react';
 
-function WhiteNoiceIcon(props) {
+const WhiteNoiceIcon: FC<SVGProps<SVGSVGElement>> = (props) => {
   return (
     <svg
       fill="none"

@@ -1,6 +1,6 @@
-import * as React from "react";
+import React, { FC, SVGProps } from 'react';
 
-function HeavyRain(props) {
+const HeavyRain: FC<SVGProps<SVGSVGElement>> = (props) => {
   return (
     <svg
       fill="currentColor"

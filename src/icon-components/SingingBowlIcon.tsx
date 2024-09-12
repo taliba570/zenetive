@@ -1,6 +1,6 @@
-import * as React from "react";
+import React, { FC, SVGProps } from 'react';
 
-function SingingBowlIcon(props) {
+const SingingBowlIcon: FC<SVGProps<SVGSVGElement>> = (props) => {
   return (
     <svg
       viewBox="0 0 24 24"

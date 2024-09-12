@@ -1,6 +1,6 @@
-import * as React from "react";
+import React, { FC, SVGProps } from 'react';
 
-function ThunderStormIcon(props) {
+const ThunderStormIcon: FC<SVGProps<SVGSVGElement>> = (props) => {
   return (
     <svg
       viewBox="0 0 512 512"

@@ -66,7 +66,7 @@ const Header: React.FC = () => {
 
       {/* Dark Mode Toggle */}
       <div className="theme-switcher">
-        <Switch isChecked={darkMode} onChange={toggleDarkMode} />
+        <Switch isChecked={darkMode} onChange={toggleDarkMode} showIcon={true} />
       </div>
 
       {/* Dropdown Menu for Mobile */}

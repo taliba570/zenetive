@@ -1,6 +1,6 @@
-import * as React from "react";
+import React, { FC, SVGProps } from 'react';
 
-function FireIcon(props) {
+const FireIcon: FC<SVGProps<SVGSVGElement>> = (props) => {
   return (
     <svg
       viewBox="0 0 16 16"

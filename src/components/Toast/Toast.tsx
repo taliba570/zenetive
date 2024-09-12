@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 interface ToastProps {
   message: string;
-  type: 'success' | 'error';
+  type: 'success' | 'error' | 'info';
   onClose: () => void;
   duration?: number;
 }
@@ -16,7 +16,7 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose, duration = 3000 }
 
   return (
     <div className={`fixed bottom-5 right-5 px-6 py-4 rounded-lg shadow-lg text-white transition-transform ${
-      type === 'success' ? 'bg-green-500' : 'bg-red-500'
+      type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500'
     }`}>
       {message}
     </div>

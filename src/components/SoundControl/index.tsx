@@ -1,9 +1,14 @@
-import React from 'react';
-import { SoundSettings, SoundSetting } from '../../interfaces/ISoundSettings';
+import React, { useState } from 'react';
+import { SoundSettings } from '../../interfaces/ISoundSettings';
+import './SoundControl.css'; // Make sure to create this CSS file
+import PropTypes from 'prop-types';
+import Switch from '../Switch/Switch';
+import Toast from '../Toast/Toast';
 
 interface SoundControlProps {
   soundSettings: SoundSettings;
   sound: string;
+  IconComponent: any;
   toggleSound: (soundName: string) => void;
   handleVolumeChange: (soundName: string, volume: string) => void;
 }
@@ -11,33 +16,72 @@ interface SoundControlProps {
 const SoundControl: React.FC<SoundControlProps> = ({
   soundSettings,
   sound,
+  IconComponent,
   toggleSound,
   handleVolumeChange
 }) => {
+  const soundEnabled = soundSettings[sound]?.enabled;
+  const soundVolume = soundSettings[sound]?.volume || 0;
+  const [checkEnabled, setCheckEnabled] = useState(false);
+
+  const handleSliderClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    if (!soundEnabled) {
+      setCheckEnabled(true);
+
+    }
+    return false;
+  };
+
   return (
-    <div className="sound-setting p-4 bg-gray-200 dark:bg-gray-700 rounded-lg shadow-lg flex items-center justify-between">
-      <label className="flex items-center space-x-2">
-        <input 
-          type="checkbox" 
-          checked={soundSettings[sound].enabled} 
-          onChange={() => toggleSound(sound)} 
-          className="form-checkbox text-blue-500"
+    <div className="sound-control">
+      {/* Icon */}
+      <div className="icon">
+        <IconComponent
+          className={`w-24 h-24 ${soundEnabled ? 'text-blue-500 dark:text-blue-500' : 'text-gray-700 dark:text-gray-100'} transition-colors duration-300`}
         />
-        <span className="text-lg font-semibold">
-          {sound.charAt(0).toUpperCase() + sound.slice(1)}
-        </span>
-      </label>
-      <input 
-        type="range" 
-        min="0" 
-        max="100" 
-        value={soundSettings[sound].volume} 
-        onChange={(e) => handleVolumeChange(sound, e.target.value)}
-        disabled={!soundSettings[sound].enabled}
-        className="range-slider w-32 h-2 bg-gray-300 dark:bg-gray-600 rounded-lg"
-      />
+      </div>
+
+      {/* Sound Control */}
+      <div className="sound-setting">
+        <input 
+          type="range" 
+          min="0" 
+          max="100" 
+          value={soundVolume} 
+          onChange={(e) => {
+            if (!soundEnabled) {
+              return false;
+            }
+            handleVolumeChange(sound, e.target.value)
+          }}
+          onClick={handleSliderClick} // Trigger toast if sound is not enabled
+          className={`volume-slider ${!soundEnabled ? 'disabled-slider' : ''}`}
+        />
+        <div>
+          <Switch isChecked={soundEnabled} onChange={() => toggleSound(sound)} showIcon={false} />
+        </div>
+      </div>
+
+      {/* Toast Notification */}
+      {checkEnabled && (
+        <Toast message='Enable the sound first to adjust its volume!' type='info' onClose={() => setCheckEnabled(false)} />
+      )}
     </div>
   );
+};
+
+SoundControl.propTypes = {
+  soundSettings: PropTypes.objectOf(
+    PropTypes.shape({
+      enabled: PropTypes.bool.isRequired,
+      volume: PropTypes.number.isRequired,
+      icon: PropTypes.func.isRequired
+    }).isRequired
+  ).isRequired,
+  sound: PropTypes.string.isRequired,
+  IconComponent: PropTypes.func.isRequired, // For passing a React component as a prop
+  toggleSound: PropTypes.func.isRequired,
+  handleVolumeChange: PropTypes.func.isRequired,
 };
 
 export default SoundControl;
