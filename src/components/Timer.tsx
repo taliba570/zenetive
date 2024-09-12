@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faPlay, 
@@ -15,6 +15,7 @@ import breakEndSound from '../assets/sounds/breakEnd.mp3';
 import { debounce } from '../utils/debouce';
 import Modal from './Modal/Modal';
 import Toast from './Toast/Toast';
+import { SoundSettings } from '../interfaces/ISoundSettings';
 
 interface TimerProps {
   workTime: number;
@@ -36,11 +37,40 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
     const savedCycles = localStorage.getItem('completedCycles');
     return savedCycles ? JSON.parse(savedCycles) : 0;
   });
+  const [soundPreference, setSoundPreference] = useState<SoundSettings>(() => {
+    const savedPreference = localStorage.getItem('soundSettings');
+    return savedPreference ? JSON.parse(savedPreference) : {};
+  });
+  const audioInstances = useRef<HTMLAudioElement[]>([]);
 
   const focusStartAudio = new Audio(focusStartSound);
   const pomodoroEndSoundAudio = new Audio(pomodoroEndSound);
   const breakStartAudio = new Audio(breakStartSound);
   const breakEndAudio = new Audio(breakEndSound);
+
+  const playEnabledSounds = () => {
+    Object.keys(soundPreference).forEach((soundType) => {
+      const sound = soundPreference[soundType];
+      if (sound.enabled) {
+        const audio = new Audio(`/assets/sounds/${soundType}.mp3`);
+        audio.volume = sound.volume / 100;
+        audio.play();
+        audioInstances.current.push(audio);
+
+        return () => {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+      }
+    })
+  };
+
+  const pauseAllSounds = () => {
+    audioInstances.current.forEach(audio => {
+      audio.pause();
+      audio.currentTime = 0;
+    });
+  };
 
   const deboucePlay = debounce((audio: HTMLAudioElement) => {
     if (soundNotification) {
@@ -78,6 +108,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
       if (mode === 'work') {
         deboucePlay(pomodoroEndSoundAudio);
         setCompletedCycles(() => completedCycles+1);
+        pauseAllSounds();
       }
       else if (mode === 'longBreak' || mode === 'shortBreak') deboucePlay(breakEndAudio);
       clearInterval(interval);
@@ -99,12 +130,20 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
 
   const toggleTimer = () => {
     setIsActive(!isActive);
-    if (!isActive && mode === 'work') deboucePlay(focusStartAudio);
-    else if (!isActive && (mode === 'shortBreak' || mode === 'longBreak')) deboucePlay(breakStartAudio);
+    if (!isActive) {
+      if (mode === 'work') {
+        deboucePlay(focusStartAudio);
+        playEnabledSounds();
+      }
+      else if (!isActive && (mode === 'shortBreak' || mode === 'longBreak')) deboucePlay(breakStartAudio);
+    } else {
+      pauseAllSounds();
+    }
   };
 
   const resetTimer = () => {
     setIsActive(false);
+    pauseAllSounds();
     if (mode === 'work') setSeconds(workTime);
     else if (mode === 'shortBreak') setSeconds(shortBreakTime);
     else setSeconds(longBreakTime);
