@@ -10,7 +10,7 @@ interface SoundControlProps {
   sound: string;
   IconComponent: any;
   toggleSound: (soundName: string) => void;
-  handleVolumeChange: (soundName: string, volume: string) => void;
+  handleVolumeChange: (soundName: string, volume: number) => void;
 }
 
 const SoundControl: React.FC<SoundControlProps> = ({
@@ -27,7 +27,6 @@ const SoundControl: React.FC<SoundControlProps> = ({
   const handleSliderClick = (e: React.MouseEvent<HTMLInputElement>) => {
     if (!soundEnabled) {
       setCheckEnabled(true);
-
     }
     return false;
   };
@@ -52,7 +51,7 @@ const SoundControl: React.FC<SoundControlProps> = ({
             if (!soundEnabled) {
               return false;
             }
-            handleVolumeChange(sound, e.target.value)
+            handleVolumeChange(sound, parseInt(e.target.value))
           }}
           onClick={handleSliderClick} // Trigger toast if sound is not enabled
           className={`volume-slider ${!soundEnabled ? 'disabled-slider' : ''}`}

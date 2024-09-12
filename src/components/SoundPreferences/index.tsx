@@ -30,7 +30,7 @@ const soundsList = {
 const SoundPreferences: React.FC = () => {
   const [soundSettings, setSoundSettings] = useState<SoundSettings>(soundsList);
 
-  const handleVolumeChange = (sound: string, volume: string) => {
+  const handleVolumeChange = (sound: string, volume: number) => {
     setSoundSettings((prevSettings: any) => ({
       ...prevSettings,
       [sound]: { ...prevSettings[sound], volume }
