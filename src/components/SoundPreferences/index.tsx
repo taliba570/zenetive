@@ -12,6 +12,8 @@ import HeavyRainIcon from '../../icon-components/HeavyRainIcon';
 import CricketsIcon from '../../icon-components/CricketsIcon';
 import CoffeeShopIcon from '../../icon-components/CoffeeShopIcon';
 import BirdsIcon from '../../icon-components/BirdsIcon';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeadphones } from '@fortawesome/free-solid-svg-icons';
 
 const soundsList = {
   waves: { enabled: false, volume: 0, icon: WaveIcon },
@@ -50,11 +52,15 @@ const SoundPreferences: React.FC = () => {
 
   return (
     <>
-      <div className="min-h-screen sound-preferences dark:bg-gray-800">
-        <h2>Sound Preferences</h2>
-        <div className="container m-auto flex flex-wrap justify-center gap-14 pt-10">
+      <div className="flex flex-col pt-10 sound-preferences items-center justify-center min-h-screen xxs:px-10 overflow-hidden bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
+        <img src="/images/logo.png" alt="Logo" className='w-64 logo' />
+        <div className='flex'>
+          <h1 className="flex mx-auto text-3xl font-bold mb-6 dark:text-white"><span><FontAwesomeIcon icon={faHeadphones} className='pr-2' /></span>Sound Preferences</h1>
+        </div>
+        <div className="container m-auto flex flex-wrap justify-center mt-1 gap-14">
           {Object.keys(soundSettings).map((sound) => (
             <SoundControl 
+              key={sound}
               soundSettings={soundSettings} 
               sound={sound}
               IconComponent={soundSettings[sound].icon}

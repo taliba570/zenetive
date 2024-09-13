@@ -41,7 +41,7 @@ const SoundControl: React.FC<SoundControlProps> = ({
       </div>
 
       {/* Sound Control */}
-      <div className="sound-setting">
+      <div className="sound-setting pt-3">
         <input 
           type="range" 
           min="0" 
@@ -56,7 +56,7 @@ const SoundControl: React.FC<SoundControlProps> = ({
           onClick={handleSliderClick} // Trigger toast if sound is not enabled
           className={`volume-slider ${!soundEnabled ? 'disabled-slider' : ''}`}
         />
-        <div>
+        <div className='pt-2'>
           <Switch isChecked={soundEnabled} onChange={() => toggleSound(sound)} showIcon={false} />
         </div>
       </div>

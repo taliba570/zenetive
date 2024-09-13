@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import './Settings.css';
 import PomodoroSettings from '../../components/PomodoroSettings';
 import SoundPreferences from '../../components/SoundPreferences';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClock, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 
 interface SettingsProps {
   workTime: number;
@@ -34,17 +36,16 @@ const Settings: React.FC<SettingsProps> = ({
             className={activeTab === 'pomodoro' ? 'active' : ''}
             onClick={() => setActiveTab('pomodoro')}
           >
-            Pomodoro Settings
+            <FontAwesomeIcon icon={faClock} /> Pomodoro Settings
           </button>
           <button 
             className={activeTab === 'sound' ? 'active' : ''}
             onClick={() => setActiveTab('sound')}
           >
-            Sound Settings
+            <FontAwesomeIcon icon={faVolumeUp} /> Sound Settings
           </button>
         </div>
       </div>
-
 
       {activeTab === 'pomodoro' && 
       <PomodoroSettings

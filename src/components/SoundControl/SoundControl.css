@@ -6,8 +6,10 @@
   margin-bottom: 15px;
 }
 
-.icon {
-  margin-bottom: 8px;
+@media screen and (max-width: 540px) {
+  .icon {
+    margin-bottom: 0px;
+  }
 }
 
 .sound-setting {
