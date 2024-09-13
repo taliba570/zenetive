@@ -52,7 +52,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
     Object.keys(soundPreference).forEach((soundType) => {
       const sound = soundPreference[soundType];
       if (sound.enabled) {
-        const audio = new Audio(`/assets/sounds/${soundType}.mp3`);
+        const audio = new Audio(`https://pomodoros.s3.eu-north-1.amazonaws.com/${soundType}.mp3`);
         audio.volume = sound.volume / 100;
         audio.play();
         audioInstances.current.push(audio);
