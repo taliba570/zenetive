@@ -53,7 +53,7 @@ const SoundPreferences: React.FC = () => {
   return (
     <>
       <div className="flex flex-col pt-10 sound-preferences items-center justify-center min-h-screen xxs:px-10 overflow-hidden bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
-        <img src="/images/logo.png" alt="Logo" className='w-64 logo' />
+        <img src="https://pomodoros.s3.eu-north-1.amazonaws.com/logo.png" alt="Logo" className='w-64 logo' />
         <div className='flex'>
           <h1 className="flex mx-auto text-3xl font-bold mb-6 dark:text-white"><span><FontAwesomeIcon icon={faHeadphones} className='pr-2' /></span>Sound Preferences</h1>
         </div>

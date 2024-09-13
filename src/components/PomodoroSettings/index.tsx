@@ -39,7 +39,7 @@ const PomodoroSettings: React.FC<PomodoroSettingsProps> = ({
   return (
     <div className="flex flex-col settings items-center justify-center min-h-screen xxs:px-10 overflow-hidden bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
         <div className='settings-content flex flex-col w-2/4 justify-center items-center'>
-          <img src="/images/logo.png" alt="Logo" className='w-64 logo' />
+          <img src="https://pomodoros.s3.eu-north-1.amazonaws.com/logo.png" alt="Logo" className='w-64 logo' />
           <h1 className="text-3xl font-bold mb-6"><span><FontAwesomeIcon icon={faGears} className='pr-1' /></span>Settings</h1>
           
           <div className="w-full max-w-md space-y-6">
