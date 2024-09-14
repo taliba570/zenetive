@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
+import { TaskPriority } from "src/commons/enums/task-priority";
 
 @Schema()
 export class Task extends Document {
@@ -11,6 +12,12 @@ export class Task extends Document {
 
   @Prop({ default: false })
   isCompleted: boolean;
+
+  @Prop({ enum: TaskPriority, default: null })
+  priority: TaskPriority | null;
+
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  userId: Types.ObjectId;
 
   @Prop({ default: Date.now })
   createdAt: Date;

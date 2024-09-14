@@ -10,6 +10,7 @@ async function bootstrap() {
     .setDescription('API documentation for Pomodoro Tracker project')
     .setVersion('1.0')
     .addTag('pomodoro')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
