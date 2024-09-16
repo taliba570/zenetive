@@ -50,7 +50,7 @@ input[type='range']::-webkit-slider-thumb {
   appearance: none;
   width: 25px; /* Thumb width */
   height: 25px; /* Thumb height */
-  background: linear-gradient(120deg, #b446cf, #2bc8f8 ); /* White thumb color */
+  background: linear-gradient(120deg, #ffb88c, #ff616d ); /* White thumb color */
   border-radius: 50%; /* Rounded thumb */
   cursor: pointer; /* Pointer cursor on hover */
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2); /* Subtle shadow for the thumb */

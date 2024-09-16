@@ -197,16 +197,16 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
     <>
       <div className="w-full h-2 bg-gray-200 dark:bg-gray-600 overflow-hidden">
         <div
-          className="h-full shadow-lg bg-gradient-to-tr from-[#b446cf] to-[#2bc8f8] transition-width duration-1000 ease-linear"
+          className="h-full shadow-lg bg-gradient-to-tr from-[#ffb88c] to-[#ff616d] transition-width duration-1000 ease-linear"
           style={{ width: `${percentageTimeLeft}%` }}
         ></div>
       </div>
 
-      <div onClick={() => setResetCycleModalOpen(true)} className='group flex absolute text-white text-4xl bg-gradient-to-br from-[#b446cf] to-[#2bc8f8] w-20 h-20 text-center justify-center rounded-full right-5 top-24 cursor-default'>
+      <div onClick={() => setResetCycleModalOpen(true)} className='group flex absolute text-white text-4xl bg-gradient-to-br from-[#ffb88c] to-[#ff616d] w-20 h-20 text-center justify-center rounded-full right-5 top-24 cursor-default'>
         <div className='flex justify-center m-auto pb-1'>
           {completedCycles}
         </div>
-        <span className="group-hover:opacity-100 text-lg transition-opacity bg-gradient-to-br from-[#b446cf] to-[#2bc8f8] px-1 text-gray-100 rounded-md absolute left-1/2 
+        <span className="group-hover:opacity-100 text-lg transition-opacity bg-gradient-to-br from-[#ffb88c] to-[#ff616d] px-1 text-gray-100 rounded-md absolute left-1/2 
         -translate-x-1/2 translate-y-full opacity-0 m-10 mx-auto">Pomodoros Completed</span>
       </div>
       

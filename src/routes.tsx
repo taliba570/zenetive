@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Settings from './pages/Settings/Settings';
 import NotFound from './pages/NotFound';
 import TaskList from './components/TaskList';
+import PhoneAuth from './components/PhoneAuth';
 
 const RoutesConfig: React.FC = () => {
   const [workTime, setWorkTime] = useState<number>(
@@ -81,6 +82,7 @@ const RoutesConfig: React.FC = () => {
         soundNotification={soundNotification}
         handleSoundNotificationChange={handleSoundNotificationChange}  />} />
       <Route path="/todos" element={<TaskList />} />
+      <Route path="/signin" element={<PhoneAuth />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

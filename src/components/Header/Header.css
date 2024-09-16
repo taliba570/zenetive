@@ -43,13 +43,13 @@
 }
 
 .nav-item.active {
-  background: linear-gradient(140deg, #b446cf, #2bc8f8);
+  background: linear-gradient(140deg, #ffb88c, #ff616d);
   color: white;
   border: none;
 }
 
 .nav-item:hover {
-  background: linear-gradient(90deg, #2bc8f8, #b446cf);
+  background: linear-gradient(90deg, #ff616d, #ffb88c);
   color: white;
   transition: background 3s linear;
 }
@@ -88,11 +88,11 @@
 }
 
 .mobile-menu .nav-item.active {
-  background: linear-gradient(to right, #b446cf, #2bc8f8);
+  background: linear-gradient(to right, #ffb88c, #ff616d);
 }
 
 .mobile-menu .nav-item:hover {
-  background: linear-gradient(to right, #2bc8f8, #b446cf);
+  background: linear-gradient(to right, #ff616d, #ffb88c);
 }
 
 /* Media Queries */
@@ -131,12 +131,12 @@
   }
 
   .nav-links.open .nav-item.active {
-    background: linear-gradient(to right, #b446cf, #2bc8f8);
+    background: linear-gradient(to right, #ffb88c, #ff616d);
     color: white;
   }
 
   .nav-links.open .nav-item:hover {
-    background: linear-gradient(to right, #2bc8f8, #b446cf);
+    background: linear-gradient(to right, #ff616d, #ffb88c);
     color: white;
   }
 }
