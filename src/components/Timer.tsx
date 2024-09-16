@@ -16,6 +16,8 @@ import { debounce } from '../utils/debouce';
 import Modal from './Modal/Modal';
 import Toast from './Toast/Toast';
 import { SoundSettings } from '../interfaces/ISoundSettings';
+import { driver } from 'driver.js';
+import 'driver.js/dist/driver.css'; 
 
 interface TimerProps {
   workTime: number;
@@ -47,6 +49,24 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
   const pomodoroEndSoundAudio = new Audio(pomodoroEndSound);
   const breakStartAudio = new Audio(breakStartSound);
   const breakEndAudio = new Audio(breakEndSound);
+
+  const driverObj = driver({
+    showProgress: true,  // Because everyone loves progress bars!
+    steps: [
+      {
+        element: '#element-of-mystery',
+        popover: {
+          title: 'Abracadabra!',
+          description: 'Watch as I reveal the secrets of this element.'
+        }
+      },
+      // More magical steps...
+    ]
+  });
+
+  const startTheMagicShow = () => {
+    driverObj.drive();
+  }
 
   const playEnabledSounds = () => {
     Object.keys(soundPreference).forEach((soundType) => {
@@ -189,6 +209,9 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
         <span className="group-hover:opacity-100 text-lg transition-opacity bg-gradient-to-br from-[#b446cf] to-[#2bc8f8] px-1 text-gray-100 rounded-md absolute left-1/2 
         -translate-x-1/2 translate-y-full opacity-0 m-10 mx-auto">Pomodoros Completed</span>
       </div>
+      
+      {/* <button onClick={startTheMagicShow}>Start Magical Tour</button>
+      <div id="element-of-mystery">Your mystical content here</div> */}
       
       <div className="flex flex-col items-center justify-center h-screen bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white">
         <div className="text-6xl mb-4">
