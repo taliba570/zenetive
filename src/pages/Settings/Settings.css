@@ -43,7 +43,7 @@ body {
 
 /* Active tab */
 .tabs button.active {
-  background: linear-gradient(120deg, #b446cf, #2bc8f8 ); 
+  background: linear-gradient(120deg, #ffb88c, #ff616d ); 
   color: white;
   transform: scale(1.05);
   box-shadow: 0px 4px 8px rgba(74, 144, 226, 0.4);

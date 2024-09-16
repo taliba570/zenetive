@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTheme } from "../../contexts/ThemeContext";
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faGears, faList, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faClock, faGears, faList, faBars, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import Switch from '../Switch/Switch';
 import './Header.css';
 
@@ -62,6 +62,11 @@ const Header: React.FC = () => {
           to="/todos"
           className={`nav-item ${location.pathname === '/todos' ? 'active' : ''}`}
         ><FontAwesomeIcon icon={faList} className='icon' /> Todos</Link>
+
+        <Link
+          to="/signin"
+          className={`nav-item ${location.pathname === '/signin' ? 'active' : ''}`}
+        ><FontAwesomeIcon icon={faDoorOpen} className='icon' /> Sign In</Link>
       </div>
 
       {/* Dark Mode Toggle */}
@@ -86,6 +91,11 @@ const Header: React.FC = () => {
             to="/todos"
             className={`nav-item ${location.pathname === '/todos' ? 'active' : ''}`}
           ><FontAwesomeIcon icon={faList} className='icon' /> Todos</Link>
+
+          <Link
+            to="/signin"
+            className={`nav-item ${location.pathname === '/signin' ? 'active' : ''}`}
+          ><FontAwesomeIcon icon={faDoorOpen} className='icon' /> Sign In</Link>
         </div>
       )}
     </nav>
