@@ -1,8 +1,17 @@
 import React from 'react';
 import TaskItem from '../TaskItem/TaskItem';
+import { Label, TaskPriority } from '../../types';
+
+interface Task {
+  name: string;
+  duration: number;
+  isCompleted: boolean;
+  priority?: TaskPriority;
+  labels?: Label[];
+}
 
 interface TaskListContainerProps {
-  tasks: { text: string; isCompleted: boolean }[];
+  tasks: Task[];
   editingIndex: number | null;
   deletingIndex: number | null;
   editedText: string;
@@ -41,7 +50,7 @@ const TaskListContainer: React.FC<TaskListContainerProps> = ({
                 task={task}
                 isEditing={editingIndex === index}
                 isDeleting={deletingIndex === index}
-                taskText={editingIndex === index ? editedText : task.text}
+                taskText={editingIndex === index ? editedText : task.name}
                 setTaskText={setEditedText}
                 toggleCompletion={() => toggleTaskCompletion(index)}
                 onEdit={() => editTask(index)}
@@ -50,7 +59,9 @@ const TaskListContainer: React.FC<TaskListContainerProps> = ({
                 onCancelEdit={cancelEdit}
               />
             );
-          }})}
+          }
+          return null;
+        })}
     </ul>
   );
 };

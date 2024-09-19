@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useTheme } from "../../contexts/ThemeContext";
+import { useTheme } from "../../services/providers/ThemeContext";
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faGears, faList, faBars, faDoorOpen } from '@fortawesome/free-solid-svg-icons';

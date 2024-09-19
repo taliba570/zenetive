@@ -1,7 +1,7 @@
 import React from 'react';
 import RoutesConfig from './routes';
 import './styles/App.css';
-import { useTheme } from './contexts/ThemeContext';
+import { useTheme } from './services/providers/ThemeContext';
 import Header from './components/Header/Header';
 
 const App: React.FC = () => {

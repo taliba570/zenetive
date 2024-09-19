@@ -1,9 +1,16 @@
 import { faCheckCircle, faEdit, faTimesCircle, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
+import { Label, TaskPriority } from '../../types';
 
 interface TaskItemProps {
-  task: { text: string; isCompleted: boolean };
+  task: { 
+    name: string;
+    duration: number;
+    isCompleted: boolean;
+    priority?: TaskPriority;
+    labels?: Label[];
+  };
   isEditing: boolean;
   isDeleting: boolean;
   taskText: string;
@@ -28,7 +35,16 @@ const TaskItem: React.FC<TaskItemProps> = ({
   onCancelEdit
 }) => {
   return (
-    <li className={`${isDeleting ? 'animate-pulse' : ''} flex justify-between items-center bg-gray-100 dark:bg-gray-700 px-4 py-2 rounded shadow`}>
+    <li 
+      className={`
+        ${task.priority != null ? 'border-l-8' : ''} 
+        ${task.priority === 'LOW' ? 'border-l-green-500' : 
+          task.priority === 'MEDIUM' ? 'border-l-yellow-500' : 
+          task.priority === 'HIGH' ? 'border-l-red-500' : ''} 
+        ${isDeleting ? 'animate-pulse' : ''} 
+        flex justify-between items-center bg-gray-100 dark:bg-gray-700 px-4 py-2 rounded shadow
+      `}
+    >
       {isEditing ? (
         <div className="flex space-x-2 w-full">
           <input 
@@ -52,9 +68,19 @@ const TaskItem: React.FC<TaskItemProps> = ({
             </button>
           </div>
           <span className={`flex-grow ${task.isCompleted ? 'line-through text-gray-500' : 'text-gray-700 dark:text-gray-300'}`} onClick={toggleCompletion}>
-            {task.text}
+            {task.name}
           </span>
-          <div className="flex space-x-2">
+          <span className="text-gray-500 dark:text-gray-400 text-sm ml-2">
+            {task.duration} mins
+          </span>
+          {task.labels?.map(label => {
+            return (
+              <span className={`w-fit font-bold text-gray-700 dark:text-gray-100 m-1 px-2 py-1 text-sm rounded-lg text-center bg-[${label.color}]`}>
+                {label.name}
+              </span>
+            );
+          })}
+          <div className="flex space-x-2 ml-4">
             <button onClick={onEdit} className="text-blue-500 hover:text-blue-700 dark:hover:text-blue-400 transition flex items-center justify-center pr-3">
               <FontAwesomeIcon icon={faEdit} />
             </button>
