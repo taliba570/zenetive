@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import './Settings.css';
-import PomodoroSettings from '../../components/PomodoroSettings';
-import SoundPreferences from '../../components/SoundPreferences';
+import '../styles/Settings.css';
+import PomodoroSettings from '../components/PomodoroSettings';
+import SoundPreferences from '../components/SoundPreferences';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 

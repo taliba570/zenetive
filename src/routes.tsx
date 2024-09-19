@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
-import Settings from './pages/Settings/Settings';
+import Settings from './pages/Settings';
 import NotFound from './pages/NotFound';
 import TaskList from './components/TaskList';
 import PhoneAuth from './components/PhoneAuth';
