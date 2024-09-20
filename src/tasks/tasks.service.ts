@@ -3,6 +3,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Task } from './task.entity';
 import { CreateTaskDto } from './dtos/create-task.dto';
+import { AssignLabelToTask } from './dtos/assign-label-to-task.dto';
 
 @Injectable()
 export class TasksService {
@@ -12,7 +13,11 @@ export class TasksService {
   ) {}
 
   findAll(userId: number): Promise<Task[]> {
-    return this.taskModel.find({ userId }).exec();
+    return this.taskModel.find({ userId })
+    .populate({
+      path: 'labels',
+      select: 'name'
+    }).exec();
   }
 
   async findById(taskId: string, userId: number): Promise<Task> {
@@ -48,7 +53,6 @@ export class TasksService {
   }
 
   async deleteTask(taskId: string, userId: string): Promise<void> {
-    console.log(taskId);
     const task = await this.taskModel.findOneAndDelete({
       _id: taskId,
       userId: userId,
@@ -57,5 +61,24 @@ export class TasksService {
     if (!task) {
       throw new NotFoundException(`Task with ID ${taskId} not found or you do not have permission to delete it.`);
     }
+  }
+
+  async assignLabelsToTask(assignLabelsToTaskDto: AssignLabelToTask): Promise<Task> {
+    const { taskId, labelIds } = assignLabelsToTaskDto;
+    return this.taskModel.findByIdAndUpdate(
+      taskId,
+      { $addToSet: { labels: { $each: labelIds }}},
+      { new: true },
+    ).exec();
+  }
+  
+  async removeLabelFromTask(taskId: string, labelId: string): Promise<Task> {
+    const task = await this.taskModel.findById(taskId).exec();
+    if (!task) {
+      throw new NotFoundException(`Task with ID "${taskId}" not found`);
+    }
+
+    task.labels = task.labels.filter(label => label.toString() !== labelId);
+    return task.save();
   }
 }

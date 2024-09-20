@@ -4,6 +4,11 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: 'http://localhost:9000', // Allow specific origin
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Specify allowed methods
+    credentials: true, // Allow credentials (cookies, authorization headers)
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Pomodoro Tracker API')

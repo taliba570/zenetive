@@ -2,11 +2,11 @@ import { BadRequestException, Body, Controller, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LoginUserDto } from "./dtos/login-user.dto";
 import { CreateUserDto } from "./dtos/create-user.dto";
-import { ForgotPasswordDto } from "./dtos/forgot-password.dto";
+import { ForgotPasswordDto, ForgotPasswordOtpDto, VerifyOtpDto } from "./dtos/forgot-password.dto";
 import { UserService } from "src/user/user.service";
 import { ApiTags } from "@nestjs/swagger";
 
-@ApiTags('auth')
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -55,5 +55,18 @@ export class AuthController {
   async resetPassword(@Body() body: { token: string, newPassword: string }) {
     const user = await this.userService.resetPassword(body.token, body.newPassword);
     return { message: 'Password has been reset successfully!' };
+  }
+
+
+  @Post('forgot-password-otp')
+  async forgotPasswordOtp(@Body() forgotPasswordOtpDto: ForgotPasswordOtpDto) {
+    const { email, phoneNumber } = forgotPasswordOtpDto;
+    return await this.authService.forgotPasswordWithOtp(email, phoneNumber);
+  }
+
+  @Post('verify-otp-reset-password')
+  async verifyOtpResetPassword(@Body() verifyOtpDto: VerifyOtpDto) {
+    const { otpCode, sessionInfo, newPassword } = verifyOtpDto;
+    return await this.authService.verifyOtpAndResetPassword(otpCode, sessionInfo, newPassword);
   }
 }

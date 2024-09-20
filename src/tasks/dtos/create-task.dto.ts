@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { Types } from "mongoose";
 import { TaskPriority } from "src/commons/enums/task-priority";
 
 export class CreateTaskDto {
@@ -13,4 +14,11 @@ export class CreateTaskDto {
 
   @ApiPropertyOptional({ enum: TaskPriority, description: 'Task priority' })
   priority?: TaskPriority | null;
+
+  @ApiPropertyOptional({ 
+    example: ['64c9d8a7b0f7a3dceda1a7f0'], 
+    description: 'Array of label IDs', 
+    type: [String]
+  })
+  labels?: Types.ObjectId[];
 }

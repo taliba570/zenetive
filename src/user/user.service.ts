@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './user.entity';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-import { CreateUserDto } from 'src/auth/dtos/create-user.dto';
 
 @Injectable()
 export class UserService {
@@ -13,7 +12,7 @@ export class UserService {
 
   async createUser(name: string, email: string, password: string): Promise<User> {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new this.userModel({ name, email, password: hashedPassword });
+    const newUser = new this.userModel({ name, email: email.toLowerCase(), password: hashedPassword });
     return newUser.save();
   }
 
@@ -40,5 +39,20 @@ export class UserService {
     user.resetPasswordToken = null;
     user.resetPasswordExpires = null;
     return user.save();
+  }
+
+  async updateUserPassword(userId: string, newPassword: string): Promise<{ message: string }> {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const result = await this.userModel.updateOne(
+      { _id: userId },
+      { $set: { password: hashedPassword } },
+    ).exec();
+
+    if (result.modifiedCount === 0) {
+      throw new BadRequestException('Unable to update the password');
+    }
+
+    return { message: 'Password successfully updated' };
   }
 }

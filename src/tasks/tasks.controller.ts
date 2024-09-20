@@ -3,10 +3,11 @@ import { ApiBearerAuth, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags }
 import { TasksService } from './tasks.service';
 import { Task } from './task.entity';
 import { CreateTaskDto } from './dtos/create-task.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UpdateTaskDto } from './dtos/update-task.dto';
+import { AssignLabelToTask } from './dtos/assign-label-to-task.dto';
 
-@ApiTags('tasks')
+@ApiTags('Tasks')
 @ApiBearerAuth()
 @Controller('tasks')
 export class TasksController {
@@ -55,7 +56,23 @@ export class TasksController {
   @ApiParam({ name: 'id', description: 'Task ID' }) // Document the task ID parameter
   async deleteTask(@Param('id') taskId: string, @Request() req: any) {
     const userId = req.user.userId;
-    console.log(userId, taskId, 'test')
     return this.tasksService.deleteTask(taskId, userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('assign-labels')
+  async assignLabels(@Body() assignLabelsToTaskDto: AssignLabelToTask) {
+    return this.tasksService.assignLabelsToTask(assignLabelsToTaskDto);
+  }
+
+  @Delete(':taskId/labels/:labelId')
+  @ApiOperation({ summary: 'Remove a label from a task' })
+  @ApiResponse({ status: 200, description: 'Label removed successfully', type: Task })
+  @ApiResponse({ status: 404, description: 'Task or Label not found' })
+  async removeLabelFromTask(
+    @Param('taskId') taskId: string, 
+    @Param('labelId') labelId: string
+  ): Promise<Task> {
+    return this.tasksService.removeLabelFromTask(taskId, labelId);
   }
 }
