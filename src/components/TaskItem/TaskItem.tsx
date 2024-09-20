@@ -75,7 +75,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
           </span>
           {task.labels?.map(label => {
             return (
-              <span className={`w-fit font-bold text-gray-700 dark:text-gray-100 m-1 px-2 py-1 text-sm rounded-lg text-center bg-[${label.color}]`}>
+              <span className={`w-fit font-bold text-gray-700 dark:text-gray-100 m-1 px-2 py-1 text-sm rounded-lg text-center`} style={{backgroundColor: label?.color}}>
                 {label.name}
               </span>
             );
