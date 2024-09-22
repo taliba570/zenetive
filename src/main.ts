@@ -1,16 +1,10 @@
 import { NestFactory } from '@nestjs/core';
-import * as cors from 'cors';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { credential } from 'firebase-admin';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use(cors({
-    origin: 'https://master.d3muok6acru34g.amplifyapp.com',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  }));
+  app.enableCors();
 
   const config = new DocumentBuilder()
     .setTitle('Pomodoro Tracker API')
