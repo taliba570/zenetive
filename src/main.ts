@@ -15,7 +15,12 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   app.enableCors({
-    origin: 'https://master.d3muok6acru34g.amplifyapp.com',  // Specify the exact URL
+    origin: [
+      'https://master.d3muok6acru34g.amplifyapp.com/',
+      'https://master.d3muok6acru34g.amplifyapp.com',
+      /\.amplifyapp\.com$/,
+      '*',
+    ],  // Specify the exact URL
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,  // If you need to allow credentials (cookies, auth)
