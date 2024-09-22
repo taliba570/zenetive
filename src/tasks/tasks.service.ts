@@ -13,7 +13,6 @@ export class TasksService {
   ) {}
 
   findAll(userId: number): Promise<Task[]> {
-    console.log(userId, 'userId');
     return this.taskModel.find({ userId })
     .populate({
       path: 'labels',
