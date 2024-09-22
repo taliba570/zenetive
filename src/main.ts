@@ -14,6 +14,12 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
+  app.enableCors({
+    origin: 'https://master.d3muok6acru34g.amplifyapp.com',  // Specify the exact URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,  // If you need to allow credentials (cookies, auth)
+  });
   SwaggerModule.setup('api', app, document);
   await app.listen(3000);
 }
