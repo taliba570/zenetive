@@ -2,13 +2,13 @@ name: CI/CD Pipeline
 
 on:
   push:
-      branches:
-        - master
+    branches:
+      - master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-  
+
     steps:
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -31,13 +31,13 @@ jobs:
 
       - name: Deploy on EC2
         run: |
-          ssh ec2-user@${{ secrets.EC2_HOST }}"
+          ssh ec2-user@${{ secrets.EC2_HOST }} "
             cd /home/${{ secrets.EC2_USER }}/pomodoro-tracker-backend &&
-            npm i &&
+            npm install &&
             npm run build
           "
 
-      - name: Restart Appliation on EC2
+      - name: Restart Application on EC2
         run: |
           ssh ec2-user@${{ secrets.EC2_HOST }} "
             pm2 restart pomodoro-tracker-backend || pm2 start dist/main.js --name pomodoro-tracker-backend
