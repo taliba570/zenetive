@@ -79,7 +79,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
         <>
           <h3 className='text-gray-100 font-semibold text-md py-1'>Labels</h3>
           <div className="flex flex-wrap gap-2 mb-2">
-            {labels.map((label) => (
+            {labels?.map((label) => (
               <button
                 key={label.name}
                 onClick={() => handleLabelClick(label)}
