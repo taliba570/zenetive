@@ -6,6 +6,7 @@ async function bootstrap() {
   const whiteList = [
     'http://localhost:9000',
     'https://master.d3muok6acru34g.amplifyapp.com',
+    'https://*.amplifyapp.com',
     '*'
   ];
   
