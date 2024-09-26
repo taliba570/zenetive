@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TasksModule } from './tasks/tasks.module';
 import { PomodoroSettingsModule } from './settings/pomodoro-settings.module';
 import { TimerModule } from './timer/timer.module';
@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { LabelsModule } from './labels/labels.module';
 import { PomodoroRecordModule } from './pomodoro-record/pomodoro-record.module';
+import { LoggerMiddleware } from './commons/middlewares/logger.middleware';
 
 @Module({
   imports: [
@@ -22,4 +23,10 @@ import { PomodoroRecordModule } from './pomodoro-record/pomodoro-record.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes('*');
+  }
+}
