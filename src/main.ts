@@ -5,8 +5,11 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const whiteList = [
     'http://localhost:9000',
+    'localhost:9000',
     'https://master.d3muok6acru34g.amplifyapp.com',
+    'master.d3muok6acru34g.amplifyapp.com',
     'https://*.amplifyapp.com',
+    '*.amplifyapp.com',
     '*'
   ];
   
