@@ -14,7 +14,7 @@ async function bootstrap() {
   ];
   
   const options = {
-    origin: process.env.NODE_ENV == 'prod' ? whiteList : true,
+    origin: process.env.NODE_ENV == 'prod' ? true : true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     preflightContinue: false,
