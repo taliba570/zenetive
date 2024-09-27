@@ -14,7 +14,7 @@ async function bootstrap() {
   app.use(compression());
   bootstrapSwagger(app);
 
-  await app.listen(3000);
+  await app.listen(80);
 }
 
 function enableCors(app: INestApplication) {
