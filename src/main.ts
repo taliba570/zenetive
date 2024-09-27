@@ -20,6 +20,10 @@ async function bootstrap() {
 function enableCors(app: INestApplication) {
   const whiteList = [
     'http://localhost:9000',
+    '13.227.74.26',
+    '13.227.74.80',
+    '13.227.74.120',
+    '13.227.74.13',
     'localhost:9000',
     'https://master.d3muok6acru34g.amplifyapp.com',
     'master.d3muok6acru34g.amplifyapp.com',
