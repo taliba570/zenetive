@@ -50,7 +50,7 @@ export class AppModule {
 }
 
 function getEnvFilePath(): string | string[] {
-  const nodeEnv = process.env.NODE_ENV || 'development';
+  const nodeEnv = process.env.NODE_ENV || 'production';
   switch(nodeEnv) {
     case 'production':
       return '.env.production';
