@@ -16,6 +16,7 @@ async function bootstrap() {
   app.enableCors({
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
     origin: function(origin, callback) {
+      console.log('checking cors permission')
       if (!origin) {
         callback(null, true);
         return;
