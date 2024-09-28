@@ -11,7 +11,8 @@ export default () => ({
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
     whitelistedIPs: [
       'http://localhost:9000',
-      'https://master.d3muok6acru34g.amplifyapp.com'
+      'https://master.d3muok6acru34g.amplifyapp.com',
+      'http://13.49.243.204'
     ],
   },
 });
