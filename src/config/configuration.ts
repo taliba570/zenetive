@@ -12,7 +12,8 @@ export default () => ({
     whitelistedIPs: [
       'http://localhost:9000',
       'https://master.d3muok6acru34g.amplifyapp.com',
-      'http://13.49.243.204'
+      'http://13.49.243.204',
+      'http://localhost:3000'
     ],
   },
 });
