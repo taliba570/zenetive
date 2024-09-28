@@ -40,5 +40,5 @@ jobs:
       - name: Restart Application on EC2
         run: |
           ssh ec2-user@${{ secrets.EC2_HOST }} "
-            pm2 restart pomodoro-tracker-backend || pm2 start dist/main.js --name pomodoro-tracker-backend
+            pm2 restart pomodoro-tracker-backend || pm2 start dist/main.js --name pomodoro-tracker-backend --env production
           "
