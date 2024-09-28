@@ -1,29 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import * as bodyParser from 'body-parser'
 import * as compression from 'compression'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
-  enableCors(app);
-  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
-  useBodyParser(app);
-  app.use(compression());
-  bootstrapSwagger(app);
-
-  await app.listen(3000);
-}
-
-function enableCors(app: INestApplication) {
+  
   const whiteList = [
     'http://localhost:9000',
-    '13.227.74.26',
-    '13.227.74.80',
-    '13.227.74.120',
-    '13.227.74.13',
+    'http://localhost',
     'localhost:9000',
     'https://master.d3muok6acru34g.amplifyapp.com',
     'master.d3muok6acru34g.amplifyapp.com',
@@ -41,9 +27,15 @@ function enableCors(app: INestApplication) {
     allowedHeaders: 'Content-Type,Accept,Authorization,email,x-request-id,request-type,X-Service-Identifier',
     exposedHeaders: 'X-Service-Identifier'
   };
-  app.enableCors(options);
-}
+  const app = await NestFactory.create(AppModule, { cors: options });
 
+  app.enableCors(options);
+  useBodyParser(app);
+  app.use(compression());
+  bootstrapSwagger(app);
+
+  await app.listen(3000);
+}
 
 function useBodyParser(app: INestApplication) {
   const rawBodyBuffer = (req: any, _: any, buffer: any, encoding: any) => {
@@ -70,7 +62,7 @@ function bootstrapSwagger(app: INestApplication) {
     .build();
 
   const document = SwaggerModule.createDocument(app, options)
-  SwaggerModule.setup('documentation', app, document)
+  SwaggerModule.setup('api', app, document)
 }
 
 bootstrap();
