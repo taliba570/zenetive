@@ -8,6 +8,8 @@ import {
   faCoffee, 
   faBook 
 } from '@fortawesome/free-solid-svg-icons';
+import { driver } from 'driver.js';
+import 'driver.js/dist/driver.css'; 
 import focusStartSound from '../assets/sounds/startClickSound.mp3';
 import pomodoroEndSound from '../assets/sounds/pomodoroEndSound.mp3';
 import breakStartSound from '../assets/sounds/breakStart.mp3';
@@ -16,8 +18,16 @@ import { debounce } from '../utils/debouce';
 import Modal from './Modal/Modal';
 import Toast from './Toast/Toast';
 import { SoundSettings } from '../interfaces/ISoundSettings';
-import { driver } from 'driver.js';
-import 'driver.js/dist/driver.css'; 
+import {
+  startTimer,
+  pauseTimer,
+  resetTimer,
+  switchMode,
+  tick,
+  incrementCompletedCycles,
+} from '../slices/timerSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../store';
 
 interface TimerProps {
   workTime: number;
@@ -28,17 +38,16 @@ interface TimerProps {
   soundNotification: boolean;
 }
 
-const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, mode, setMode, soundNotification }) => {
-  const [seconds, setSeconds] = useState<number>(workTime);
-  const [isActive, setIsActive] = useState<boolean>(false);
+const Timer: React.FC<TimerProps> = () => {
+  const dispatch = useDispatch();
+  const timerState = useSelector((state: RootState) => state.timer);
+
+  const { mode, isActive, startTime, elapsedSeconds, completedCycles } = timerState;
+
   const [changeMode, setChangeMode] = useState<'work' | 'shortBreak' | 'longBreak' | null>(null);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [resetCycleModalOpen, setResetCycleModalOpen] = useState<boolean>(false);
   const [toast, setToast] = useState<{message: string; type: 'success' | 'error' } | null>(null);
-  const [completedCycles, setCompletedCycles] = useState(() => {
-    const savedCycles = localStorage.getItem('completedCycles');
-    return savedCycles ? JSON.parse(savedCycles) : 0;
-  });
   const [soundPreference, setSoundPreference] = useState<SoundSettings>(() => {
     const savedPreference = localStorage.getItem('soundSettings');
     return savedPreference ? JSON.parse(savedPreference) : {};
@@ -49,7 +58,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
   const pomodoroEndSoundAudio = new Audio(pomodoroEndSound);
   const breakStartAudio = new Audio(breakStartSound);
   const breakEndAudio = new Audio(breakEndSound);
-
+  
   const driverObj = driver({
     showProgress: true,  // Because everyone loves progress bars!
     steps: [
@@ -93,50 +102,43 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
   };
 
   const deboucePlay = debounce((audio: HTMLAudioElement) => {
-    if (soundNotification) {
+    console.log(soundPreference);
+    if (true) {
       audio.play().catch(error => {
         console.error('Error playing audio:', error);
       })
     }
   }, 200);
 
-  const totalTime = mode === 'work' ? workTime : mode === 'shortBreak' ? shortBreakTime : longBreakTime;
+  const totalTime = mode === 'work' ? 1500 : mode === 'shortBreak' ? 300 : 900;
 
-  const percentageTimeLeft = (seconds / totalTime) * 100;
+  const percentageTimeLeft = ((totalTime - elapsedSeconds) / totalTime) * 100;
 
   useEffect(() => {
-    if (mode === 'work') {
-      setSeconds(workTime);
-    } else if (mode === 'shortBreak') {
-      setSeconds(shortBreakTime);
-    } else if (mode === 'longBreak') {
-      setSeconds(longBreakTime);
+    let interval: NodeJS.Timeout;
+    if (isActive) {
+      interval = setInterval(() => {
+        dispatch(tick());
+
+        if (elapsedSeconds +1 >= totalTime) {
+          clearInterval(interval);
+          dispatch(pauseTimer());
+          if (mode === 'work') {
+            deboucePlay(pomodoroEndSoundAudio);
+            dispatch(incrementCompletedCycles());
+            pauseAllSounds();
+          } else if (mode === 'shortBreak' || mode === 'longBreak') {
+            deboucePlay(breakEndAudio);
+          }
+        }
+      }, 1000);
     }
-  }, [mode, workTime, shortBreakTime, longBreakTime]);
+    return () => clearInterval(interval);
+  }, [isActive, mode, elapsedSeconds, totalTime, dispatch, deboucePlay, pomodoroEndSoundAudio, breakEndAudio]);
 
   useEffect(() => {
     localStorage.setItem('completedCycles', JSON.stringify(completedCycles));
   }, [completedCycles]);
-
-  useEffect(() => {
-    let interval: any;
-    if (isActive && seconds > 0) {
-      interval = setInterval(() => {
-        setSeconds((prevSeconds) => prevSeconds - 1);
-      }, 1000);
-    } else if (seconds === 0) {
-      if (mode === 'work') {
-        deboucePlay(pomodoroEndSoundAudio);
-        setCompletedCycles(() => completedCycles+1);
-        pauseAllSounds();
-      }
-      else if (mode === 'longBreak' || mode === 'shortBreak') deboucePlay(breakEndAudio);
-      clearInterval(interval);
-      setIsActive(false);
-      setSeconds(workTime);
-    }
-    return () => clearInterval(interval);
-  }, [isActive, seconds, mode]);
 
   useEffect(() => {
     const preloadAudio = () => {
@@ -146,32 +148,36 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
       new Audio(breakEndSound).load();
     }
     preloadAudio();
-  }, []);
+  }, [focusStartAudio, pomodoroEndSoundAudio, breakStartAudio, breakEndAudio]);
 
   const toggleTimer = () => {
-    setIsActive(!isActive);
+    console.log('called toggleTimer');
     if (!isActive) {
+      console.log('starting timer');
+      dispatch(startTimer(totalTime));
       if (mode === 'work') {
+        console.log('debouncing start focus sound');
         deboucePlay(focusStartAudio);
         playEnabledSounds();
+      } else if (mode === 'shortBreak' || mode === 'longBreak') {
+        console.log('debouncing start break sound');
+        deboucePlay(breakStartAudio);
       }
-      else if (!isActive && (mode === 'shortBreak' || mode === 'longBreak')) deboucePlay(breakStartAudio);
     } else {
+      console.log('pausing timer')
+      dispatch(pauseTimer());
+      deboucePlay(pomodoroEndSoundAudio);
       pauseAllSounds();
     }
   };
 
-  const resetTimer = () => {
-    setIsActive(false);
+  const resetTimerHandler = () => {
+    dispatch(resetTimer(totalTime));
     pauseAllSounds();
-    if (mode === 'work') setSeconds(workTime);
-    else if (mode === 'shortBreak') setSeconds(shortBreakTime);
-    else setSeconds(longBreakTime);
   };
 
-  const switchMode = (newMode: 'work' | 'shortBreak' | 'longBreak') => {
-    setIsActive(false);
-    setMode(newMode);
+  const switchModeHandler = (newMode: 'work' | 'shortBreak' | 'longBreak') => {
+    dispatch(switchMode(newMode));
     closeModal();
   };
 
@@ -185,13 +191,17 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
   };
 
   const resetPomodoroCycle = () => {
-    setCompletedCycles(0);
+    dispatch({ type: 'timer/resetCompletedCycles' })
     setResetCycleModalOpen(false);
   }
 
   const closeResetCycleModal = () => {
     setResetCycleModalOpen(false);
   }
+
+  const displaySeconds = totalTime - elapsedSeconds;
+  const minutes = Math.floor(displaySeconds / 60);
+  const seconds = displaySeconds % 60;
 
   return (
     <>
@@ -215,7 +225,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
       
       <div className="flex flex-col items-center justify-center h-screen bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white">
         <div className="text-6xl mb-4">
-          {Math.floor(seconds / 60)}:{seconds % 60 < 10 ? '0' : ''}{seconds % 60}
+          {minutes}:{seconds < 10 ? '0' : ''}{seconds}
         </div>
         <div className="flex space-x-4 mt-6">
           <button
@@ -233,7 +243,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
           </button>
 
           <button
-            onClick={resetTimer}
+            onClick={resetTimerHandler}
             className="px-4 py-2 rounded-lg font-medium transition duration-300 transform active:scale-95 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:from-red-500 hover:to-red-700 active:bg-red-700"
           >
             <FontAwesomeIcon icon={faRedo} className="mr-2" />
@@ -243,7 +253,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
 
         <div className="flex flex-row xxs:mx-auto xxs:items-center space-x-4 mt-4 xxs:flex-col">
           <button
-            onClick={() => { if (isActive) openModal('work'); else switchMode('work') }}
+            onClick={() => { if (isActive) openModal('work'); else switchModeHandler('work') }}
             className={`px-4 py-2 xxs:mt-5 xxs:mx-auto rounded-lg font-medium transition duration-300 transform active:scale-95 text-white 
               ${
                 mode === 'work'
@@ -257,7 +267,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
           </button>
 
           <button
-            onClick={() => { if (isActive) openModal('shortBreak'); else switchMode('shortBreak') }}
+            onClick={() => { if (isActive) openModal('shortBreak'); else switchModeHandler('shortBreak') }}
             className={`px-4 py-2 xxs:mt-8 xxs:mx-auto rounded-lg font-medium transition duration-300 transform active:scale-95 text-white 
               ${
                 mode === 'shortBreak'
@@ -271,7 +281,7 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
           </button>
 
           <button
-            onClick={() => { if (isActive) openModal('longBreak'); else switchMode('longBreak') }}
+            onClick={() => { if (isActive) openModal('longBreak'); else switchModeHandler('longBreak') }}
             className={`px-4 py-2 xxs:mt-8 xxs:mx-auto rounded-lg font-medium transition duration-300 transform active:scale-95 text-white 
               ${
                 mode === 'longBreak'
@@ -294,20 +304,20 @@ const Timer: React.FC<TimerProps> = ({ workTime, shortBreakTime, longBreakTime, 
             iconType='warning'
             modalType='confirmation'
             onConfirm={() => {
-              if (changeMode) switchMode(changeMode);
+              if (changeMode) switchModeHandler(changeMode);
             }}
             onCancel={closeModal}
           />
         )}
         {resetCycleModalOpen && (
           <Modal 
-          isOpen={resetCycleModalOpen}
-          title={`Reset Today's Progress`}
-          message={`Are you sure you want to reset today's progress?`}
-          iconType='warning'
-          modalType='confirmation'
-          onConfirm={() => resetPomodoroCycle()}
-          onCancel={closeResetCycleModal}
+            isOpen={resetCycleModalOpen}
+            title={`Reset Today's Progress`}
+            message={`Are you sure you want to reset today's progress?`}
+            iconType='warning'
+            modalType='confirmation'
+            onConfirm={() => resetPomodoroCycle()}
+            onCancel={closeResetCycleModal}
           />
         )}
 
