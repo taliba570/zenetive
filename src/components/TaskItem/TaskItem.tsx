@@ -67,7 +67,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
               <FontAwesomeIcon icon={faCheckCircle} />
             </button>
           </div>
-          <span className={`flex-grow ${task.isCompleted ? 'line-through text-gray-500' : 'text-gray-700 dark:text-gray-300'}`} onClick={toggleCompletion}>
+          <span className={`flex-grow ${task.isCompleted ? 'line-through text-gray-500' : 'text-gray-700 dark:text-gray-300'}`}>
             {task.name}
           </span>
           <span className="text-gray-500 dark:text-gray-400 text-sm ml-2">
