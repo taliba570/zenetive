@@ -23,13 +23,6 @@ export class PomodoroSettings extends Document {
 
   @Prop({ default: 0 })
   totalFocusedHours: number;
-
-  @Prop({ 
-    type: Map,
-    of: Number,
-    default: {}
-   })
-  soundPreferences: Map<string, number>;
 }
 
 export const PomodoroSettingsSchema = SchemaFactory.createForClass(PomodoroSettings);

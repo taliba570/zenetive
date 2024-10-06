@@ -11,6 +11,7 @@ import configuration from './config/configuration';
 import { TasksModule } from './tasks/tasks.module';
 import { PomodoroSettingsModule } from './settings/pomodoro-settings.module';
 import { TimerModule } from './timer/timer.module';
+import { SoundPreferenceModule } from './sound-preference/sound-preference.module';
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { TimerModule } from './timer/timer.module';
     TimerModule,
     AuthModule,
     LabelsModule,
-    PomodoroRecordModule
+    PomodoroRecordModule,
+    SoundPreferenceModule
   ],
 })
 export class AppModule {
