@@ -98,11 +98,11 @@ const Timer: React.FC<TimerProps> = () => {
             deboucePlay(pomodoroEndSoundAudio);
             dispatch(incrementCompletedCycles());
             stopAllSounds();
-            switchModeHandler('shortBreak');
-          } else if (mode === 'shortBreak') {
-            deboucePlay(breakEndAudio);
-            switchModeHandler('longBreak');
-          } else if (mode === 'longBreak') {
+            if (((completedCycles+1) % 4) === 0)
+              switchModeHandler('longBreak');
+            else 
+              switchModeHandler('shortBreak');
+          } else if (mode === 'shortBreak' || mode === 'longBreak') {
             deboucePlay(breakEndAudio);
             switchModeHandler('work');
           }
