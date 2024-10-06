@@ -1,54 +1,82 @@
 import React, { useEffect, useState } from 'react';
-import { SoundSettings } from '../../interfaces/ISoundSettings';
 import SoundControl from '../SoundControl';
-import FireIcon from '../../icon-components/FireIcon';
-import WaveIcon from '../../icon-components/WaveIcon';
-import WindIcon from '../../icon-components/WindIcon';
-import WhiteNoiseIcon from '../../icon-components/WhiteNoiseIcon';
-import TrainIcon from '../../icon-components/TrainIcon';
-import SingingBowlIcon from '../../icon-components/SingingBowlIcon';
-import ThunderStormIcon from '../../icon-components/ThunderStormIcon';
-import HeavyRainIcon from '../../icon-components/HeavyRainIcon';
-import CricketsIcon from '../../icon-components/CricketsIcon';
-import CoffeeShopIcon from '../../icon-components/CoffeeShopIcon';
-import BirdsIcon from '../../icon-components/BirdsIcon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeadphones } from '@fortawesome/free-solid-svg-icons';
-
-const soundsList = {
-  waves: { enabled: false, volume: 0, icon: WaveIcon },
-  fire: { enabled: false, volume: 0, icon: FireIcon },
-  birds: { enabled: false, volume: 0, icon: BirdsIcon },
-  coffeeshop: { enabled: false, volume: 0, icon: CoffeeShopIcon },
-  crickets: { enabled: false, volume: 0, icon: CricketsIcon },
-  heavyrain: { enabled: false, volume: 0, icon: HeavyRainIcon },
-  singingbowl: { enabled: false, volume: 0, icon: SingingBowlIcon },
-  thunderstorm: { enabled: false, volume: 0, icon: ThunderStormIcon },
-  train: { enabled: false, volume: 0, icon: TrainIcon },
-  whitenoise: { enabled: false, volume: 0, icon: WhiteNoiseIcon },
-  wind: { enabled: false, volume: 0, icon: WindIcon },
-};
+import { SoundSettings, soundsList } from '../../types';
+import { editSoundPreference, fetchSoundPreferences } from '../../services/apis/SoundPreferences';
+import { getIconComponent } from '../../utils/helper';
 
 const SoundPreferences: React.FC = () => {
   const [soundSettings, setSoundSettings] = useState<SoundSettings>(soundsList);
+  
+  useEffect(() => {
+    const loadSoundPreferences = async () => {
+      try {
+        const lSSoundPreference = localStorage.getItem('soundSettings');
+        if (lSSoundPreference) {
+          const parsedSettings = JSON.parse(lSSoundPreference);
+          setSoundSettings(parsedSettings);
+          return;
+        }
+        const settings = await fetchSoundPreferences();
+        const mergedSettings: SoundSettings = { ...soundsList };
+        settings.sounds.forEach((pref: any) => {
+          if (mergedSettings[pref.url]) {
+            mergedSettings[pref.url] = {
+              ...mergedSettings[pref.url],
+              enabled: true,
+              volume: pref.volume
+            };
+          }
+        });
+        setSoundSettings(mergedSettings);
+        localStorage.setItem('soundSettings', JSON.stringify(mergedSettings));
+      } catch (error) {
+        console.error('Error fetching sound preferences:', error);
+      }
+    };
+    loadSoundPreferences();
+  }, []);
 
-  const handleVolumeChange = (sound: string, volume: number) => {
+  const handleVolumeChange = async (sound: string, volume: number) => {
     setSoundSettings((prevSettings: any) => ({
       ...prevSettings,
       [sound]: { ...prevSettings[sound], volume }
     }));
-  };
-
-  const toggleSound = (sound: string) => {
-    setSoundSettings((prevSettings: any) => ({
-      ...prevSettings,
-      [sound]: { ...prevSettings[sound], enabled: !prevSettings[sound].enabled }
+    const updatedSettings = Object.entries(soundSettings)
+      .filter(([_, sound]) => sound.enabled) // Filter only enabled sounds
+      .map(([url, sound]) => ({
+        url, // Set the key as the 'url'
+        volume: sound.volume,
+        icon: sound.icon,
     }));
+    try {
+      localStorage.setItem('soundSettings', JSON.stringify(soundSettings));
+      await editSoundPreference(updatedSettings);
+    } catch (error) {
+      console.error('Error toggling sound:', error);
+    }
   };
 
-  useEffect(() => {
-    localStorage.setItem('soundSettings', JSON.stringify(soundSettings));
-  }, [soundSettings]);
+  const toggleSound = async (sound: string) => {
+    setSoundSettings((prevSettings: any) => {
+      const result: SoundSettings = {
+        ...prevSettings,
+        [sound]: { ...prevSettings[sound], enabled: !prevSettings[sound].enabled, volume: (!prevSettings[sound].enabled === true) ? 50 : 0 }
+      };
+      const updatedSettings = Object.fromEntries(
+        Object.entries(result).filter(([_, sound]) => sound.enabled)
+      );
+      
+      try {
+        localStorage.setItem('soundSettings', JSON.stringify(result));
+        editSoundPreference(updatedSettings);
+      } catch (error) {
+        console.error('Error toggling sound:', error);
+      }
+      return result;
+    });
+  };
 
   return (
     <>
@@ -63,7 +91,7 @@ const SoundPreferences: React.FC = () => {
               key={sound}
               soundSettings={soundSettings} 
               sound={sound}
-              IconComponent={soundSettings[sound].icon}
+              IconComponent={getIconComponent(soundSettings[sound]?.icon)}
               toggleSound={toggleSound}
               handleVolumeChange={handleVolumeChange}
             />

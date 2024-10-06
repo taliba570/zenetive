@@ -17,7 +17,6 @@ import breakEndSound from '../assets/sounds/breakEnd.mp3';
 import { debounce } from '../utils/debouce';
 import Modal from './Modal/Modal';
 import Toast from './Toast/Toast';
-import { SoundSettings } from '../interfaces/ISoundSettings';
 import {
   startTimer,
   pauseTimer,
@@ -28,6 +27,7 @@ import {
 } from '../slices/timerSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
+import { useSound } from '../services/providers/SoundContext';
 
 interface TimerProps {
   workTime: number;
@@ -41,18 +41,14 @@ interface TimerProps {
 const Timer: React.FC<TimerProps> = () => {
   const dispatch = useDispatch();
   const timerState = useSelector((state: RootState) => state.timer);
-
+  const { playEnabledSounds, stopAllSounds } = useSound();
   const { mode, isActive, startTime, elapsedSeconds, completedCycles } = timerState;
 
   const [changeMode, setChangeMode] = useState<'work' | 'shortBreak' | 'longBreak' | null>(null);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const [resetCurrentPomodoro, setResetCurrentPomodoro] = useState<boolean>(false);
   const [resetCycleModalOpen, setResetCycleModalOpen] = useState<boolean>(false);
   const [toast, setToast] = useState<{message: string; type: 'success' | 'error' } | null>(null);
-  const [soundPreference, setSoundPreference] = useState<SoundSettings>(() => {
-    const savedPreference = localStorage.getItem('soundSettings');
-    return savedPreference ? JSON.parse(savedPreference) : {};
-  });
-  const audioInstances = useRef<HTMLAudioElement[]>([]);
 
   const focusStartAudio = new Audio(focusStartSound);
   const pomodoroEndSoundAudio = new Audio(pomodoroEndSound);
@@ -77,32 +73,7 @@ const Timer: React.FC<TimerProps> = () => {
     driverObj.drive();
   }
 
-  const playEnabledSounds = () => {
-    Object.keys(soundPreference).forEach((soundType) => {
-      const sound = soundPreference[soundType];
-      if (sound.enabled) {
-        const audio = new Audio(`https://pomodoros.s3.eu-north-1.amazonaws.com/${soundType}.mp3`);
-        audio.volume = sound.volume / 100;
-        audio.play();
-        audioInstances.current.push(audio);
-
-        return () => {
-          audio.pause();
-          audio.currentTime = 0;
-        }
-      }
-    })
-  };
-
-  const pauseAllSounds = () => {
-    audioInstances.current.forEach(audio => {
-      audio.pause();
-      audio.currentTime = 0;
-    });
-  };
-
   const deboucePlay = debounce((audio: HTMLAudioElement) => {
-    console.log(soundPreference);
     if (true) {
       audio.play().catch(error => {
         console.error('Error playing audio:', error);
@@ -126,7 +97,7 @@ const Timer: React.FC<TimerProps> = () => {
           if (mode === 'work') {
             deboucePlay(pomodoroEndSoundAudio);
             dispatch(incrementCompletedCycles());
-            pauseAllSounds();
+            stopAllSounds();
           } else if (mode === 'shortBreak' || mode === 'longBreak') {
             deboucePlay(breakEndAudio);
           }
@@ -151,29 +122,28 @@ const Timer: React.FC<TimerProps> = () => {
   }, [focusStartAudio, pomodoroEndSoundAudio, breakStartAudio, breakEndAudio]);
 
   const toggleTimer = () => {
-    console.log('called toggleTimer');
     if (!isActive) {
-      console.log('starting timer');
       dispatch(startTimer(totalTime));
       if (mode === 'work') {
-        console.log('debouncing start focus sound');
         deboucePlay(focusStartAudio);
-        playEnabledSounds();
+        playEnabledSounds((() => {
+          const savedPreference = localStorage.getItem('soundSettings');
+          return savedPreference ? JSON.parse(savedPreference) : {};
+        })());
       } else if (mode === 'shortBreak' || mode === 'longBreak') {
-        console.log('debouncing start break sound');
         deboucePlay(breakStartAudio);
       }
     } else {
-      console.log('pausing timer')
       dispatch(pauseTimer());
       deboucePlay(pomodoroEndSoundAudio);
-      pauseAllSounds();
+      stopAllSounds();
     }
   };
 
   const resetTimerHandler = () => {
     dispatch(resetTimer(totalTime));
-    pauseAllSounds();
+    stopAllSounds();
+    closeResetCurrentPomodoroModal();
   };
 
   const switchModeHandler = (newMode: 'work' | 'shortBreak' | 'longBreak') => {
@@ -188,6 +158,10 @@ const Timer: React.FC<TimerProps> = () => {
 
   const closeModal = () => {
     setModalOpen(false);
+  };
+
+  const closeResetCurrentPomodoroModal = () => {
+    setResetCurrentPomodoro(false);
   };
 
   const resetPomodoroCycle = () => {
@@ -243,7 +217,7 @@ const Timer: React.FC<TimerProps> = () => {
           </button>
 
           <button
-            onClick={resetTimerHandler}
+            onClick={() => (isActive) ? setResetCurrentPomodoro(true) : ''}
             className="px-4 py-2 rounded-lg font-medium transition duration-300 transform active:scale-95 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:from-red-500 hover:to-red-700 active:bg-red-700"
           >
             <FontAwesomeIcon icon={faRedo} className="mr-2" />
@@ -307,6 +281,19 @@ const Timer: React.FC<TimerProps> = () => {
               if (changeMode) switchModeHandler(changeMode);
             }}
             onCancel={closeModal}
+          />
+        )}
+        {resetCurrentPomodoro && (
+          <Modal 
+            isOpen={resetCurrentPomodoro}
+            title={`Reset current timer`}
+            message={`Are you sure you want to reset current timer? Current progress will be lost!`}
+            iconType='warning'
+            modalType='confirmation'
+            onConfirm={() => {
+              if (resetCurrentPomodoro) resetTimerHandler();
+            }}
+            onCancel={closeResetCurrentPomodoroModal}
           />
         )}
         {resetCycleModalOpen && (
