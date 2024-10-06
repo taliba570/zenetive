@@ -81,7 +81,7 @@ const Timer: React.FC<TimerProps> = () => {
     }
   }, 200);
 
-  const totalTime = mode === 'work' ? 1500 : mode === 'shortBreak' ? 300 : 900;
+  const totalTime = mode === 'work' ? 4 : mode === 'shortBreak' ? 4 : 4;
 
   const percentageTimeLeft = ((totalTime - elapsedSeconds) / totalTime) * 100;
 
@@ -98,8 +98,13 @@ const Timer: React.FC<TimerProps> = () => {
             deboucePlay(pomodoroEndSoundAudio);
             dispatch(incrementCompletedCycles());
             stopAllSounds();
-          } else if (mode === 'shortBreak' || mode === 'longBreak') {
+            switchModeHandler('shortBreak');
+          } else if (mode === 'shortBreak') {
             deboucePlay(breakEndAudio);
+            switchModeHandler('longBreak');
+          } else if (mode === 'longBreak') {
+            deboucePlay(breakEndAudio);
+            switchModeHandler('work');
           }
         }
       }, 1000);
