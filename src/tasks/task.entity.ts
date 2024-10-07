@@ -22,6 +22,9 @@ export class Task extends Document {
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Label' }], default: []})
   labels: Types.ObjectId[];
 
+  @Prop({ nullable: true })
+  dueDate: Date;
+
   @Prop({ default: Date.now })
   createdAt: Date;
 }

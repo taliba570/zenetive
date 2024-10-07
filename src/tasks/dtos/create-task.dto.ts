@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsDateString, IsOptional } from "class-validator";
 import { Types } from "mongoose";
 import { TaskPriority } from "src/commons/enums/task-priority";
 
@@ -21,4 +22,8 @@ export class CreateTaskDto {
     type: [String]
   })
   labels?: Types.ObjectId[];
+
+  @IsDateString()
+  @IsOptional()
+  dueDate?: string;
 }
