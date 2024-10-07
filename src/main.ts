@@ -5,6 +5,8 @@ import { ImATeapotException, INestApplication } from '@nestjs/common';
 import * as bodyParser from 'body-parser'
 import * as compression from 'compression'
 import { ConfigService } from '@nestjs/config';
+import { CustomLogger } from './logger/custom-logger.service';
+import { AllExceptionsFilter } from './logger/all-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,6 +24,11 @@ async function bootstrap() {
   useBodyParser(app);
   app.use(compression());
   bootstrapSwagger(app);
+
+  const customLogger = await app.resolve(CustomLogger);
+  app.useLogger(customLogger);
+
+  app.useGlobalFilters(new AllExceptionsFilter(customLogger));
 
   await app.listen(port);
 }
