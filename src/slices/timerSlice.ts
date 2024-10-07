@@ -1,4 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import Api from "../services/apis/Api";
+import { timeToSeconds } from "../utils/formatTime";
 
 interface TimerState {
   mode: 'work' | 'shortBreak' | 'longBreak';
@@ -6,6 +8,9 @@ interface TimerState {
   startTime: number | null;
   elapsedSeconds: number;
   completedCycles: number;
+  workDuration: number;
+  shortBreakDuration: number;
+  longBreakDuration: number;
 }
 
 const initialState: TimerState = {
@@ -14,7 +19,42 @@ const initialState: TimerState = {
   startTime: null,
   elapsedSeconds: 0,
   completedCycles: parseInt(localStorage.getItem('completedCycles') || '0', 10),
+  workDuration: 1500,
+  shortBreakDuration: 300,
+  longBreakDuration: 900
 };
+
+export const fetchPomodoroSettings = createAsyncThunk(
+  'timer/fetchPomodoroSettings',
+  async () => {
+    const response = await Api.get('/pomodoro-settings');
+    return response;
+  }
+);
+
+export const updateWorkDuration = createAsyncThunk(
+  'timer/updateWorkDuration',
+  async (workDuration: number) => {
+    const response = await Api.patch('/pomodoro-settings/work-duration', { workDuration });
+    return response.data;
+  }
+);
+
+export const updateShortBreakDuration = createAsyncThunk(
+  'timer/updateShortBreakDuration',
+  async (shortBreakDuration: number) => {
+    const response = await Api.patch('/pomodoro-settings/short-break-duration', { shortBreakDuration });
+    return response.data;
+  }
+);
+
+export const updateLongBreakDuration = createAsyncThunk(
+  'timer/updateLongBreakDuration',
+  async (longBreakDuration: number) => {
+    const response = await Api.patch('/pomodoro-settings/long-break-duration', { longBreakDuration });
+    return response.data;
+  }
+);
 
 const timerSlice = createSlice({
   name: 'timer',
@@ -54,6 +94,29 @@ const timerSlice = createSlice({
       state.completedCycles = 0;
       localStorage.setItem('completedCycles', '0');
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchPomodoroSettings.fulfilled, (state, action: any) => {
+        const { workDuration, shortBreakDuration, longBreakDuration } = action.payload;
+        state.workDuration = timeToSeconds(workDuration);
+        state.shortBreakDuration = timeToSeconds(shortBreakDuration);
+        state.longBreakDuration = timeToSeconds(longBreakDuration);
+
+        localStorage.setItem('pomodoroSettings', JSON.stringify(action.payload));
+      })
+      .addCase(updateWorkDuration.fulfilled, (state, action) => {
+        state.workDuration = action.payload.workDuration;
+        localStorage.setItem('workDuration', action.payload.workDuration);
+      })
+      .addCase(updateShortBreakDuration.fulfilled, (state, action) => {
+        state.shortBreakDuration = action.payload.shortBreakDuration;
+        localStorage.setItem('shortBreakDuration', action.payload.shortBreakDuration);
+      })
+      .addCase(updateLongBreakDuration.fulfilled, (state, action) => {
+        state.longBreakDuration = action.payload.longBreakDuration;
+        localStorage.setItem('longBreakDuration', action.payload.longBreakDuration);
+      });
   },
 });
 

@@ -3,38 +3,39 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { timeToMinutes, timeToSeconds } from '../../utils/formatTime';
 import './index.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../store';
+import { updateLongBreakDuration, updateShortBreakDuration, updateWorkDuration } from '../../slices/timerSlice';
 
 interface PomodoroSettingsProps {
-  workTime: number;
-  shortBreakTime: number;
-  longBreakTime: number;
-  onWorkTimeChange: (time: number) => void;
-  onShortBreakTimeChange: (time: number) => void;
-  onLongBreakTimeChange: (time: number) => void;
   soundNotification: boolean;
   handleSoundNotificationChange: () => void;
 }
 
 const PomodoroSettings: React.FC<PomodoroSettingsProps> = ({
-  workTime,
-  shortBreakTime,
-  longBreakTime,
   soundNotification,
   handleSoundNotificationChange,
-  onWorkTimeChange,
-  onShortBreakTimeChange,
-  onLongBreakTimeChange
 }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const timerState = useSelector((state: RootState) => state.timer);
+  const { 
+    workDuration, 
+    shortBreakDuration, 
+    longBreakDuration 
+  } = timerState;
   const handleWorkTimeChange = (time: number) => {
-    onWorkTimeChange(timeToSeconds(time)); // Store time in seconds
+    const durationInSeconds = timeToSeconds(time);
+    dispatch(updateWorkDuration(durationInSeconds));
   };
 
   const handleShortBreakTimeChange = (time: number) => {
-    onShortBreakTimeChange(timeToSeconds(time));
+    const durationInSeconds = timeToSeconds(time);
+    dispatch(updateShortBreakDuration(durationInSeconds));
   };
 
   const handleLongBreakTimeChange = (time: number) => {
-    onLongBreakTimeChange(timeToSeconds(time));
+    const durationInSeconds = timeToSeconds(time);
+    dispatch(updateLongBreakDuration(durationInSeconds));
   };
   return (
     <div className="flex flex-col settings items-center justify-center min-h-screen xxs:px-10 overflow-hidden bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
@@ -47,7 +48,7 @@ const PomodoroSettings: React.FC<PomodoroSettingsProps> = ({
               <label className="text-lg font-medium mb-2">Work Time (minutes)</label>
               <input 
                 type="number"
-                value={timeToMinutes(workTime)}
+                value={timeToMinutes(workDuration)}
                 onChange={(e) => handleWorkTimeChange(Number(e.target.value))}
                 className="px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -57,7 +58,7 @@ const PomodoroSettings: React.FC<PomodoroSettingsProps> = ({
               <label className="text-lg font-medium mb-2">Short Break Time (minutes)</label>
               <input 
                 type="number"
-                value={timeToMinutes(shortBreakTime)}
+                value={timeToMinutes(shortBreakDuration)}
                 onChange={(e) => handleShortBreakTimeChange(Number(e.target.value))}
                 className="px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500"
               />
@@ -67,7 +68,7 @@ const PomodoroSettings: React.FC<PomodoroSettingsProps> = ({
               <label className="text-lg font-medium mb-2">Long Break Time (minutes)</label>
               <input 
                 type="number"
-                value={timeToMinutes(longBreakTime)}
+                value={timeToMinutes(longBreakDuration)}
                 onChange={(e) => handleLongBreakTimeChange(Number(e.target.value))}
                 className="px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
