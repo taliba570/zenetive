@@ -6,46 +6,76 @@ import Toast from './Toast/Toast';
 import { createTask, fetchTasks, updateTask, deleteTask } from '../services/apis/Tasks';
 import { CreateTaskDto, Label, Task, TaskPriority } from '../types';
 import { fetchLabels } from '../services/apis/Labels';
+import { debounce } from '../utils/debouce';
 
 const TaskList: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [taskInput, setTaskInput] = useState('');
   const [deletingIndex, setDeletingIndex] = useState<number | null>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editedText, setEditedText] = useState('');
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [priority, setPriority] = useState<TaskPriority>(null);
   const [labels, setLabels] = useState<Label[]>([]);
   const [creatingTask, setCreatingTask] = useState<boolean>(false);
   const [selectedLabels, setSelectedLabels] = useState<Label | null>(null);
 
   useEffect(() => {
-    const loadLabels = async () => {
-      try {
-        const data: any = await fetchLabels();
-        setLabels(data.data);
-      } catch (error) {
-        console.error('Error loading labels:', error);
-      }
-    };
-    loadLabels();
+    console.log('tasks', tasks.length);
+    setTasks(() => {
+      console.log('after clearing tasks', tasks.length);
+      loadLabels();
+      console.log('after fetching tasks', tasks.length);
+      return [];
+    });
+    loadTasks();
   }, []);
 
   useEffect(() => {
-    const loadTasks = async () => {
-      try {
-        const tasksData = await fetchTasks();
-        setTasks(tasksData);
-      } catch (error) {
-        console.error('Error loading tasks:', error);
-      } finally {
-        setLoading(false);
+    const handleScroll = debounce(() => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop + 100 >=
+        document.documentElement.scrollHeight
+      ) {
+        loadTasks();
       }
-    };
-    loadTasks();
-  }, []);
+    }, 300);
+  
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [page]);
+
+  
+  const loadTasks = async () => {
+    console.log('loading tasks', loading)
+    if (loading) return;
+    if (!hasMore) return;
+
+    setLoading(true);
+    try {
+      const tasksData = await fetchTasks(page, 10);
+      setTasks((prevTasks) => prevTasks.concat(tasksData.tasks));
+      setHasMore(tasksData.hasNext);
+      setPage((prevPage) => prevPage + 1)
+    } catch (error) {
+      console.error('Error loading tasks:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const loadLabels = async () => {
+    try {
+      const data: any = await fetchLabels();
+      setLabels(data.data);
+    } catch (error) {
+      console.error('Error loading labels:', error);
+    }
+  };
 
   const addTask = async () => {
     if (taskInput) {
