@@ -14,6 +14,18 @@ import BirdsIcon from './icon-components/BirdsIcon';
 export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH' | null;
 
 /*
+ * Pomodoro Settings
+*/
+export interface PomodoroSetting {
+  workDuration: number;
+  shortBreakDuration: number;
+  longBreakDurtaion: number;
+  cyclesBeforeLongBreak: number;
+  dailyPomodoroTarget: number;
+  totalFocusedHours: number;
+}
+
+/*
  * Task
 */
 export interface Task {

@@ -24,25 +24,31 @@ import {
   switchMode,
   tick,
   incrementCompletedCycles,
+  fetchPomodoroSettings,
 } from '../slices/timerSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
+import { AppDispatch, RootState } from '../store';
 import { useSound } from '../services/providers/SoundContext';
 
 interface TimerProps {
-  workTime: number;
-  shortBreakTime: number;
-  longBreakTime: number;
   mode: 'work' | 'shortBreak' | 'longBreak';
   setMode: (mode: 'work' | 'shortBreak' | 'longBreak') => void;
   soundNotification: boolean;
 }
 
 const Timer: React.FC<TimerProps> = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const timerState = useSelector((state: RootState) => state.timer);
   const { playEnabledSounds, stopAllSounds } = useSound();
-  const { mode, isActive, startTime, elapsedSeconds, completedCycles } = timerState;
+  const { 
+    mode, 
+    isActive, 
+    elapsedSeconds, 
+    completedCycles, 
+    workDuration, 
+    shortBreakDuration, 
+    longBreakDuration 
+  } = timerState;
 
   const [changeMode, setChangeMode] = useState<'work' | 'shortBreak' | 'longBreak' | null>(null);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
@@ -81,12 +87,16 @@ const Timer: React.FC<TimerProps> = () => {
     }
   }, 200);
 
-  const totalTime = mode === 'work' ? 4 : mode === 'shortBreak' ? 4 : 4;
+  const totalTime = mode === 'work' ? workDuration : mode === 'shortBreak' ? shortBreakDuration : longBreakDuration;
 
   const percentageTimeLeft = ((totalTime - elapsedSeconds) / totalTime) * 100;
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
+    const pomodoroSettings = localStorage.getItem('pomodoroSettings');
+    if (!pomodoroSettings) {
+      dispatch(fetchPomodoroSettings());
+    } 
     if (isActive) {
       interval = setInterval(() => {
         dispatch(tick());

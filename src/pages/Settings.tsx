@@ -6,23 +6,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 
 interface SettingsProps {
-  workTime: number;
-  shortBreakTime: number;
-  longBreakTime: number;
-  onWorkTimeChange: (time: number) => void;
-  onShortBreakTimeChange: (time: number) => void;
-  onLongBreakTimeChange: (time: number) => void;
   soundNotification: boolean;
   handleSoundNotificationChange: () => void;
 }
 
 const Settings: React.FC<SettingsProps> = ({
-  workTime,
-  shortBreakTime,
-  longBreakTime,
-  onWorkTimeChange,
-  onShortBreakTimeChange,
-  onLongBreakTimeChange,
   soundNotification,
   handleSoundNotificationChange
 }) => {
@@ -49,14 +37,8 @@ const Settings: React.FC<SettingsProps> = ({
 
       {activeTab === 'pomodoro' && 
       <PomodoroSettings
-        workTime={workTime}
-        shortBreakTime={shortBreakTime}
-        longBreakTime={longBreakTime}
         soundNotification={soundNotification}
         handleSoundNotificationChange={handleSoundNotificationChange}
-        onWorkTimeChange={onWorkTimeChange}
-        onShortBreakTimeChange={onShortBreakTimeChange}
-        onLongBreakTimeChange={onLongBreakTimeChange}
       />}
       {activeTab === 'sound' && <SoundPreferences />}
       
