@@ -12,12 +12,36 @@ export class TasksService {
     private taskModel: Model<Task>,
   ) {}
 
-  findAll(userId: number): Promise<Task[]> {
-    return this.taskModel.find({ userId })
+  async findAll(
+    page: number, 
+    limit: number, 
+    userId: number
+  ): Promise<any> {
+    const skip = (page - 1) * limit;
+    const tasks = await this.taskModel.find({ 
+      userId,
+      isCompleted: false,
+     })
     .populate({
       path: 'labels',
       select: 'name'
-    }).exec();
+    })
+    .skip(skip)
+    .limit(limit)
+    .exec();
+
+    const totalTasks = await this.taskModel.countDocuments({ 
+      userId: userId,
+      isCompleted: false
+    });
+
+    return {
+      tasks,
+      totalTasks,
+      totalPages: Math.ceil(totalTasks / limit),
+      currentPage: page,
+      hasNext: page < Math.ceil(totalTasks / limit)
+    };
   }
 
   async findById(taskId: string, userId: number): Promise<Task> {

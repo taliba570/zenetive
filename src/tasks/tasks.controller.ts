@@ -1,5 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, Request, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { 
+  Body, 
+  Controller, 
+  Delete, 
+  Get, 
+  Param, 
+  Post, 
+  Put, 
+  Query, 
+  Request, 
+  UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TasksService } from './tasks.service';
 import { Task } from './task.entity';
 import { CreateTaskDto } from './dtos/create-task.dto';
@@ -17,8 +27,12 @@ export class TasksController {
   @Get()
   @ApiOperation({ summary: 'Get all tasks' })
   @ApiResponse({ status: 200, description: 'Return all tasks' })
-  async findAll(@Request() req): Promise<Task[]> {
-    return this.tasksService.findAll(req.user.userId);
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Request() req
+  ): Promise<Task[]> {
+    return this.tasksService.findAll(page, limit, req.user.userId);
   }
 
   @UseGuards(JwtAuthGuard)
