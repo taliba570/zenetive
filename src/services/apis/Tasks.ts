@@ -1,9 +1,9 @@
 import { CreateTaskDto, Task } from "../../types";
 import Api from "./Api";
 
-export const fetchTasks = async () : Promise<Task[]> => {
+export const fetchTasks = async (page: number, limit: number) => {
   try {
-    const response = await Api.get<Task[]>('/tasks');
+    const response = await Api.get(`/tasks?page=${page}&limit=${limit}`);
     return response.data;
   } catch (error) {
     console.error('Erorr fetching tasks:', error);
