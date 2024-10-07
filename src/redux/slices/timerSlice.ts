@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import Api from "../services/apis/Api";
-import { timeToSeconds } from "../utils/formatTime";
+import Api from "../../services/apis/Api";
+import { timeToSeconds } from "../../utils/formatTime";
 
 interface TimerState {
   mode: 'work' | 'shortBreak' | 'longBreak';

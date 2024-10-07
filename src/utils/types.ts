@@ -1,15 +1,15 @@
 import { FC, SVGProps } from "react";
-import FireIcon from './icon-components/FireIcon';
-import WaveIcon from './icon-components/WaveIcon';
-import WindIcon from './icon-components/WindIcon';
-import WhiteNoiseIcon from './icon-components/WhiteNoiseIcon';
-import TrainIcon from './icon-components/TrainIcon';
-import SingingBowlIcon from './icon-components/SingingBowlIcon';
-import ThunderStormIcon from './icon-components/ThunderStormIcon';
-import HeavyRainIcon from './icon-components/HeavyRainIcon';
-import CricketsIcon from './icon-components/CricketsIcon';
-import CoffeeShopIcon from './icon-components/CoffeeShopIcon';
-import BirdsIcon from './icon-components/BirdsIcon';
+import FireIcon from '../components/common/icon-components/FireIcon';
+import WaveIcon from '../components/common/icon-components/WaveIcon';
+import WindIcon from '../components/common/icon-components/WindIcon';
+import WhiteNoiseIcon from '../components/common/icon-components/WhiteNoiseIcon';
+import TrainIcon from '../components/common/icon-components/TrainIcon';
+import SingingBowlIcon from '../components/common/icon-components/SingingBowlIcon';
+import ThunderStormIcon from '../components/common/icon-components/ThunderStormIcon';
+import HeavyRainIcon from '../components/common/icon-components/HeavyRainIcon';
+import CricketsIcon from '../components/common/icon-components/CricketsIcon';
+import CoffeeShopIcon from '../components/common/icon-components/CoffeeShopIcon';
+import BirdsIcon from '../components/common/icon-components/BirdsIcon';
 
 export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH' | null;
 

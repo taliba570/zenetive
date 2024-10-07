@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import SoundControl from '../SoundControl';
+import SoundControl from './SoundControl';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeadphones } from '@fortawesome/free-solid-svg-icons';
-import { SoundSettings, soundsList } from '../../types';
+import { SoundSettings, soundsList } from '../../utils/types';
 import { editSoundPreference, fetchSoundPreferences } from '../../services/apis/SoundPreferences';
 import { getIconComponent } from '../../utils/helper';
 

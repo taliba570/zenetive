@@ -1,7 +1,7 @@
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
-import { Label, TaskPriority } from '../../types';
+import { Label, TaskPriority } from '../../utils/types';
 import { fetchLabels } from '../../services/apis/Labels';
 
 interface TaskInputProps {

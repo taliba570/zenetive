@@ -2,10 +2,14 @@ import { faBell, faBellSlash, faGears } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { timeToMinutes, timeToSeconds } from '../../utils/formatTime';
-import './index.css';
+import './../../styles/PomodoroSettings.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../store';
-import { updateLongBreakDuration, updateShortBreakDuration, updateWorkDuration } from '../../slices/timerSlice';
+import { AppDispatch, RootState } from '../../redux/store';
+import { 
+  updateLongBreakDuration, 
+  updateShortBreakDuration, 
+  updateWorkDuration 
+} from './../../redux/slices/timerSlice';
 
 interface PomodoroSettingsProps {
   soundNotification: boolean;

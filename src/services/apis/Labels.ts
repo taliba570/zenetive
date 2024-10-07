@@ -1,4 +1,4 @@
-import { CreateLabelDto, Label } from "../../types";
+import { CreateLabelDto, Label } from "../../utils/types";
 import Api from "./Api";
 import { requestHandler } from "./RequestHandler";
 

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
-import Settings from './pages/Settings';
-import NotFound from './pages/NotFound';
-import TaskList from './components/TaskList';
-import PhoneAuth from './components/PhoneAuth';
+import Home from '../../pages/Home';
+import Settings from '../../pages/Settings';
+import NotFound from '../../pages/NotFound';
+import TaskList from '../tasks/TaskList';
+import PhoneAuth from '../PhoneAuth';
 
 const RoutesConfig: React.FC = () => {
   const [mode, setMode] = useState<'work' | 'shortBreak' | 'longBreak'>('work');

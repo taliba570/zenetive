@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faPlay, 
@@ -10,13 +10,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css'; 
-import focusStartSound from '../assets/sounds/startClickSound.mp3';
-import pomodoroEndSound from '../assets/sounds/pomodoroEndSound.mp3';
-import breakStartSound from '../assets/sounds/breakStart.mp3';
-import breakEndSound from '../assets/sounds/breakEnd.mp3';
-import { debounce } from '../utils/debouce';
-import Modal from './Modal/Modal';
-import Toast from './Toast/Toast';
+import focusStartSound from '../../assets/sounds/startClickSound.mp3';
+import pomodoroEndSound from '../../assets/sounds/pomodoroEndSound.mp3';
+import breakStartSound from '../../assets/sounds/breakStart.mp3';
+import breakEndSound from '../../assets/sounds/breakEnd.mp3';
+import { debounce } from '../../utils/debouce';
+import Toast from '../common/Toast';
 import {
   startTimer,
   pauseTimer,
@@ -25,10 +24,11 @@ import {
   tick,
   incrementCompletedCycles,
   fetchPomodoroSettings,
-} from '../slices/timerSlice';
+} from '../../redux/slices/timerSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../store';
-import { useSound } from '../services/providers/SoundContext';
+import { AppDispatch, RootState } from '../../redux/store';
+import { useSound } from '../../services/providers/SoundContext';
+import Modal from '../common/Modal';
 
 interface TimerProps {
   mode: 'work' | 'shortBreak' | 'longBreak';

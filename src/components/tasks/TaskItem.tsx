@@ -1,7 +1,7 @@
 import { faCheckCircle, faEdit, faTimesCircle, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
-import { Label, TaskPriority } from '../../types';
+import { Label, TaskPriority } from '../../utils/types';
 
 interface TaskItemProps {
   task: { 
