@@ -3,7 +3,7 @@ import { PomodoroSettingsService } from './pomodoro-settings.service';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PomodoroSettings } from './pomodoro-setting.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { UpdatePomodoroSettingsDto } from './dtos/update-pomodoro-settings.dto';
+import { UpdateLongBreakDurationDto, UpdatePomodoroSettingsDto, UpdateShortBreakDurationDto, UpdateWorkDurationDto } from './dtos/update-pomodoro-settings.dto';
 
 @ApiTags('Pomodoro Settings')
 @ApiBearerAuth()
@@ -27,6 +27,39 @@ export class PomodoroSettingsController {
   updateSettings(
     @Request() req: any, 
     @Body() updateData: UpdatePomodoroSettingsDto
+  ): Promise<PomodoroSettings> {
+    return this.pomodoroSettingsService.updateSettings(req.user.userId, updateData);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('work-duration')
+  @ApiOperation({ summary: 'Update Pomodoro settings for a user' })
+  @ApiResponse({ status: 200, description: 'Settings updated', type: PomodoroSettings })
+  updateWorkDuration(
+    @Request() req: any, 
+    @Body() updateData: UpdateWorkDurationDto
+  ): Promise<PomodoroSettings> {
+    return this.pomodoroSettingsService.updateSettings(req.user.userId, updateData);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('short-break-duration')
+  @ApiOperation({ summary: 'Update Pomodoro settings for a user' })
+  @ApiResponse({ status: 200, description: 'Settings updated', type: PomodoroSettings })
+  updateShortBreakDuration(
+    @Request() req: any, 
+    @Body() updateData: UpdateShortBreakDurationDto
+  ): Promise<PomodoroSettings> {
+    return this.pomodoroSettingsService.updateSettings(req.user.userId, updateData);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('long-break-duration')
+  @ApiOperation({ summary: 'Update Pomodoro settings for a user' })
+  @ApiResponse({ status: 200, description: 'Settings updated', type: PomodoroSettings })
+  updateLongBreakDuration(
+    @Request() req: any, 
+    @Body() updateData: UpdateLongBreakDurationDto
   ): Promise<PomodoroSettings> {
     return this.pomodoroSettingsService.updateSettings(req.user.userId, updateData);
   }
