@@ -1,4 +1,4 @@
-import { CreateTaskDto, Task } from "../../types";
+import { CreateTaskDto, Task } from "../../utils/types";
 import Api from "./Api";
 
 export const fetchTasks = async (page: number, limit: number) => {

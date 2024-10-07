@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import './SoundControl.css';
+import './../../styles/SoundControl.css';
 import PropTypes from 'prop-types';
-import Switch from '../Switch/Switch';
-import Toast from '../Toast/Toast';
-import { SoundSettings } from '../../types';
+import Switch from '../common/Switch';
+import Toast from '../common/Toast';
+import { SoundSettings } from '../../utils/types';
 
 interface SoundControlProps {
   soundSettings: SoundSettings;

@@ -1,6 +1,6 @@
 import React from 'react';
-import TaskItem from '../TaskItem/TaskItem';
-import { Label, TaskPriority } from '../../types';
+import TaskItem from './TaskItem';
+import { Label, TaskPriority } from '../../utils/types';
 
 interface Task {
   name: string;

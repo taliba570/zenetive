@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import TaskInput from './TaskInput/TaskInput';
-import TaskListContainer from './TaskListContainer/TaskListContainer';
-import Modal from './Modal/Modal';
-import Toast from './Toast/Toast';
-import { createTask, fetchTasks, updateTask, deleteTask } from '../services/apis/Tasks';
-import { CreateTaskDto, Label, Task, TaskPriority } from '../types';
-import { fetchLabels } from '../services/apis/Labels';
-import { debounce } from '../utils/debouce';
+import TaskInput from './TaskInput';
+import TaskListContainer from './TaskListContainer';
+import Modal from './../common/Modal';
+import Toast from '../common/Toast';
+import { createTask, fetchTasks, updateTask, deleteTask } from '../../services/apis/Tasks';
+import { CreateTaskDto, Label, Task, TaskPriority } from '../../utils/types';
+import { fetchLabels } from '../../services/apis/Labels';
+import { debounce } from '../../utils/debouce';
 
 const TaskList: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);

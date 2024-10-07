@@ -3,8 +3,8 @@ import { useTheme } from "../../services/providers/ThemeContext";
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faGears, faList, faBars, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
-import Switch from '../Switch/Switch';
-import './Header.css';
+import './../../styles/Header.css';
+import Switch from './Switch';
 
 const Header: React.FC = () => {
   const location = useLocation();

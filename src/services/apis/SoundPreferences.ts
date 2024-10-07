@@ -1,4 +1,4 @@
-import { SoundSettings } from "../../types";
+import { SoundSettings } from "../../utils/types";
 import Api from "./Api";
 
 export const fetchSoundPreferences = async () : Promise<any> => {

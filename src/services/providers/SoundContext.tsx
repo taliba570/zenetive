@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useRef } from "react";
-import { SoundContextType } from "../../types";
+import { SoundContextType } from "../../utils/types";
 
 const SoundContext = createContext<SoundContextType | undefined>(undefined);
 
