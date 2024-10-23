@@ -1,22 +1,9 @@
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect, useState } from 'react';
-import { Label, TaskPriority } from '../../utils/types';
-import { fetchLabels } from '../../services/apis/Labels';
-
-interface TaskInputProps {
-  taskInput: string;
-  setTaskInput: (input: string) => void;
-  addTask: () => void;
-  priority: TaskPriority;
-  setPriority: (priority: TaskPriority) => void;
-  labels: Label[];
-  setLabels: (labels: Label[]) => void;
-  creatingTask: boolean;
-  setCreatingTask: (arg: boolean) => void;
-  selectedLabels: Label | null,
-  setSelectedLabels: (arg: Label) => void;
-}
+import React from 'react';
+import { TaskPriority } from '../../utils/types';
+import { TaskInputProps } from './interface/Task.interface';
+import { Label } from '../labels/interfaces/label.interface';
 
 const TaskInput: React.FC<TaskInputProps> = ({ 
   taskInput, 
@@ -42,12 +29,6 @@ const TaskInput: React.FC<TaskInputProps> = ({
 
   const handleLabelClick = (label: Label) => {
     setSelectedLabels(label);
-    // setLabels([label]);
-    // prevLabels => {
-    //   const newLabels = prevLabels.includes(label._id) ? prevLabels.filter(l => l !== label._id) : [...prevLabels, label._id];
-    //   setLabels(newLabels);
-    //   return newLabels;
-    // }
   };
 
   const handleCancel = () => {

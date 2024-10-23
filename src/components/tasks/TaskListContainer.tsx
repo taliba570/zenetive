@@ -1,67 +1,81 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { TaskListContainerProps } from './interface/Task.interface';
 import TaskItem from './TaskItem';
-import { Label, TaskPriority } from '../../utils/types';
+import { AppDispatch, RootState } from '../../redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { debounce } from '../../utils/debouce';
+import { fetchTasks } from '../../redux/slices/asyncThunks.ts/taskThunks';
+import { fetchLabels } from '../../redux/slices/asyncThunks.ts/labelThunks';
 
-interface Task {
-  name: string;
-  duration: number;
-  isCompleted: boolean;
-  priority?: TaskPriority;
-  labels?: Label[];
-}
+const TaskListContainer: React.FC<TaskListContainerProps> = ({ onEdit, onDelete, onToggleComplete  }) => {
+  
+  const dispatch = useDispatch<AppDispatch>();
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [hasMore, setHasMore] = useState(true);
+  const [labelHasMore, setLabelHasMore] = useState(true);
+  const { tasks, loading, error } = useSelector((state: RootState) => state.tasks);
 
-interface TaskListContainerProps {
-  tasks: Task[];
-  editingIndex: number | null;
-  deletingIndex: number | null;
-  editedText: string;
-  setEditedText: (text: string) => void;
-  toggleTaskCompletion: (index: number) => void;
-  editTask: (index: number) => void;
-  deleteTask: (index: number) => void;
-  saveTask: (index: number) => void;
-  cancelEdit: () => void;
-}
+  
+  useEffect(() => {
+    dispatch(fetchTasks({ page, limit })).then((action) => {
+      if (fetchTasks.fulfilled.match(action)) {
+        const { totalPages } = action.payload;
+        if (page >= totalPages) {
+          setHasMore(false);
+        }
+      }
+    });
 
-const TaskListContainer: React.FC<TaskListContainerProps> = ({
-  tasks,
-  editingIndex,
-  deletingIndex,
-  editedText,
-  setEditedText,
-  toggleTaskCompletion,
-  editTask,
-  deleteTask,
-  saveTask,
-  cancelEdit,
-}) => {
+    dispatch(fetchLabels({ page, limit })).then((action) => {
+      if (fetchLabels.fulfilled.match(action)) {
+        const { totalPages } = action.payload;
+        if (page >= totalPages) {
+          setLabelHasMore(false);
+        }
+      }
+    });
+  }, [dispatch, page, limit]);
+
+  const handleScroll = debounce(() => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop + 100 >=
+      document.documentElement.scrollHeight
+    ) {
+      if (!loading && hasMore) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    }
+  }, 300);
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll, loading, hasMore]);
+  
+  if (loading && tasks.length === 0) {
+    return <p className="text-center text-gray-700 dark:text-gray-300">Loading tasks...</p>;
+  }
+
+  if (error) {
+    return <p className="text-center text-red-500 dark:text-red-400">Error: {error}</p>;
+  }
+
+  if (tasks.length === 0) {
+    return <p className="text-center text-gray-700 dark:text-gray-300">No tasks available.</p>;
+  }
+
   return (
-    <ul className="space-y-2">
-      {tasks.filter((task) => !task.isCompleted).length < 1 
-        ? (
-          <li className='text-gray-900 dark:text-white text-center py-3 px-2 text-2xl'>
-            🎉🎉 Huurrry! You have no pending task 🥳🥳!
-          </li>
-        ) : tasks.map((task, index) => {
-          if (!task.isCompleted) {
-            return (
-              <TaskItem
-                key={index}
-                task={task}
-                isEditing={editingIndex === index}
-                isDeleting={deletingIndex === index}
-                taskText={editingIndex === index ? editedText : task.name}
-                setTaskText={setEditedText}
-                toggleCompletion={() => toggleTaskCompletion(index)}
-                onEdit={() => editTask(index)}
-                onDelete={() => deleteTask(index)}
-                onSave={() => saveTask(index)}
-                onCancelEdit={cancelEdit}
-              />
-            );
-          }
-          return null;
-        })}
+    <ul className="space-y-4">
+      {tasks.map((task) => (
+        <TaskItem 
+          onToggleComplete={() => onToggleComplete(task)}
+          onEdit={() => onEdit(task)}
+          onDelete={() => onDelete(task?._id || '')}
+          key={task._id}
+          task={task}
+        />
+      ))}
     </ul>
   );
 };

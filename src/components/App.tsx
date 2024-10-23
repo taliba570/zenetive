@@ -7,8 +7,14 @@ import Header from './common/Header';
 const App: React.FC = () => {
   const { darkMode } = useTheme();
 
+  if (darkMode) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+
   return (
-    <div className={darkMode ? 'dark' : ''}>
+    <div>
       <Header />
       <RoutesConfig />
     </div>

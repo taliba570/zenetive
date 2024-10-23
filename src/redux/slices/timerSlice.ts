@@ -1,17 +1,12 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import Api from "../../services/apis/Api";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { timeToSeconds } from "../../utils/formatTime";
-
-interface TimerState {
-  mode: 'work' | 'shortBreak' | 'longBreak';
-  isActive: boolean;
-  startTime: number | null;
-  elapsedSeconds: number;
-  completedCycles: number;
-  workDuration: number;
-  shortBreakDuration: number;
-  longBreakDuration: number;
-}
+import { TimerState } from "../../components/timer/interfaces/PomodoroRecord.interface";
+import { 
+  fetchPomodoroSettings, 
+  updateLongBreakDuration, 
+  updateShortBreakDuration, 
+  updateWorkDuration 
+} from "./asyncThunks.ts/timerThunks";
 
 const initialState: TimerState = {
   mode: 'work',
@@ -21,40 +16,12 @@ const initialState: TimerState = {
   completedCycles: parseInt(localStorage.getItem('completedCycles') || '0', 10),
   workDuration: 1500,
   shortBreakDuration: 300,
-  longBreakDuration: 900
+  longBreakDuration: 900,
+  currentSession: null,
+  sessions: [],
+  loading: false,
+  error: undefined,
 };
-
-export const fetchPomodoroSettings = createAsyncThunk(
-  'timer/fetchPomodoroSettings',
-  async () => {
-    const response = await Api.get('/pomodoro-settings');
-    return response;
-  }
-);
-
-export const updateWorkDuration = createAsyncThunk(
-  'timer/updateWorkDuration',
-  async (workDuration: number) => {
-    const response = await Api.patch('/pomodoro-settings/work-duration', { workDuration });
-    return response.data;
-  }
-);
-
-export const updateShortBreakDuration = createAsyncThunk(
-  'timer/updateShortBreakDuration',
-  async (shortBreakDuration: number) => {
-    const response = await Api.patch('/pomodoro-settings/short-break-duration', { shortBreakDuration });
-    return response.data;
-  }
-);
-
-export const updateLongBreakDuration = createAsyncThunk(
-  'timer/updateLongBreakDuration',
-  async (longBreakDuration: number) => {
-    const response = await Api.patch('/pomodoro-settings/long-break-duration', { longBreakDuration });
-    return response.data;
-  }
-);
 
 const timerSlice = createSlice({
   name: 'timer',
@@ -62,14 +29,15 @@ const timerSlice = createSlice({
   reducers: {
     startTimer(state, action: PayloadAction<number>) {
       state.isActive = true;
-      state.startTime = Date.now() - state.elapsedSeconds * 1000;
+      state.startTime = Date.now();
+      console.log(state.startTime);
     },
     pauseTimer(state) {
       state.isActive = false;
-      state.elapsedSeconds = Math.floor((Date.now() - (state.startTime || Date.now())) / 1000);
+      state.elapsedSeconds = Math.floor((Date.now() - (state.startTime ? new Date(state.startTime).getTime() : Date.now())) / 1000);
       state.startTime = null;
     },
-    resetTimer(state, action: PayloadAction<number>) {
+    resetTimer(state) {
       state.isActive = false;
       state.elapsedSeconds = 0;
       state.startTime = null;
@@ -83,7 +51,7 @@ const timerSlice = createSlice({
     tick(state) {
       if (state.isActive && state.startTime) {
         const now = Date.now();
-        state.elapsedSeconds = Math.floor((now - state.startTime) / 1000);
+        state.elapsedSeconds = Math.floor((now - new Date(state.startTime).getTime()) / 1000);
       }
     },
     incrementCompletedCycles(state) {

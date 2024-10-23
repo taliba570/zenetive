@@ -23,12 +23,18 @@ import {
   switchMode,
   tick,
   incrementCompletedCycles,
-  fetchPomodoroSettings,
 } from '../../redux/slices/timerSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../redux/store';
 import { useSound } from '../../services/providers/SoundContext';
 import Modal from '../common/Modal';
+import { setCurrentTask } from '../../redux/slices/taskSlice';
+import SearchableDropdown from './SearchableDropdown';
+import SelectedTaskDisplay from './SelectedTaskDisplay';
+import { Task } from '../tasks/interface/Task.interface';
+import { fetchTasks } from '../../redux/slices/asyncThunks.ts/taskThunks';
+import { fetchPomodoroSettings } from '../../redux/slices/asyncThunks.ts/timerThunks';
+import { completeSession, createPomodoroSession } from '../../redux/slices/asyncThunks.ts/pomodoroRecordThunks';
 
 interface TimerProps {
   mode: 'work' | 'shortBreak' | 'longBreak';
@@ -49,12 +55,15 @@ const Timer: React.FC<TimerProps> = () => {
     shortBreakDuration, 
     longBreakDuration 
   } = timerState;
+  const { tasks, fetched, currentTask, loading, error: tasksError } = useSelector((state: RootState) => state.tasks);
 
   const [changeMode, setChangeMode] = useState<'work' | 'shortBreak' | 'longBreak' | null>(null);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [resetCurrentPomodoro, setResetCurrentPomodoro] = useState<boolean>(false);
   const [resetCycleModalOpen, setResetCycleModalOpen] = useState<boolean>(false);
   const [toast, setToast] = useState<{message: string; type: 'success' | 'error' } | null>(null);
+  const [isRunning, setIsRunning] = useState(false);
+  const [taskPage, setTaskPage] = useState<number>(1);
 
   const focusStartAudio = new Audio(focusStartSound);
   const pomodoroEndSoundAudio = new Audio(pomodoroEndSound);
@@ -74,6 +83,12 @@ const Timer: React.FC<TimerProps> = () => {
       // More magical steps...
     ]
   });
+
+  useEffect(() => {
+    if (!fetched && !loading) {
+      dispatch(fetchTasks({ page: taskPage, limit: 10 }));
+    }
+  }, [fetched, dispatch, taskPage]);
 
   const startTheMagicShow = () => {
     driverObj.drive();
@@ -99,14 +114,25 @@ const Timer: React.FC<TimerProps> = () => {
     } 
     if (isActive) {
       interval = setInterval(() => {
+        console.log('Elapsed seconds:', elapsedSeconds);
+        console.log('Total time:', totalTime);
         dispatch(tick());
 
         if (elapsedSeconds +1 >= totalTime) {
+          setIsRunning(false);
           clearInterval(interval);
           dispatch(pauseTimer());
           if (mode === 'work') {
             deboucePlay(pomodoroEndSoundAudio);
             dispatch(incrementCompletedCycles());
+            const duration = totalTime - elapsedSeconds;
+            const completeSessionData = {
+              endTime: '',
+              duration: duration,
+              isRunning: false,
+              wasCompleted: duration === totalTime ? true : false
+            };
+            dispatch(completeSession(completeSessionData));
             stopAllSounds();
             if (((completedCycles+1) % 4) === 0)
               switchModeHandler('longBreak');
@@ -136,10 +162,29 @@ const Timer: React.FC<TimerProps> = () => {
     preloadAudio();
   }, [focusStartAudio, pomodoroEndSoundAudio, breakStartAudio, breakEndAudio]);
 
+  const handleStart = () => {
+    dispatch(startTimer(totalTime));
+  };
+
+  useEffect(() => {
+    if (timerState.startTime) {
+
+      // Once startTime is updated, create the Pomodoro session
+      dispatch(createPomodoroSession({
+        duration: 0,
+        taskId: currentTask,
+        startTime: timerState.startTime,
+        endTime: null,
+        isRunning: true
+      }));
+    }
+  }, [timerState.startTime]);
+
   const toggleTimer = () => {
     if (!isActive) {
-      dispatch(startTimer(totalTime));
+      handleStart();
       if (mode === 'work') {
+        setIsRunning(true);
         deboucePlay(focusStartAudio);
         playEnabledSounds((() => {
           const savedPreference = localStorage.getItem('soundSettings');
@@ -156,7 +201,7 @@ const Timer: React.FC<TimerProps> = () => {
   };
 
   const resetTimerHandler = () => {
-    dispatch(resetTimer(totalTime));
+    dispatch(resetTimer());
     stopAllSounds();
     closeResetCurrentPomodoroModal();
   };
@@ -188,6 +233,10 @@ const Timer: React.FC<TimerProps> = () => {
     setResetCycleModalOpen(false);
   }
 
+  const handleTaskChange = (task: Task | null) => {
+    dispatch(setCurrentTask(task));
+  };
+
   const displaySeconds = totalTime - elapsedSeconds;
   const minutes = Math.floor(displaySeconds / 60);
   const seconds = displaySeconds % 60;
@@ -213,7 +262,19 @@ const Timer: React.FC<TimerProps> = () => {
       <div id="element-of-mystery">Your mystical content here</div> */}
       
       <div className="flex flex-col items-center justify-center h-screen bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white">
-        <div className="text-6xl mb-4">
+        {!currentTask && (
+          <div className="w-1/4">
+            <label>Link to Task (Optional):</label>
+            <SearchableDropdown
+              value={currentTask}
+              onChange={(task) => handleTaskChange(task)}
+            />
+          </div>
+        )}
+        
+        {currentTask && <SelectedTaskDisplay />}
+      
+        <div className="text-6xl mb-4 text-center">
           {minutes}:{seconds < 10 ? '0' : ''}{seconds}
         </div>
         <div className="flex space-x-4 mt-6">

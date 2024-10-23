@@ -1,223 +1,117 @@
-import React, { useState, useEffect } from 'react';
-import TaskInput from './TaskInput';
-import TaskListContainer from './TaskListContainer';
+// src/components/tasks/TaskList.tsx
+
+import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../redux/store';
+import AddTaskModal from './AddTaskModal';
 import Modal from './../common/Modal';
 import Toast from '../common/Toast';
-import { createTask, fetchTasks, updateTask, deleteTask } from '../../services/apis/Tasks';
-import { CreateTaskDto, Label, Task, TaskPriority } from '../../utils/types';
-import { fetchLabels } from '../../services/apis/Labels';
-import { debounce } from '../../utils/debouce';
+import TaskListContainer from './TaskListContainer';
+import { Task } from './interface/Task.interface';
+import { deleteTask, toggleTaskComplete } from '../../redux/slices/asyncThunks.ts/taskThunks';
 
 const TaskList: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [taskInput, setTaskInput] = useState('');
-  const [deletingIndex, setDeletingIndex] = useState<number | null>(null);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [editedText, setEditedText] = useState('');
-  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const [isAddEditModalOpen, setAddEditModalOpen] = useState<boolean>(false);
+  const [editTask, setEditTask] = useState<Task | null>(null);
+  const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [priority, setPriority] = useState<TaskPriority>(null);
-  const [labels, setLabels] = useState<Label[]>([]);
-  const [creatingTask, setCreatingTask] = useState<boolean>(false);
-  const [selectedLabels, setSelectedLabels] = useState<Label | null>(null);
 
-  useEffect(() => {
-    console.log('tasks', tasks.length);
-    setTasks(() => {
-      console.log('after clearing tasks', tasks.length);
-      loadLabels();
-      console.log('after fetching tasks', tasks.length);
-      return [];
-    });
-    loadTasks();
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = debounce(() => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop + 100 >=
-        document.documentElement.scrollHeight
-      ) {
-        loadTasks();
-      }
-    }, 300);
-  
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [page]);
-
-  
-  const loadTasks = async () => {
-    console.log('loading tasks', loading)
-    if (loading) return;
-    if (!hasMore) return;
-
-    setLoading(true);
-    try {
-      const tasksData = await fetchTasks(page, 10);
-      setTasks((prevTasks) => prevTasks.concat(tasksData.tasks));
-      setHasMore(tasksData.hasNext);
-      setPage((prevPage) => prevPage + 1)
-    } catch (error) {
-      console.error('Error loading tasks:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-  const loadLabels = async () => {
-    try {
-      const data: any = await fetchLabels();
-      setLabels(data.data);
-    } catch (error) {
-      console.error('Error loading labels:', error);
-    }
-  };
-
-  const addTask = async () => {
-    if (taskInput) {
-      try {
-        const newTask: CreateTaskDto = {
-          name: taskInput,
-          duration: 0,
-          isCompleted: false,
-          priority: priority,
-          labels: selectedLabels ? [selectedLabels] : undefined,
-        };
-        const createdTask = await createTask(newTask);
-        setTasks([...tasks, createdTask]);
-        setTaskInput('');
-        setPriority(null);
-        setCreatingTask(false);
-        setToast({ message: 'Task added successfully!', type: 'success' });
-      } catch (error) {
-        console.error('Error adding task:', error);
-        setToast({ message: 'Unable to create task!', type: 'error' });
-      }
-    } else {
-      setToast({ message: 'Unable to create task with empty title!', type: 'error' });
-    }
-  };
-
+  // Handle deleting a task
   const deleteTaskHandler = async () => {
-    if (deletingIndex !== null) {
+    if (deletingTaskId) {
       try {
-        await deleteTask(tasks[deletingIndex]._id);
-        const newTasks = tasks.filter((_, index) => index !== deletingIndex);
-        setTasks(newTasks);
-        setDeletingIndex(null);
+        await dispatch(deleteTask(deletingTaskId)).unwrap();
         setToast({ message: 'Task deleted successfully!', type: 'success' });
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error deleting task:', error);
         setToast({ message: 'Unable to delete task!', type: 'error' });
       } finally {
-        closeModal();
+        setDeletingTaskId(null);
       }
     } else {
-      setToast({ message: 'Can not find task ID to delete.', type: 'error' });
+      setToast({ message: 'Cannot find task ID to delete.', type: 'error' });
     }
   };
 
-  const editTask = (index: number) => {
-    setEditingIndex(index);
-    setEditedText(tasks[index].name);
+  // Handle editing a task
+  const editTaskHandler = (task: Task) => {
+    setEditTask(task);
+    setAddEditModalOpen(true);
   };
 
-  const saveTask = async (index: number) => {
-    if (editedText !== '') {
-      try {
-        if (tasks[index].name === editedText) {
-          cancelEdit();
-          return;
-        }
-        const updatedTask = { ...tasks[index], name: editedText };
-        await updateTask(updatedTask._id, updatedTask);
-        const newTasks = [...tasks];
-        newTasks[index] = updatedTask;
-        setTasks(newTasks);
-        setEditingIndex(null);
-        setCreatingTask(false);
-        setToast({ message: 'Task updated successfully!', type: 'success' });
-      } catch (error) {
-        console.error('Error updating task:', error);
-        setToast({ message: 'Unable to update task!', type: 'error' });
-      }
-    } else {
-      setToast({ message: 'Task title can not be empty!', type: 'error' });
-    }
+  // Open add task modal
+  const openAddTaskModal = () => {
+    setEditTask(null);
+    setAddEditModalOpen(true);
   };
 
-  const cancelEdit = () => {
-    setEditingIndex(null);
-    setEditedText('');
+  // Close add/edit modal
+  const closeAddEditModal = () => {
+    setEditTask(null);
+    setAddEditModalOpen(false);
   };
 
-  const toggleTaskCompletion = async (index: number) => {
-    const updatedTask = { ...tasks[index], isCompleted: !tasks[index].isCompleted };
+  // Open delete confirmation modal
+  const openDeleteModal = (taskId: string) => {
+    setDeletingTaskId(taskId);
+  };
+
+  const handleToggleTaskComplete = async (task: Task) => {
     try {
-      await updateTask(updatedTask._id, updatedTask);
-      const newTasks = [...tasks];
-      newTasks[index] = updatedTask;
-      setTasks(newTasks);
-      setToast({ message: 'Task completed status updated!', type: 'success' });
-    } catch (error) {
-      console.error('Error updating task completion status:', error);
+      await dispatch(toggleTaskComplete(task)).unwrap();
+      setToast({ message: 'Task completion status updated!', type: 'success' });
+    } catch (error: any) {
+      console.error('Error toggling task completion:', error);
       setToast({ message: 'Unable to update task status!', type: 'error' });
     }
   };
 
-  const openModal = (index: number) => {
-    setDeletingIndex(index);
-    setModalOpen(true);
-  };
-
-  const closeModal = () => setModalOpen(false);
-
   return (
     <div className="min-h-screen w-full mx-auto p-4 bg-gray-100 dark:bg-gray-800">
       <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 max-w-2xl w-full m-auto">
-        <TaskInput  
-          taskInput={taskInput}
-          setTaskInput={setTaskInput}
-          addTask={addTask}
-          priority={priority}
-          setPriority={setPriority}
-          labels={labels}
-          setLabels={setLabels}
-          creatingTask={creatingTask}
-          setCreatingTask={setCreatingTask}
-          selectedLabels={selectedLabels}
-          setSelectedLabels={setSelectedLabels}
+        {/* Add Task Button */}
+        <button
+          onClick={openAddTaskModal}
+          className="mb-4 p-2 bg-gradient-to-br from-[#ffb88c] to-[#ff616d] text-white rounded-lg font-semibold shadow-2xl hover:from-[#ff616d] hover:to-[#ffb88c] transition transform active:scale-95 flex items-center justify-center"
+        >
+          <FontAwesomeIcon icon={faPlus} /> <span className="px-2">Add Task</span>
+        </button>
+
+        {/* Add/Edit Task Modal */}
+        <AddTaskModal
+          isOpen={isAddEditModalOpen}
+          onClose={closeAddEditModal}
+          task={editTask}
         />
-        <h2 className='text-2xl py-2 text-gray-800 font-semibold dark:text-gray-100'>Current Tasks</h2>
+
+        <h2 className="text-2xl py-2 text-gray-800 font-semibold dark:text-gray-100">Current Tasks</h2>
         <TaskListContainer
-          tasks={tasks}
-          editingIndex={editingIndex}
-          deletingIndex={deletingIndex}
-          editedText={editedText}
-          setEditedText={setEditedText}
-          toggleTaskCompletion={toggleTaskCompletion}
-          editTask={editTask}
-          deleteTask={openModal}
-          saveTask={saveTask}
-          cancelEdit={cancelEdit}
+          onEdit={editTaskHandler}
+          onDelete={openDeleteModal}
+          onToggleComplete={handleToggleTaskComplete}
         />
       </div>
 
-      {isModalOpen && <Modal 
-        isOpen={isModalOpen}
-        title='Delete Task'
-        message='Are you sure you want to delete this task? This action can not be undone.'
-        iconType='warning'
-        modalType='confirmation'
-        onConfirm={deleteTaskHandler}
-        onCancel={closeModal} />}
+      {/* Delete Confirmation Modal */}
+      {deletingTaskId && (
+        <Modal 
+          isOpen={!!deletingTaskId}
+          title="Delete Task"
+          message="Are you sure you want to delete this task? This action cannot be undone."
+          iconType="warning"
+          modalType="confirmation"
+          onConfirm={deleteTaskHandler}
+          onCancel={() => setDeletingTaskId(null)}
+        />
+      )}
+
+      {/* Toast Notification */}
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
     </div>
   );
-}
+};
 
 export default TaskList;
