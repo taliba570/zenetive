@@ -30,24 +30,6 @@ export class PomodoroRecordService {
     });
     await pomodoroRecord.save();
 
-    // if (taskId) {
-    //   const task = await this.taskModel.findById(taskId);
-    //   if (!task) {
-    //     throw new NotFoundException('Task not found');
-    //   }
-
-    //   task.actualPomodoroSessions += 1;
-    //   task.totalTimeSpent += durationInMinutes;
-    //   task.linkedPomodoroSessions.push(pomodoroRecord._id as Types.ObjectId);
-    //   await task.save();
-    // }
-
-    // await this.pomodoroSettingsModel.updateOne(
-    //   { userId },
-    //   { $inc: { totalFocusedHours: durationInHours } },
-    //   { upsert: true }
-    // );
-
     return pomodoroRecord;
   }
 
@@ -65,6 +47,31 @@ export class PomodoroRecordService {
     if (!pomodoroRecord) {
       throw new NotFoundException('Pomodoro record not found');
     }
+
+    const { startTime, endTime } = pomodoroRecord;
+    const durationInMilliseconds = new Date(endTime).getTime() - new Date(startTime).getTime();
+    const durationInMinutes = Math.floor(durationInMilliseconds / (1000 * 60)); // Convert milliseconds to minutes
+
+    if (pomodoroRecord.taskId) {
+      const task = await this.taskModel.findById(pomodoroRecord.taskId);
+      if (!task) {
+        throw new NotFoundException('Task not found');
+      }
+
+      task.actualPomodoroSessions += 1;
+      task.totalTimeSpent += durationInMinutes;
+      task.duration += durationInMinutes;
+      task.linkedPomodoroSessions.push(pomodoroRecord._id as Types.ObjectId);
+      await task.save();
+    }
+
+    await this.pomodoroSettingsModel.updateOne(
+      { userId },
+      { $inc: { totalFocusedHours: durationInMinutes } },
+      { upsert: true }
+    );
+  
+  
     return pomodoroRecord;
   }
 

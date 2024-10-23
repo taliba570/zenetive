@@ -5,15 +5,15 @@ import { Document, Types } from 'mongoose';
 export class PomodoroRecord extends Document {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   userId: Types.ObjectId;
-
+  
   @Prop({ type: Types.ObjectId, ref: 'Task', required: false })
   taskId?: Types.ObjectId;
 
   @Prop({ required: true })
-  startTime: Number;
+  startTime: number;
 
   @Prop({ required: false, default: null })
-  endTime: Number;
+  endTime: number;
 
   @Prop({ default: false })
   isRunning: boolean;
