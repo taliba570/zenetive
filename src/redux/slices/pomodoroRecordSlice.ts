@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { completeSession, createPomodoroSession } from "./asyncThunks.ts/pomodoroRecordThunks";
-import { PomodoroRecordState } from "../../components/timer/interfaces/PomodoroRecord.interface";
+import { PomodoroRecord, PomodoroRecordState } from "../../components/timer/interfaces/PomodoroRecord.interface";
 
 const initialState: PomodoroRecordState = {
   pomodoroRecords: [],
@@ -20,6 +20,7 @@ const pomodoroRecordSlice = createSlice({
     });
     builder.addCase(createPomodoroSession.fulfilled, (state, action) => {
       state.pomodoroRecords.push(action.payload);
+      state.currentPomodoroRecord = action.payload;
       state.loading = false;
       state.error = null;
     });

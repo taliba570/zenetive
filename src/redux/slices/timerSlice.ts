@@ -30,7 +30,6 @@ const timerSlice = createSlice({
     startTimer(state, action: PayloadAction<number>) {
       state.isActive = true;
       state.startTime = Date.now();
-      console.log(state.startTime);
     },
     pauseTimer(state) {
       state.isActive = false;

@@ -33,9 +33,10 @@ import SelectedTaskDisplay from './SelectedTaskDisplay';
 import { Task } from '../tasks/interface/Task.interface';
 import { fetchTasks } from '../../redux/slices/asyncThunks.ts/taskThunks';
 import { fetchPomodoroSettings } from '../../redux/slices/asyncThunks.ts/timerThunks';
-import { completeSession, createPomodoroSession } from '../../redux/slices/asyncThunks.ts/pomodoroRecordThunks';
+import { completeSession, createPomodoroSession, updatePomodoroRecord } from '../../redux/slices/asyncThunks.ts/pomodoroRecordThunks';
 import { TimerProps } from './interfaces/Timer.interface';
 import { debounce } from '../../utils/debounce';
+import { UpdatePomodoroRecordDto, UpdatePomodoroRecordParams } from './interfaces/PomodoroRecord.interface';
 
 const Timer: React.FC<TimerProps> = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -51,6 +52,7 @@ const Timer: React.FC<TimerProps> = () => {
     longBreakDuration 
   } = timerState;
   const { tasks, fetched, currentTask, loading, error: tasksError } = useSelector((state: RootState) => state.tasks);
+  const { currentPomodoroRecord } = useSelector((state: RootState) => state.pomodoroRecord);
 
   const [changeMode, setChangeMode] = useState<'work' | 'shortBreak' | 'longBreak' | null>(null);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
@@ -109,25 +111,24 @@ const Timer: React.FC<TimerProps> = () => {
     } 
     if (isActive) {
       interval = setInterval(() => {
-        console.log('Elapsed seconds:', elapsedSeconds);
-        console.log('Total time:', totalTime);
         dispatch(tick());
 
-        if (elapsedSeconds +1 >= totalTime) {
+        if (elapsedSeconds === totalTime) {
           setIsRunning(false);
           clearInterval(interval);
           dispatch(pauseTimer());
           if (mode === 'work') {
             debouncePlay(pomodoroEndSoundAudio);
             dispatch(incrementCompletedCycles());
-            const duration = totalTime - elapsedSeconds;
-            const completeSessionData = {
-              endTime: '',
-              duration: duration,
-              isRunning: false,
-              wasCompleted: duration === totalTime ? true : false
+            const completeSessionData: UpdatePomodoroRecordParams = {
+              id: currentPomodoroRecord?._id || '',
+              updatePomodoroRecordDto: {
+                endTime: Date.now(),
+                duration: elapsedSeconds,
+                wasCompleted: true
+              }
             };
-            dispatch(completeSession(completeSessionData));
+            dispatch(updatePomodoroRecord(completeSessionData));
             stopAllSounds();
             if (((completedCycles+1) % 4) === 0)
               switchModeHandler('longBreak');
