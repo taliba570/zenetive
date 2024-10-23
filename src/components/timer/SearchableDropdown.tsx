@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AsyncSelect from 'react-select/async';
 import { AppDispatch, RootState } from "../../redux/store";
-import { debounce } from "../../utils/debouce";
+import { debounce } from "../../utils/debounce";
 import { Task } from "../tasks/interface/Task.interface";
 import { SearchableDropdownProps } from "./interfaces/PomodoroRecord.interface";
 import { customSelectStyles } from "./styles/styles";

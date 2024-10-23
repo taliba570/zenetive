@@ -72,3 +72,19 @@ export interface TaskListContainerProps {
 export interface TaskItemProps extends TaskListContainerProps {
   task: Task;
 }
+
+export interface AddTaskModalFormProps {
+  taskName: string;
+  setTaskName: (taskName: string) => void;
+  priority: TaskPriority | undefined;
+  setPriority: (priority: TaskPriority) => void;
+  dueDate: string | null;
+  setDueDate: (dueDate: string) => void;
+  estimatedPomodoroSessions: number | undefined;
+  setEstimatedPomodoroSessions: (estimatedPomodoroSessions: number) => void;
+  linkToPomodoro: boolean;
+  setLinkToPomodoro: (linkToPomodoro: boolean) => void;
+  selectedLabels: any;
+  setSelectedLabels: (selectedLabels: any) => void;
+  task?: Task | null;
+}

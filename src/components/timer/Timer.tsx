@@ -14,7 +14,6 @@ import focusStartSound from '../../assets/sounds/startClickSound.mp3';
 import pomodoroEndSound from '../../assets/sounds/pomodoroEndSound.mp3';
 import breakStartSound from '../../assets/sounds/breakStart.mp3';
 import breakEndSound from '../../assets/sounds/breakEnd.mp3';
-import { debounce } from '../../utils/debouce';
 import Toast from '../common/Toast';
 import {
   startTimer,
@@ -35,12 +34,8 @@ import { Task } from '../tasks/interface/Task.interface';
 import { fetchTasks } from '../../redux/slices/asyncThunks.ts/taskThunks';
 import { fetchPomodoroSettings } from '../../redux/slices/asyncThunks.ts/timerThunks';
 import { completeSession, createPomodoroSession } from '../../redux/slices/asyncThunks.ts/pomodoroRecordThunks';
-
-interface TimerProps {
-  mode: 'work' | 'shortBreak' | 'longBreak';
-  setMode: (mode: 'work' | 'shortBreak' | 'longBreak') => void;
-  soundNotification: boolean;
-}
+import { TimerProps } from './interfaces/Timer.interface';
+import { debounce } from '../../utils/debounce';
 
 const Timer: React.FC<TimerProps> = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -94,7 +89,7 @@ const Timer: React.FC<TimerProps> = () => {
     driverObj.drive();
   }
 
-  const deboucePlay = debounce((audio: HTMLAudioElement) => {
+  const debouncePlay = debounce((audio: HTMLAudioElement) => {
     if (true) {
       audio.play().catch(error => {
         console.error('Error playing audio:', error);
@@ -123,7 +118,7 @@ const Timer: React.FC<TimerProps> = () => {
           clearInterval(interval);
           dispatch(pauseTimer());
           if (mode === 'work') {
-            deboucePlay(pomodoroEndSoundAudio);
+            debouncePlay(pomodoroEndSoundAudio);
             dispatch(incrementCompletedCycles());
             const duration = totalTime - elapsedSeconds;
             const completeSessionData = {
@@ -139,14 +134,14 @@ const Timer: React.FC<TimerProps> = () => {
             else 
               switchModeHandler('shortBreak');
           } else if (mode === 'shortBreak' || mode === 'longBreak') {
-            deboucePlay(breakEndAudio);
+            debouncePlay(breakEndAudio);
             switchModeHandler('work');
           }
         }
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [isActive, mode, elapsedSeconds, totalTime, dispatch, deboucePlay, pomodoroEndSoundAudio, breakEndAudio]);
+  }, [isActive, mode, elapsedSeconds, totalTime, dispatch, debouncePlay, pomodoroEndSoundAudio, breakEndAudio]);
 
   useEffect(() => {
     localStorage.setItem('completedCycles', JSON.stringify(completedCycles));
@@ -185,17 +180,17 @@ const Timer: React.FC<TimerProps> = () => {
       handleStart();
       if (mode === 'work') {
         setIsRunning(true);
-        deboucePlay(focusStartAudio);
+        debouncePlay(focusStartAudio);
         playEnabledSounds((() => {
           const savedPreference = localStorage.getItem('soundSettings');
           return savedPreference ? JSON.parse(savedPreference) : {};
         })());
       } else if (mode === 'shortBreak' || mode === 'longBreak') {
-        deboucePlay(breakStartAudio);
+        debouncePlay(breakStartAudio);
       }
     } else {
       dispatch(pauseTimer());
-      deboucePlay(pomodoroEndSoundAudio);
+      debouncePlay(pomodoroEndSoundAudio);
       stopAllSounds();
     }
   };
