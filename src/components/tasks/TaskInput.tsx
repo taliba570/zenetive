@@ -20,11 +20,7 @@ const TaskInput: React.FC<TaskInputProps> = ({
 }) => {
 
   const handlePriorityClick = (selectedPriority: TaskPriority) => {
-    if (selectedPriority === priority) {
-      setPriority(null);
-    } else {
-      setPriority(selectedPriority);
-    }
+    (selectedPriority === priority) ? setPriority(null) : setPriority(selectedPriority);
   };
 
   const handleLabelClick = (label: Label) => {

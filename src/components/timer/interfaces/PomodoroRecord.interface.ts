@@ -5,21 +5,6 @@ export interface SearchableDropdownProps {
   onChange: (taskId: Task | null) => void;
 }
 
-export interface TimerState {
-  mode: 'work' | 'shortBreak' | 'longBreak';
-  isActive: boolean;
-  startTime: number | null;
-  elapsedSeconds: number;
-  completedCycles: number;
-  workDuration: number;
-  shortBreakDuration: number;
-  longBreakDuration: number;
-  currentSession?: PomodoroRecord | null | undefined;
-  sessions: PomodoroRecord[];
-  loading: boolean;
-  error: string | undefined | null;
-}
-
 export interface PomodoroRecord {
   userId: string;
   taskId: string;
