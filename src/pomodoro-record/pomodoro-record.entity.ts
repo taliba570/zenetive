@@ -10,16 +10,19 @@ export class PomodoroRecord extends Document {
   taskId?: Types.ObjectId;
 
   @Prop({ required: true })
-  startTime: Date;
+  startTime: Number;
 
-  @Prop({ required: true })
-  endTime: Date;
+  @Prop({ required: false, default: null })
+  endTime: Number;
 
-  @Prop({ default: 25 })
-  duration: number;
+  @Prop({ default: false })
+  isRunning: boolean;
 
   @Prop({ default: false })
   wasCompleted: boolean;
+
+  @Prop({ required: true })
+  duration: number;
 }
 
 export const PomodoroRecordSchema = SchemaFactory.createForClass(PomodoroRecord);

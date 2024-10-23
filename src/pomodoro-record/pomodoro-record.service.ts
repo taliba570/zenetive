@@ -1,47 +1,71 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { PomodoroRecord } from './pomodoro-record.schema';
+import { PomodoroRecord } from './pomodoro-record.entity';
 import { PomodoroSettings } from '../settings/pomodoro-setting.entity';
-import { CreatePomodoroRecordDto } from './dtos/create-pomodoro-record.dto';
+import { CreatePomodoroRecordDto, UpdatePomodoroRecordDto } from './dtos/create-pomodoro-record.dto';
 import { PomodoroSettingsService } from '../settings/pomodoro-settings.service';
 import { DateRangeDto } from './dtos/date-range.dto';
+import { Task } from 'src/tasks/task.entity';
 
 @Injectable()
 export class PomodoroRecordService {
   constructor(
     @InjectModel(PomodoroRecord.name) private readonly pomodoroRecordModel: Model<PomodoroRecord>,
     @InjectModel(PomodoroSettings.name) private readonly pomodoroSettingsModel: Model<PomodoroSettings>,
+    @InjectModel(Task.name) private readonly taskModel: Model<Task>,
     private readonly pomodoroSettingsService: PomodoroSettingsService
   ) {}
 
   async saveRecord(createPomodoroRecordDto: CreatePomodoroRecordDto, userId: string) {
-    const { endTime, startTime, taskId, wasCompleted } = createPomodoroRecordDto;
-    const durationInMinutes = ((new Date(endTime)).getTime() - (new Date(startTime)).getTime()) / 60000;
-    const durationInHours = durationInMinutes;
-    console.log(durationInHours, userId);
-
+    const { endTime, startTime, taskId, wasCompleted, duration } = createPomodoroRecordDto;
+    
     const pomodoroRecord = new this.pomodoroRecordModel({
       userId,
       taskId,
       startTime,
       endTime,
-      duration: durationInMinutes,
+      duration: duration,
       wasCompleted,
     });
     await pomodoroRecord.save();
 
-    await this.pomodoroSettingsModel.updateOne(
-      { userId },
-      { $inc: { totalFocusedHours: durationInHours } },
-      { upsert: true }
-    );
+    // if (taskId) {
+    //   const task = await this.taskModel.findById(taskId);
+    //   if (!task) {
+    //     throw new NotFoundException('Task not found');
+    //   }
+
+    //   task.actualPomodoroSessions += 1;
+    //   task.totalTimeSpent += durationInMinutes;
+    //   task.linkedPomodoroSessions.push(pomodoroRecord._id as Types.ObjectId);
+    //   await task.save();
+    // }
+
+    // await this.pomodoroSettingsModel.updateOne(
+    //   { userId },
+    //   { $inc: { totalFocusedHours: durationInHours } },
+    //   { upsert: true }
+    // );
 
     return pomodoroRecord;
   }
 
   async getUserRecords(userId: string): Promise<PomodoroRecord[]> {
     return this.pomodoroRecordModel.find({ userId }).exec();
+  }
+
+  async updateRecord(recordId: string, userId: string, updateData: UpdatePomodoroRecordDto): Promise<PomodoroRecord> {
+    const pomodoroRecord = await this.pomodoroRecordModel.findOneAndUpdate({ 
+      _id: recordId, 
+      userId 
+    }, 
+    updateData, 
+    { new: true });
+    if (!pomodoroRecord) {
+      throw new NotFoundException('Pomodoro record not found');
+    }
+    return pomodoroRecord;
   }
 
   async deletePomodoroRecord(recordId: string, userId: string): Promise<void> {

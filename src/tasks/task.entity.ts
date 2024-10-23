@@ -27,6 +27,18 @@ export class Task extends Document {
 
   @Prop({ default: Date.now })
   createdAt: Date;
+
+  @Prop({ default: 0 })
+  estimatedPomodoroSessions: number;
+
+  @Prop({ default: 0 })
+  actualPomodoroSessions: number;
+
+  @Prop({ default: 0 })
+  totalTimeSpent: number;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'PomodoroRecord' }], default: [] })
+  linkedPomodoroSessions: Types.ObjectId[];
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

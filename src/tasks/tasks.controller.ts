@@ -8,7 +8,9 @@ import {
   Put, 
   Query, 
   Request, 
-  UseGuards } from '@nestjs/common';
+  UseGuards, 
+  UsePipes,
+  ValidationPipe} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TasksService } from './tasks.service';
 import { Task } from './task.entity';
@@ -16,6 +18,7 @@ import { CreateTaskDto } from './dtos/create-task.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UpdateTaskDto } from './dtos/update-task.dto';
 import { AssignLabelToTask } from './dtos/assign-label-to-task.dto';
+import { SearchTasksDto } from './dtos/search-tasks.dto';
 
 @ApiTags('Tasks')
 @ApiBearerAuth()
@@ -33,6 +36,21 @@ export class TasksController {
     @Request() req
   ): Promise<Task[]> {
     return this.tasksService.findAll(page, limit, req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('search')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async searchTasks(
+    @Query() searchTasksDto: SearchTasksDto,
+    @Request() req: any,
+  ) {
+    console.log('received')
+    const { q } = searchTasksDto;
+    const userId = req.user.userId;
+    
+    console.log('got values')
+    return this.tasksService.searchTasks(userId, q);
   }
 
   @UseGuards(JwtAuthGuard)

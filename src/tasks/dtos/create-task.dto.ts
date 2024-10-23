@@ -23,6 +23,9 @@ export class CreateTaskDto {
   })
   labels?: Types.ObjectId[];
 
+  @ApiPropertyOptional({ example: 2, description: 'Number of estimated pomodoro sessions' })
+  estimatedPomodoroSessions?: number;
+
   @IsDateString()
   @IsOptional()
   dueDate?: string;

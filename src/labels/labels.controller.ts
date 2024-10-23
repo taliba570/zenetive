@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LabelsService } from './labels.service';
 import { Label } from './label.entity';
@@ -27,8 +27,18 @@ export class LabelsController {
   @Get()
   @ApiOperation({ summary: 'Get all labels' })
   @ApiResponse({ status: 200, description: 'List of labels', type: [Label] })
-  async findAll(@Request() req): Promise<Label[]> {
-    return this.labelsService.findAllLabelsByUser(req.user.userId);
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Request() req
+  ): Promise<{
+    labels: Label[],
+    totalLabels: number,
+    totalPages: number,
+    currentPage: number,
+    hasNext: boolean
+  }> {
+    return this.labelsService.findAllLabelsByUser(page, limit, req.user.userId);
   }
 
   @UseGuards(JwtAuthGuard)

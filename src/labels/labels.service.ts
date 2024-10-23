@@ -38,7 +38,37 @@ export class LabelsService {
     }
   }
 
-  async findAllLabelsByUser(userId: string): Promise<Label[]> {
-    return this.labelModel.find({ userId }).exec();
+  async findAllLabelsByUser(
+    page: number, 
+    limit: number, 
+    userId: string
+  ): Promise<{
+    labels: Label[],
+    totalLabels: number,
+    totalPages: number,
+    currentPage: number,
+    hasNext: boolean
+  }> {
+    const skip = (page - 1) * limit;
+    const labels = await this.labelModel.find({ 
+      userId,
+     })
+    .skip(skip)
+    .limit(limit)
+    .sort({ "name": 1, "createdAt": -1 })
+    .exec();
+
+    const totalLabels = await this.labelModel.countDocuments({ 
+      userId: userId,
+      isCompleted: false
+    });
+
+    return {
+      labels,
+      totalLabels,
+      totalPages: Math.ceil(totalLabels / limit),
+      currentPage: page,
+      hasNext: page < Math.ceil(totalLabels / limit)
+    };
   }
 }

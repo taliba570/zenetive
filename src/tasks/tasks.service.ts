@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Task } from './task.entity';
 import { CreateTaskDto } from './dtos/create-task.dto';
@@ -26,8 +26,10 @@ export class TasksService {
       path: 'labels',
       select: 'name'
     })
+    .populate('linkedPomodoroSessions')
     .skip(skip)
     .limit(limit)
+    .sort({ "priority": -1, "createdAt": -1 })
     .exec();
 
     const totalTasks = await this.taskModel.countDocuments({ 
@@ -45,7 +47,10 @@ export class TasksService {
   }
 
   async findById(taskId: string, userId: number): Promise<Task> {
-    const task = await this.taskModel.findOne({ _id: taskId, userId }).exec();
+    const task = await this.taskModel
+      .findOne({ _id: taskId, userId })
+      .populate('linkedPomodoroSessions')
+      .exec();
     if (!task) {
       throw new NotFoundException(`Task with ID ${taskId} not found!`);
     }
@@ -104,5 +109,20 @@ export class TasksService {
 
     task.labels = task.labels.filter(label => label.toString() !== labelId);
     return task.save();
+  }
+
+  async searchTasks(userId: string, query: string): Promise<Task[]> {
+    
+    console.log('attempting to query')
+    const regex = new RegExp(query, 'i');
+
+    return this.taskModel
+      .find({
+        userId,
+        name: { $regex: regex },
+        isCompleted: false,
+      })
+      .limit(20) // Limit results to prevent over-fetching
+      .exec();
   }
 }
