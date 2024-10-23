@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { timeToSeconds } from "../../utils/formatTime";
-import { TimerState } from "../../components/timer/interfaces/PomodoroRecord.interface";
 import { 
   fetchPomodoroSettings, 
   updateLongBreakDuration, 
   updateShortBreakDuration, 
   updateWorkDuration 
 } from "./asyncThunks.ts/timerThunks";
+import { TimerState } from "../../components/timer/interfaces/Timer.interface";
 
 const initialState: TimerState = {
   mode: 'work',
