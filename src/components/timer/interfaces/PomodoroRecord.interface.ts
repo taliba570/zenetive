@@ -8,7 +8,7 @@ export interface SearchableDropdownProps {
 export interface PomodoroRecord {
   userId: string;
   taskId: string;
-  pomodoroId?: string;
+  _id?: string;
   duration: number;
   startTime: number;
   endTime: number;
@@ -23,4 +23,16 @@ export interface PomodoroRecordState {
   currentPomodoroRecord: PomodoroRecord | null;
   loading: boolean;
   error: string | null;
+}
+
+export interface UpdatePomodoroRecordDto {
+  duration: number;
+  endTime?: number;
+  wasCompleted: boolean;
+}
+
+// Define the input for the asyncThunk
+export interface UpdatePomodoroRecordParams {
+  id: string;
+  updatePomodoroRecordDto: UpdatePomodoroRecordDto;
 }
