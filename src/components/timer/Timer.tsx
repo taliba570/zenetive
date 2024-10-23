@@ -168,7 +168,7 @@ const Timer: React.FC<TimerProps> = () => {
       // Once startTime is updated, create the Pomodoro session
       dispatch(createPomodoroSession({
         duration: 0,
-        taskId: currentTask,
+        taskId: currentTask?._id || '',
         startTime: timerState.startTime,
         endTime: null,
         isRunning: true
