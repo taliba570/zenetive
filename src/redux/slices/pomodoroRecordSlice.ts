@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { completeSession, createPomodoroSession } from "./asyncThunks.ts/pomodoroRecordThunks";
-import { PomodoroRecord, PomodoroRecordState } from "../../components/timer/interfaces/PomodoroRecord.interface";
+import { PomodoroRecordState } from "../../components/timer/interfaces/PomodoroRecord.interface";
 
 const initialState: PomodoroRecordState = {
   pomodoroRecords: [],
