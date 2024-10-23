@@ -5,11 +5,7 @@ import { timeToMinutes, timeToSeconds } from '../../utils/formatTime';
 import './../../styles/PomodoroSettings.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../redux/store';
-import { 
-  updateLongBreakDuration, 
-  updateShortBreakDuration, 
-  updateWorkDuration 
-} from './../../redux/slices/timerSlice';
+import { updateLongBreakDuration, updateShortBreakDuration, updateWorkDuration } from '../../redux/slices/asyncThunks.ts/timerThunks';
 
 interface PomodoroSettingsProps {
   soundNotification: boolean;

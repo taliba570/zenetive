@@ -1,0 +1,37 @@
+/* AddTaskModal.css */
+
+/* Custom styles for the modal */
+.custom-modal {
+  background: linear-gradient(to bottom right, #ffb88c, #ff616d); /* Gradient background */
+  border-radius: 12px;
+  padding: 20px;
+  color: #fff; /* Light text for better contrast */
+}
+
+/* Custom styles for input fields */
+.custom-input {
+  background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff; /* White text */
+}
+
+/* Custom styles for select fields */
+.custom-select {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff; /* White text */
+}
+
+/* Custom datepicker styling */
+.custom-datepicker {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff; /* White text */
+}
+
+/* Additional styles for focused elements */
+.custom-input:focus,
+.custom-select:focus,
+.custom-datepicker:focus {
+  border-color: #ff616d; /* Highlight border on focus */
+  outline: none; /* Remove default outline */
+}

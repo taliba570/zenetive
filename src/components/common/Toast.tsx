@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-interface ToastProps {
+export interface ToastProps {
   message: string;
   type: 'success' | 'error' | 'info';
   onClose: () => void;
