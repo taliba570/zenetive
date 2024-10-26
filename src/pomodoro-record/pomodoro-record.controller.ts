@@ -17,7 +17,6 @@ export class PomodoroRecordController {
   @ApiOperation({ summary: 'Save a completed Pomodoro session' })
   @ApiResponse({ status: 201, description: 'Pomodoro session saved', type: PomodoroRecord })
   async saveRecord(@Body() createPomodoroRecordDto: CreatePomodoroRecordDto, @Request() req: any) {
-    console.log(createPomodoroRecordDto);
     return await this.pomodoroRecordService.saveRecord(createPomodoroRecordDto, req.user.userId);
   }
 
@@ -38,7 +37,6 @@ export class PomodoroRecordController {
     @Body() updatePomodoroRecordDto: UpdatePomodoroRecordDto, 
     @Request() req: any
   ): Promise<PomodoroRecord> {
-    console.log(updatePomodoroRecordDto);
     return await this.pomodoroRecordService.updateRecord(id, req.user.userId, updatePomodoroRecordDto);
   }
 
