@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { PomodoroRecord } from './pomodoro-record.entity';
@@ -7,6 +7,7 @@ import { CreatePomodoroRecordDto, UpdatePomodoroRecordDto } from './dtos/create-
 import { PomodoroSettingsService } from '../settings/pomodoro-settings.service';
 import { DateRangeDto } from './dtos/date-range.dto';
 import { Task } from 'src/tasks/task.entity';
+import { PomodoroState } from 'src/commons/enums/pomodoro-state';
 
 @Injectable()
 export class PomodoroRecordService {
@@ -18,15 +19,14 @@ export class PomodoroRecordService {
   ) {}
 
   async saveRecord(createPomodoroRecordDto: CreatePomodoroRecordDto, userId: string) {
-    const { endTime, startTime, taskId, wasCompleted, duration } = createPomodoroRecordDto;
+    const { expectedEndTime, startTime, taskId, expectedDuration } = createPomodoroRecordDto;
     
     const pomodoroRecord = new this.pomodoroRecordModel({
       userId,
       taskId,
       startTime,
-      endTime,
-      duration: duration,
-      wasCompleted,
+      expectedEndTime,
+      expectedDuration,
     });
     await pomodoroRecord.save();
 
@@ -48,8 +48,8 @@ export class PomodoroRecordService {
       throw new NotFoundException('Pomodoro record not found');
     }
 
-    const { startTime, endTime } = pomodoroRecord;
-    const durationInMilliseconds = new Date(endTime).getTime() - new Date(startTime).getTime();
+    const { startTime, actualEndTime } = pomodoroRecord;
+    const durationInMilliseconds = new Date(actualEndTime).getTime() - new Date(startTime).getTime();
     const durationInMinutes = Math.floor(durationInMilliseconds / (1000 * 60)); // Convert milliseconds to minutes
 
     if (pomodoroRecord.taskId) {
@@ -82,7 +82,7 @@ export class PomodoroRecordService {
       throw new NotFoundException('Pomodoro record not found');
     }
 
-    const sessionDurationInHours = pomodoroRecord.duration;
+    const sessionDurationInHours = (pomodoroRecord.actualEndTime - pomodoroRecord.startTime)/1000/60;
     await this.pomodoroSettingsService.subtractFocusedHours(userId, sessionDurationInHours);
   }
 
@@ -118,5 +118,23 @@ export class PomodoroRecordService {
       date: `${record._id.year}-${String(record._id.month).padStart(2, '0')}-${String(record._id.day).padStart(2, '0')}`,
       sessionCount: record.count
     }));
+  }
+
+  async pausePomodoro(id: string): Promise<PomodoroRecord> {
+    const pauseTime = Date.now();
+    return await this.pomodoroRecordModel.findByIdAndUpdate(
+      id,
+      { $push: { pauseTimestamps: pauseTime }, state: PomodoroState.PAUSED },
+      { new: true }
+    );
+  }
+
+  async resumePomodoro(id: string): Promise<PomodoroRecord> {
+    const resumeTime = Date.now();
+    return await this.pomodoroRecordModel.findOneAndUpdate(
+      { _id: id, "pauseResumeTimestamps.resumeTime": null },
+      { $set: { "pauseResumeTimestamps.$.resumeTime": resumeTime }, state: PomodoroState.IN_PROGRESS },  
+      { new: true }
+    );
   }
 }

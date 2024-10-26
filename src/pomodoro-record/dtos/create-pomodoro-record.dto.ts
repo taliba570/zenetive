@@ -7,7 +7,7 @@ export class CreatePomodoroRecordDto {
     type: Number,
     example: 25,
   })
-  readonly duration: number;
+  readonly expectedDuration: number;
 
   @ApiProperty({
     description: 'The task ID associated with this pomodoro session',
@@ -21,28 +21,14 @@ export class CreatePomodoroRecordDto {
     type: Number,
     example: '1729604939963',
   })
-  readonly startTime: Number;
+  readonly startTime: number;
 
   @ApiProperty({
     description: 'The timestamp when the pomodoro session ended',
     type: Number,
     example: '1729604939963',
   })
-  readonly endTime?: Number;
-
-  @ApiProperty({
-    description: 'If the session was completed?',
-    type: Boolean,
-    example: true,
-  })
-  readonly wasCompleted: number;
-
-  @ApiProperty({
-    description: 'If the session is running?',
-    type: Boolean,
-    example: true,
-  })
-  readonly isRunning: boolean;
+  readonly expectedEndTime?: number;
 }
 
 export class UpdatePomodoroRecordDto {
@@ -51,7 +37,7 @@ export class UpdatePomodoroRecordDto {
     type: Number,
     example: 25,
   })
-  readonly duration: number;
+  readonly spentDuration: number;
 
   @ApiProperty({
     description: 'The pomodoro record ID',
@@ -65,12 +51,5 @@ export class UpdatePomodoroRecordDto {
     type: Number,
     example: '1729604939963',
   })
-  readonly endTime?: Number;
-
-  @ApiProperty({
-    description: 'If the session was completed?',
-    type: Boolean,
-    example: true,
-  })
-  readonly wasCompleted: number;
+  readonly actualEndTime?: number;
 }

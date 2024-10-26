@@ -1,0 +1,8 @@
+export enum PomodoroState {
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  PAUSED = 'PAUSED',
+  CANCELLED = 'CANCELLED',
+  DELETED = 'DELETED',
+  SKIPPED = 'SKIPPED',
+}

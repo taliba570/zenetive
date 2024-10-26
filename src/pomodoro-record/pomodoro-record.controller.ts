@@ -38,6 +38,7 @@ export class PomodoroRecordController {
     @Body() updatePomodoroRecordDto: UpdatePomodoroRecordDto, 
     @Request() req: any
   ): Promise<PomodoroRecord> {
+    console.log(updatePomodoroRecordDto);
     return await this.pomodoroRecordService.updateRecord(id, req.user.userId, updatePomodoroRecordDto);
   }
 
