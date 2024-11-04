@@ -5,6 +5,15 @@ export interface SearchableDropdownProps {
   onChange: (taskId: Task | null) => void;
 }
 
+export enum PomorodoState {
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  PAUSED = 'PAUSED',
+  CANCELLED = 'CANCELLED',
+  DELETED = 'DELETED',
+  SKIPPED = 'SKIPPED',
+}
+
 export interface PomodoroRecord {
   userId: string;
   taskId: string;
@@ -26,9 +35,9 @@ export interface PomodoroRecordState {
 }
 
 export interface UpdatePomodoroRecordDto {
-  duration: number;
-  endTime?: number;
-  wasCompleted: boolean;
+  spentDuration: number;
+  actualEndTime?: number;
+  state: PomorodoState.COMPLETED
 }
 
 // Define the input for the asyncThunk

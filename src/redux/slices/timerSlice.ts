@@ -27,6 +27,11 @@ const timerSlice = createSlice({
   name: 'timer',
   initialState,
   reducers: {
+    setInitialValues(state, action: PayloadAction<any>) {
+      state.workDuration = action.payload.workTime;
+      state.shortBreakDuration = action.payload.shortBreakTime;
+      state.longBreakDuration = action.payload.longBreakTime;
+    },
     startTimer(state, action: PayloadAction<number>) {
       state.isActive = true;
       state.startTime = Date.now();
@@ -65,24 +70,52 @@ const timerSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchPomodoroSettings.fulfilled, (state, action: any) => {
-        const { workDuration, shortBreakDuration, longBreakDuration } = action.payload;
-        state.workDuration = timeToSeconds(workDuration);
-        state.shortBreakDuration = timeToSeconds(shortBreakDuration);
-        state.longBreakDuration = timeToSeconds(longBreakDuration);
+        const { workDuration, shortBreakDuration, longBreakDuration } = action.payload.data;
+        state.workDuration = workDuration;
+        state.shortBreakDuration = shortBreakDuration;
+        state.longBreakDuration = longBreakDuration;
 
-        localStorage.setItem('pomodoroSettings', JSON.stringify(action.payload));
+        localStorage.setItem('pomodoroSettings', JSON.stringify({
+          workTime: workDuration,
+          shortBreakTime: shortBreakDuration,
+          longBreakTime: longBreakDuration
+        }));
       })
       .addCase(updateWorkDuration.fulfilled, (state, action) => {
         state.workDuration = action.payload.workDuration;
-        localStorage.setItem('workDuration', action.payload.workDuration);
+
+        // Retrieve existing pomodoroSettings from localStorage
+        const pomodoroSettings = JSON.parse(localStorage.getItem('pomodoroSettings') || '{}');
+      
+        // Update the workTime value
+        pomodoroSettings.workTime = action.payload.workDuration;
+      
+        // Save updated pomodoroSettings back to localStorage
+        localStorage.setItem('pomodoroSettings', JSON.stringify(pomodoroSettings));
       })
       .addCase(updateShortBreakDuration.fulfilled, (state, action) => {
         state.shortBreakDuration = action.payload.shortBreakDuration;
-        localStorage.setItem('shortBreakDuration', action.payload.shortBreakDuration);
+
+        // Retrieve existing pomodoroSettings from localStorage
+        const pomodoroSettings = JSON.parse(localStorage.getItem('pomodoroSettings') || '{}');
+      
+        // Update the shortBreakTime value
+        pomodoroSettings.shortBreakTime = action.payload.shortBreakDuration;
+      
+        // Save updated pomodoroSettings back to localStorage
+        localStorage.setItem('pomodoroSettings', JSON.stringify(pomodoroSettings));
       })
       .addCase(updateLongBreakDuration.fulfilled, (state, action) => {
         state.longBreakDuration = action.payload.longBreakDuration;
-        localStorage.setItem('longBreakDuration', action.payload.longBreakDuration);
+
+        // Retrieve existing pomodoroSettings from localStorage
+        const pomodoroSettings = JSON.parse(localStorage.getItem('pomodoroSettings') || '{}');
+      
+        // Update the longBreakTime value
+        pomodoroSettings.longBreakTime = action.payload.longBreakDuration;
+      
+        // Save updated pomodoroSettings back to localStorage
+        localStorage.setItem('pomodoroSettings', JSON.stringify(pomodoroSettings));
       });
   },
 });
@@ -95,6 +128,7 @@ export const {
   tick,
   incrementCompletedCycles,
   resetCompeltedCycles,
+  setInitialValues,
 } = timerSlice.actions;
 
 export default timerSlice.reducer;

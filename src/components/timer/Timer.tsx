@@ -22,6 +22,7 @@ import {
   switchMode,
   tick,
   incrementCompletedCycles,
+  setInitialValues,
 } from '../../redux/slices/timerSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../redux/store';
@@ -36,7 +37,7 @@ import { fetchPomodoroSettings } from '../../redux/slices/asyncThunks.ts/timerTh
 import { completeSession, createPomodoroSession, updatePomodoroRecord } from '../../redux/slices/asyncThunks.ts/pomodoroRecordThunks';
 import { TimerProps } from './interfaces/Timer.interface';
 import { debounce } from '../../utils/debounce';
-import { UpdatePomodoroRecordDto, UpdatePomodoroRecordParams } from './interfaces/PomodoroRecord.interface';
+import { PomorodoState, UpdatePomodoroRecordDto, UpdatePomodoroRecordParams } from './interfaces/PomodoroRecord.interface';
 
 const Timer: React.FC<TimerProps> = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -108,7 +109,9 @@ const Timer: React.FC<TimerProps> = () => {
     const pomodoroSettings = localStorage.getItem('pomodoroSettings');
     if (!pomodoroSettings) {
       dispatch(fetchPomodoroSettings());
-    } 
+    } else {
+      dispatch(setInitialValues(JSON.parse(pomodoroSettings)));
+    }
     if (isActive) {
       interval = setInterval(() => {
         dispatch(tick());
@@ -123,9 +126,9 @@ const Timer: React.FC<TimerProps> = () => {
             const completeSessionData: UpdatePomodoroRecordParams = {
               id: currentPomodoroRecord?._id || '',
               updatePomodoroRecordDto: {
-                endTime: Date.now(),
-                duration: elapsedSeconds,
-                wasCompleted: true
+                actualEndTime: Date.now(),
+                spentDuration: elapsedSeconds,
+                state: PomorodoState.COMPLETED
               }
             };
             dispatch(updatePomodoroRecord(completeSessionData));
@@ -164,14 +167,12 @@ const Timer: React.FC<TimerProps> = () => {
 
   useEffect(() => {
     if (timerState.startTime) {
-
       // Once startTime is updated, create the Pomodoro session
       dispatch(createPomodoroSession({
-        duration: 0,
+        expectedDuration: totalTime,
         taskId: currentTask?._id || '',
         startTime: timerState.startTime,
-        endTime: null,
-        isRunning: true
+        expectedEndTime: timerState.startTime + totalTime
       }));
     }
   }, [timerState.startTime]);
