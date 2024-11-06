@@ -6,7 +6,6 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { LabelsModule } from './labels/labels.module';
 import { PomodoroRecordModule } from './pomodoro-record/pomodoro-record.module';
-import configuration from './config/configuration';
 import { TasksModule } from './tasks/tasks.module';
 import { PomodoroSettingsModule } from './settings/pomodoro-settings.module';
 import { TimerModule } from './timer/timer.module';
@@ -14,6 +13,7 @@ import { SoundPreferenceModule } from './sound-preference/sound-preference.modul
 import { CustomLogger } from './logger/custom-logger.service';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './logger/logging.interceptor';
+import configuration from './config/configuration';
 
 @Module({
   imports: [
