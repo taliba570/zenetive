@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { PomodoroState } from 'src/commons/enums/pomodoro-state';
-import { SessionLengthVariability } from 'src/commons/enums/session-length-variability';
-import { SessionType } from 'src/commons/enums/session-type';
+import { PomodoroState } from '../commons/enums/pomodoro-state';
+import { SessionLengthVariability } from '../commons/enums/session-length-variability';
+import { SessionType } from '../commons/enums/session-type';
 
 @Schema()
 export class PomodoroRecord extends Document {

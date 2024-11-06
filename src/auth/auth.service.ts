@@ -4,7 +4,7 @@ import { UserService } from "../user/user.service";
 import { SignInData } from "./dtos/signin-data.dto";
 import * as bcrypt from 'bcrypt';
 import { FirebaseOtpSrevice } from "./../tools/firebase/firebase-otp.service";
-import { EmailService } from "src/tools/email/email.service";
+import { EmailService } from "../tools/email/email.service";
 import * as dotenv from 'dotenv';
 
 dotenv.config(); 

@@ -4,8 +4,8 @@ import { TasksController } from './tasks.controller';
 import { Task, TaskSchema } from './task.entity';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from '../auth/auth.module';
-import { Label, LabelSchema } from 'src/labels/label.entity';
-import { PomodoroRecord, PomodoroRecordSchema } from 'src/pomodoro-record/pomodoro-record.entity';
+import { Label, LabelSchema } from '../labels/label.entity';
+import { PomodoroRecord, PomodoroRecordSchema } from '../pomodoro-record/pomodoro-record.entity';
 
 @Module({
   imports: [

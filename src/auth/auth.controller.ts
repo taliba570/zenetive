@@ -3,7 +3,7 @@ import { AuthService } from "./auth.service";
 import { LoginUserDto } from "./dtos/login-user.dto";
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { ForgotPasswordDto, ForgotPasswordOtpDto, VerifyOtpDto } from "./dtos/forgot-password.dto";
-import { UserService } from "src/user/user.service";
+import { UserService } from "../user/user.service";
 import { ApiTags } from "@nestjs/swagger";
 
 @ApiTags('Auth')

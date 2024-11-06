@@ -6,8 +6,8 @@ import { PomodoroSettings } from '../settings/pomodoro-setting.entity';
 import { CreatePomodoroRecordDto, UpdatePomodoroRecordDto } from './dtos/create-pomodoro-record.dto';
 import { PomodoroSettingsService } from '../settings/pomodoro-settings.service';
 import { DateRangeDto } from './dtos/date-range.dto';
-import { Task } from 'src/tasks/task.entity';
-import { PomodoroState } from 'src/commons/enums/pomodoro-state';
+import { Task } from '../tasks/task.entity';
+import { PomodoroState } from '../commons/enums/pomodoro-state';
 
 @Injectable()
 export class PomodoroRecordService {

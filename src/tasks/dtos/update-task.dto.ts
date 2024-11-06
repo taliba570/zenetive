@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { TaskPriority } from "src/commons/enums/task-priority";
+import { TaskPriority } from "../../commons/enums/task-priority";
 
 export class UpdateTaskDto {
   @ApiProperty({ example: 'Write Code', description: 'Task title'})

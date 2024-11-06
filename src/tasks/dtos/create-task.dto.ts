@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsDateString, IsOptional } from "class-validator";
 import { Types } from "mongoose";
-import { TaskPriority } from "src/commons/enums/task-priority";
+import { TaskPriority } from "../../commons/enums/task-priority";
 
 export class CreateTaskDto {
   @ApiProperty({ example: 'Write code', description: 'Name of the task' })

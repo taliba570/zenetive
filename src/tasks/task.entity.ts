@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
-import { TaskPriority } from "src/commons/enums/task-priority";
+import { TaskPriority } from "../commons/enums/task-priority";
 
 @Schema()
 export class Task extends Document {

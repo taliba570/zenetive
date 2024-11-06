@@ -1,7 +1,7 @@
 import { Controller, Get, Body, Patch, Param, Request, Put, UseGuards } from '@nestjs/common';
 import { SoundPreferenceService } from './sound-preference.service';
 import { UpdateSoundPreferenceDto } from './dto/update-sound-setting.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SoundPreference } from './entities/sound-setting.entity';
 
