@@ -23,7 +23,7 @@ async function bootstrap() {
   });
   useBodyParser(app);
   app.use(compression());
-  bootstrapSwagger(app);
+  bootstrapSwagger(app); 
 
   const customLogger = await app.resolve(CustomLogger);
   app.useLogger(customLogger);
