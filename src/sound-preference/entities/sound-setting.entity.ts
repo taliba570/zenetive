@@ -1,5 +1,5 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
 @Schema()
 export class Sound extends Document {
@@ -27,4 +27,5 @@ export class SoundPreference extends Document {
   sounds: Sound[];
 }
 
-export const SoundPreferenceSchema = SchemaFactory.createForClass(SoundPreference);
+export const SoundPreferenceSchema =
+  SchemaFactory.createForClass(SoundPreference);

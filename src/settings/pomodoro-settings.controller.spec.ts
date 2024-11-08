@@ -11,8 +11,8 @@ describe('PomodoroSettingsController', () => {
     getSettings: jest.fn(),
     updateSettings: jest.fn(),
     resetSettings: jest.fn(),
-    subtractFocusedHours: jest.fn()
-  }
+    subtractFocusedHours: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -20,15 +20,17 @@ describe('PomodoroSettingsController', () => {
       providers: [
         {
           provide: PomodoroSettingsService,
-          useValue: mockPomodoroSettingsService
-        }
-      ]
+          useValue: mockPomodoroSettingsService,
+        },
+      ],
     })
-    .overrideGuard(JwtAuthGuard)
-    .useValue({canActivate: jest.fn(() => true)})
-    .compile();
+      .overrideGuard(JwtAuthGuard)
+      .useValue({ canActivate: jest.fn(() => true) })
+      .compile();
 
-    controller = module.get<PomodoroSettingsController>(PomodoroSettingsController);
+    controller = module.get<PomodoroSettingsController>(
+      PomodoroSettingsController,
+    );
     service = module.get<PomodoroSettingsService>(PomodoroSettingsService);
   });
 

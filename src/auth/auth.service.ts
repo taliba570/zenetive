@@ -1,13 +1,13 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { UserService } from "../user/user.service";
-import { SignInData } from "./dtos/signin-data.dto";
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { UserService } from '../user/user.service';
+import { SignInData } from './dtos/signin-data.dto';
 import * as bcrypt from 'bcrypt';
-import { FirebaseOtpSrevice } from "./../tools/firebase/firebase-otp.service";
-import { EmailService } from "../tools/email/email.service";
+import { FirebaseOtpSrevice } from './../tools/firebase/firebase-otp.service';
+import { EmailService } from '../tools/email/email.service';
 import * as dotenv from 'dotenv';
 
-dotenv.config(); 
+dotenv.config();
 
 @Injectable()
 export class AuthService {
@@ -20,7 +20,7 @@ export class AuthService {
 
   async authenticate(email: string, password: string) {
     const user = await this.validateUser(email, password);
-    if(!user) {
+    if (!user) {
       throw new BadRequestException('Invalid credentials');
     }
 
@@ -29,10 +29,10 @@ export class AuthService {
 
   async validateUser(email: string, password: string): Promise<SignInData> {
     const user = await this.userService.findUserByEmail(email);
-    if (user && await bcrypt.compare(password, user.password)) {
+    if (user && (await bcrypt.compare(password, user.password))) {
       return {
         id: user.id,
-        email: user.email
+        email: user.email,
       };
     }
     return null;
@@ -49,9 +49,9 @@ export class AuthService {
       accessToken,
       user: {
         userId: user.id,
-        email: user.email
-      }
-    }
+        email: user.email,
+      },
+    };
   }
 
   async setResetPasswordToken(userId: string) {
@@ -60,12 +60,12 @@ export class AuthService {
 
     await this.userService.setResetPasswordToken(userId, token, expirationDate);
 
-    return { 
-      message: 'Password reset link has been sent to your email.', 
+    return {
+      message: 'Password reset link has been sent to your email.',
       temp: {
         token,
-        expirationDate
-      }
+        expirationDate,
+      },
     };
   }
 
@@ -85,11 +85,14 @@ export class AuthService {
   }
 
   async verifyOtpAndResetPassword(
-    otpCode: string, 
-    sessionInfo: string, 
-    newPassword: string
+    otpCode: string,
+    sessionInfo: string,
+    newPassword: string,
   ) {
-    const decodedToken = await this.firebaseOtpService.verifyOtp(otpCode, sessionInfo);
+    const decodedToken = await this.firebaseOtpService.verifyOtp(
+      otpCode,
+      sessionInfo,
+    );
 
     if (decodedToken) {
       return this.userService.updateUserPassword(decodedToken.uid, newPassword);
@@ -108,6 +111,10 @@ export class AuthService {
       <p>If you didn't request this, please ignore this email.</p>
     `;
 
-    return await this.emailService.sendMail(email, 'Password Reset Request', emailContent);
+    return await this.emailService.sendMail(
+      email,
+      'Password Reset Request',
+      emailContent,
+    );
   }
 }

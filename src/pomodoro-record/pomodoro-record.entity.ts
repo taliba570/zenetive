@@ -6,25 +6,25 @@ import { SessionType } from '../commons/enums/session-type';
 
 @Schema()
 export class PomodoroRecord extends Document {
-  @Prop({ 
-    type: String, 
-    enum: SessionType, 
-    required: true, 
-    default: SessionType.WORK 
+  @Prop({
+    type: String,
+    enum: SessionType,
+    required: true,
+    default: SessionType.WORK,
   })
   sessionType: SessionType;
-  
-  @Prop({ 
-    type: String, 
-    enum: PomodoroState, 
-    required: true, 
-    default: PomodoroState.IN_PROGRESS 
+
+  @Prop({
+    type: String,
+    enum: PomodoroState,
+    required: true,
+    default: PomodoroState.IN_PROGRESS,
   })
   state: PomodoroState;
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   userId: Types.ObjectId;
-  
+
   @Prop({ type: Types.ObjectId, ref: 'Task', required: false })
   taskId?: Types.ObjectId;
 
@@ -57,10 +57,10 @@ export class PomodoroRecord extends Document {
     type: [
       {
         pauseTime: { type: Number, required: true },
-        resumeTime: { type: Number, default: null }
-      }
+        resumeTime: { type: Number, default: null },
+      },
     ],
-    default: []
+    default: [],
   })
   pauseResumeTimestamps: { pauseTime: number; resumeTime?: number }[];
 
@@ -76,14 +76,15 @@ export class PomodoroRecord extends Document {
 
   @Prop({ required: false, default: null })
   note?: string; // anything user want to add to the pomodoro record
-  
-  @Prop({ 
-    type: String, 
-    enum: SessionLengthVariability, 
-    required: true, 
-    default: SessionLengthVariability.CONSTANT
+
+  @Prop({
+    type: String,
+    enum: SessionLengthVariability,
+    required: true,
+    default: SessionLengthVariability.CONSTANT,
   })
   sessionLengthVariability: SessionLengthVariability;
 }
 
-export const PomodoroRecordSchema = SchemaFactory.createForClass(PomodoroRecord);
+export const PomodoroRecordSchema =
+  SchemaFactory.createForClass(PomodoroRecord);

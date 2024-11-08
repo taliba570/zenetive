@@ -6,13 +6,19 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectModel(User.name) private userModel: Model<User>,
-  ) {}
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  async createUser(name: string, email: string, password: string): Promise<User> {
+  async createUser(
+    name: string,
+    email: string,
+    password: string,
+  ): Promise<User> {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new this.userModel({ name, email: email.toLowerCase(), password: hashedPassword });
+    const newUser = new this.userModel({
+      name,
+      email: email.toLowerCase(),
+      password: hashedPassword,
+    });
     return newUser.save();
   }
 
@@ -28,26 +34,30 @@ export class UserService {
   }
 
   async resetPassword(token: string, newPassword: string) {
-    const user = await this.userModel.findOne({
-      resetPasswordToken: token,
-      resetPasswordExpires: { $gt: new Date() },
-    }).exec();
+    const user = await this.userModel
+      .findOne({
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: new Date() },
+      })
+      .exec();
 
     if (!user) throw new Error('Token expired or invalid');
-    
+
     user.password = await bcrypt.hash(newPassword, 10);
     user.resetPasswordToken = null;
     user.resetPasswordExpires = null;
     return user.save();
   }
 
-  async updateUserPassword(userId: string, newPassword: string): Promise<{ message: string }> {
+  async updateUserPassword(
+    userId: string,
+    newPassword: string,
+  ): Promise<{ message: string }> {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    const result = await this.userModel.updateOne(
-      { _id: userId },
-      { $set: { password: hashedPassword } },
-    ).exec();
+    const result = await this.userModel
+      .updateOne({ _id: userId }, { $set: { password: hashedPassword } })
+      .exec();
 
     if (result.modifiedCount === 0) {
       throw new BadRequestException('Unable to update the password');

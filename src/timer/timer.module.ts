@@ -6,9 +6,9 @@ import { Timer, TimerSchema } from './timer.entity';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Timer.name, schema: TimerSchema }])
+    MongooseModule.forFeature([{ name: Timer.name, schema: TimerSchema }]),
   ],
   providers: [TimerService],
-  controllers: [TimerController]
+  controllers: [TimerController],
 })
 export class TimerModule {}

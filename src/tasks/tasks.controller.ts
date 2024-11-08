@@ -1,17 +1,24 @@
-import { 
-  Body, 
-  Controller, 
-  Delete, 
-  Get, 
-  Param, 
-  Post, 
-  Put, 
-  Query, 
-  Request, 
-  UseGuards, 
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  Request,
+  UseGuards,
   UsePipes,
-  ValidationPipe} from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+  ValidationPipe,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { TasksService } from './tasks.service';
 import { Task } from './task.entity';
 import { CreateTaskDto } from './dtos/create-task.dto';
@@ -33,7 +40,7 @@ export class TasksController {
   async findAll(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
-    @Request() req
+    @Request() req,
   ): Promise<Task[]> {
     return this.tasksService.findAll(page, limit, req.user.userId);
   }
@@ -45,11 +52,11 @@ export class TasksController {
     @Query() searchTasksDto: SearchTasksDto,
     @Request() req: any,
   ) {
-    console.log('received')
+    console.log('received');
     const { q } = searchTasksDto;
     const userId = req.user.userId;
-    
-    console.log('got values')
+
+    console.log('got values');
     return this.tasksService.searchTasks(userId, q);
   }
 
@@ -57,7 +64,7 @@ export class TasksController {
   @Get(':id')
   @ApiOperation({ summary: 'Get task by ID' })
   @ApiResponse({ status: 200, description: 'Return task by Id' })
-  @ApiParam({ name: 'id', description: 'Task ID'})
+  @ApiParam({ name: 'id', description: 'Task ID' })
   async findById(@Param('id') taskId: string, @Request() req) {
     return await this.tasksService.findById(taskId, req.user.userId);
   }
@@ -65,7 +72,7 @@ export class TasksController {
   @UseGuards(JwtAuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create a new task' })
-  @ApiResponse({ status: 201, description: 'Task created successfully.'})
+  @ApiResponse({ status: 201, description: 'Task created successfully.' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   async create(@Request() req, @Body() taskData: CreateTaskDto): Promise<Task> {
     return this.tasksService.create(taskData, req.user.userId);
@@ -73,11 +80,11 @@ export class TasksController {
 
   @UseGuards(JwtAuthGuard)
   @Put(':id')
-  @ApiParam({ name: 'id', description: 'Task ID'})
+  @ApiParam({ name: 'id', description: 'Task ID' })
   async updateTask(
     @Param('id') taskId: string,
     @Body() updateTaskDto: UpdateTaskDto,
-    @Request() req: any
+    @Request() req: any,
   ) {
     const userId = req.user.userId;
     return await this.tasksService.updateTask(taskId, userId, updateTaskDto);
@@ -99,11 +106,15 @@ export class TasksController {
 
   @Delete(':taskId/labels/:labelId')
   @ApiOperation({ summary: 'Remove a label from a task' })
-  @ApiResponse({ status: 200, description: 'Label removed successfully', type: Task })
+  @ApiResponse({
+    status: 200,
+    description: 'Label removed successfully',
+    type: Task,
+  })
   @ApiResponse({ status: 404, description: 'Task or Label not found' })
   async removeLabelFromTask(
-    @Param('taskId') taskId: string, 
-    @Param('labelId') labelId: string
+    @Param('taskId') taskId: string,
+    @Param('labelId') labelId: string,
   ): Promise<Task> {
     return this.tasksService.removeLabelFromTask(taskId, labelId);
   }

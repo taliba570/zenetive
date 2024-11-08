@@ -4,7 +4,7 @@ import { getModelToken } from '@nestjs/mongoose';
 
 describe('LabelsService', () => {
   let service: LabelsService;
-  
+
   const mockLabelModel = {
     find: jest.fn(),
     create: jest.fn(),
@@ -13,10 +13,13 @@ describe('LabelsService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [LabelsService,{
-        provide: getModelToken('Label'), // Provide the LabelModel
-        useValue: mockLabelModel, // Mock implementation
-      }],
+      providers: [
+        LabelsService,
+        {
+          provide: getModelToken('Label'), // Provide the LabelModel
+          useValue: mockLabelModel, // Mock implementation
+        },
+      ],
     }).compile();
 
     service = module.get<LabelsService>(LabelsService);

@@ -6,11 +6,9 @@ import { LabelsService } from './labels.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: Label.name, schema: LabelSchema }
-    ])
+    MongooseModule.forFeature([{ name: Label.name, schema: LabelSchema }]),
   ],
   controllers: [LabelsController],
-  providers: [LabelsService]
+  providers: [LabelsService],
 })
 export class LabelsModule {}

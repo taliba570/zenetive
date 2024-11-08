@@ -11,13 +11,18 @@ export class SoundPreferenceService {
     private readonly soundPrefereceModel: Model<SoundPreference>,
   ) {}
 
-  async update(userId: string, updateData: UpdateSoundPreferenceDto): Promise<SoundPreference> {
+  async update(
+    userId: string,
+    updateData: UpdateSoundPreferenceDto,
+  ): Promise<SoundPreference> {
     console.log(updateData, 'service'); // Log to see the structure of updateData
-    const settings = await this.soundPrefereceModel.findOneAndUpdate(
-      { userId },
-      { $set: { sounds: updateData } },
-      { new: true, upsert: true },
-    ).exec();
+    const settings = await this.soundPrefereceModel
+      .findOneAndUpdate(
+        { userId },
+        { $set: { sounds: updateData } },
+        { new: true, upsert: true },
+      )
+      .exec();
     return settings;
   }
 

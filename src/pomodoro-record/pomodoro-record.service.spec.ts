@@ -39,20 +39,20 @@ describe('PomodoroRecordService', () => {
         PomodoroRecordService,
         {
           provide: getModelToken(PomodoroRecord.name),
-          useValue: mockPomodoroRecordModel
+          useValue: mockPomodoroRecordModel,
         },
         {
           provide: getModelToken(Task.name),
-          useValue: mockTaskModel
+          useValue: mockTaskModel,
         },
         {
           provide: getModelToken(PomodoroSettings.name),
-          useValue: mockPomodoroSettingsModel
+          useValue: mockPomodoroSettingsModel,
         },
         {
           provide: PomodoroSettingsService,
-          useValue: mockPomodoroSettingsService
-        }
+          useValue: mockPomodoroSettingsService,
+        },
       ],
     }).compile();
 

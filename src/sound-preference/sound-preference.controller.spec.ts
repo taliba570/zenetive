@@ -9,22 +9,26 @@ describe('SoundPreferenceController', () => {
 
   const mockSoundPreferenceService = {
     update: jest.fn(),
-    get: jest.fn()
-  }
+    get: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [SoundPreferenceController],
-      providers: [{
-        provide: SoundPreferenceService,
-        useValue: mockSoundPreferenceService
-      }],
+      providers: [
+        {
+          provide: SoundPreferenceService,
+          useValue: mockSoundPreferenceService,
+        },
+      ],
     })
-    .overrideGuard(JwtAuthGuard)
-    .useValue({canActivate: jest.fn(() => true)})
-    .compile();
+      .overrideGuard(JwtAuthGuard)
+      .useValue({ canActivate: jest.fn(() => true) })
+      .compile();
 
-    controller = module.get<SoundPreferenceController>(SoundPreferenceController);
+    controller = module.get<SoundPreferenceController>(
+      SoundPreferenceController,
+    );
     service = module.get<SoundPreferenceService>(SoundPreferenceService);
   });
 

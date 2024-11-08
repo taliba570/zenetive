@@ -7,8 +7,8 @@ describe('SoundPreferenceService', () => {
 
   const mockSoundPreferenceModel = {
     findOneAndUpdate: jest.fn(),
-    findOne: jest.fn()
-  }
+    findOne: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -16,8 +16,8 @@ describe('SoundPreferenceService', () => {
         SoundPreferenceService,
         {
           provide: getModelToken('SoundPreference'),
-          useValue: mockSoundPreferenceModel
-        }
+          useValue: mockSoundPreferenceModel,
+        },
       ],
     }).compile();
 

@@ -12,7 +12,7 @@ export class CreatePomodoroRecordDto {
   @ApiProperty({
     description: 'The task ID associated with this pomodoro session',
     type: String,
-    example: '614d9f2332f0a1b5c4c2a645'
+    example: '614d9f2332f0a1b5c4c2a645',
   })
   readonly taskId: Types.ObjectId;
 
@@ -42,7 +42,7 @@ export class UpdatePomodoroRecordDto {
   @ApiProperty({
     description: 'The pomodoro record ID',
     type: String,
-    example: '614d9f2332f0a1b5c4c2a645'
+    example: '614d9f2332f0a1b5c4c2a645',
   })
   readonly id: Types.ObjectId;
 

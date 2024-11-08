@@ -1,7 +1,7 @@
-var admin = require("firebase-admin");
+import admin from 'firebase-admin';
 
-var serviceAccount = require("../../../firebase.json");
+const serviceAccount = require('../../../firebase.json');
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount),
 });

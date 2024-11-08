@@ -9,7 +9,7 @@ describe('PomodoroSettingsService', () => {
     findOne: jest.fn(),
     findOneAndUpdate: jest.fn(),
     updateOne: jest.fn(),
-  }
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -17,8 +17,8 @@ describe('PomodoroSettingsService', () => {
         PomodoroSettingsService,
         {
           provide: getModelToken('PomodoroSettings'),
-          useValue: mockPomodoroSettingModel
-        }
+          useValue: mockPomodoroSettingModel,
+        },
       ],
     }).compile();
 

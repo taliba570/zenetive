@@ -1,5 +1,5 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, Types } from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
 
 @Schema()
 export class PomodoroSettings extends Document {
@@ -25,4 +25,5 @@ export class PomodoroSettings extends Document {
   totalFocusedHours: number;
 }
 
-export const PomodoroSettingsSchema = SchemaFactory.createForClass(PomodoroSettings);
+export const PomodoroSettingsSchema =
+  SchemaFactory.createForClass(PomodoroSettings);

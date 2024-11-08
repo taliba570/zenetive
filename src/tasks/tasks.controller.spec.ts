@@ -16,7 +16,7 @@ describe('TasksController', () => {
     assignLabelsToTask: jest.fn(),
     removeLabelFromTask: jest.fn(),
     searchTasks: jest.fn(),
-  }
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -24,13 +24,13 @@ describe('TasksController', () => {
       providers: [
         {
           provide: TasksService,
-          useValue: mockTaskService
-        }
-      ]
+          useValue: mockTaskService,
+        },
+      ],
     })
-    .overrideGuard(JwtAuthGuard)
-    .useValue({canActivate: jest.fn(() => true)})
-    .compile();
+      .overrideGuard(JwtAuthGuard)
+      .useValue({ canActivate: jest.fn(() => true) })
+      .compile();
 
     controller = module.get<TasksController>(TasksController);
     service = module.get<TasksService>(TasksService);

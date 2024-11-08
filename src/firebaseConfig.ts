@@ -13,6 +13,6 @@ const firebaseConfig = {
 
 if (!firebase.getApps.length) {
   firebase.initializeApp(firebaseConfig);
-};
+}
 
 export default firebase;

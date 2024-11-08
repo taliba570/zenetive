@@ -1,5 +1,5 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { Model, Types } from 'mongoose';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Task } from './task.entity';
 import { CreateTaskDto } from './dtos/create-task.dto';
@@ -12,29 +12,26 @@ export class TasksService {
     private taskModel: Model<Task>,
   ) {}
 
-  async findAll(
-    page: number, 
-    limit: number, 
-    userId: number
-  ): Promise<any> {
+  async findAll(page: number, limit: number, userId: number): Promise<any> {
     const skip = (page - 1) * limit;
-    const tasks = await this.taskModel.find({ 
-      userId,
-      isCompleted: false,
-     })
-    .populate({
-      path: 'labels',
-      select: 'name'
-    })
-    .populate('linkedPomodoroSessions')
-    .skip(skip)
-    .limit(limit)
-    .sort({ "priority": -1, "createdAt": -1 })
-    .exec();
+    const tasks = await this.taskModel
+      .find({
+        userId,
+        isCompleted: false,
+      })
+      .populate({
+        path: 'labels',
+        select: 'name',
+      })
+      .populate('linkedPomodoroSessions')
+      .skip(skip)
+      .limit(limit)
+      .sort({ priority: -1, createdAt: -1 })
+      .exec();
 
-    const totalTasks = await this.taskModel.countDocuments({ 
+    const totalTasks = await this.taskModel.countDocuments({
       userId: userId,
-      isCompleted: false
+      isCompleted: false,
     });
 
     return {
@@ -42,7 +39,7 @@ export class TasksService {
       totalTasks,
       totalPages: Math.ceil(totalTasks / limit),
       currentPage: page,
-      hasNext: page < Math.ceil(totalTasks / limit)
+      hasNext: page < Math.ceil(totalTasks / limit),
     };
   }
 
@@ -59,7 +56,7 @@ export class TasksService {
 
   async create(taskData: CreateTaskDto, userId: string): Promise<Task> {
     try {
-      const newTask = new this.taskModel({...taskData, userId});
+      const newTask = new this.taskModel({ ...taskData, userId });
       return await newTask.save();
     } catch (error) {
       console.error('Error creating task:', error);
@@ -75,45 +72,54 @@ export class TasksService {
     );
 
     if (!task) {
-      throw new NotFoundException(`Task with ID ${taskId} not found or you don't have permission to update it.`);
+      throw new NotFoundException(
+        `Task with ID ${taskId} not found or you don't have permission to update it.`,
+      );
     }
 
     return task;
   }
 
   async deleteTask(taskId: string, userId: string): Promise<void> {
-    const task = await this.taskModel.findOneAndDelete({
-      _id: taskId,
-      userId: userId,
-    }).exec();
+    const task = await this.taskModel
+      .findOneAndDelete({
+        _id: taskId,
+        userId: userId,
+      })
+      .exec();
 
     if (!task) {
-      throw new NotFoundException(`Task with ID ${taskId} not found or you do not have permission to delete it.`);
+      throw new NotFoundException(
+        `Task with ID ${taskId} not found or you do not have permission to delete it.`,
+      );
     }
   }
 
-  async assignLabelsToTask(assignLabelsToTaskDto: AssignLabelToTask): Promise<Task> {
+  async assignLabelsToTask(
+    assignLabelsToTaskDto: AssignLabelToTask,
+  ): Promise<Task> {
     const { taskId, labelIds } = assignLabelsToTaskDto;
-    return this.taskModel.findByIdAndUpdate(
-      taskId,
-      { $addToSet: { labels: { $each: labelIds }}},
-      { new: true },
-    ).exec();
+    return this.taskModel
+      .findByIdAndUpdate(
+        taskId,
+        { $addToSet: { labels: { $each: labelIds } } },
+        { new: true },
+      )
+      .exec();
   }
-  
+
   async removeLabelFromTask(taskId: string, labelId: string): Promise<Task> {
     const task = await this.taskModel.findById(taskId).exec();
     if (!task) {
       throw new NotFoundException(`Task with ID "${taskId}" not found`);
     }
 
-    task.labels = task.labels.filter(label => label.toString() !== labelId);
+    task.labels = task.labels.filter((label) => label.toString() !== labelId);
     return task.save();
   }
 
   async searchTasks(userId: string, query: string): Promise<Task[]> {
-    
-    console.log('attempting to query')
+    console.log('attempting to query');
     const regex = new RegExp(query, 'i');
 
     return this.taskModel

@@ -1,6 +1,6 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, Types } from "mongoose";
-import { TaskPriority } from "../commons/enums/task-priority";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
+import { TaskPriority } from '../commons/enums/task-priority';
 
 @Schema()
 export class Task extends Document {
@@ -19,7 +19,7 @@ export class Task extends Document {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   userId: Types.ObjectId;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Label' }], default: []})
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Label' }], default: [] })
   labels: Types.ObjectId[];
 
   @Prop({ nullable: true })
@@ -37,7 +37,10 @@ export class Task extends Document {
   @Prop({ default: 0 })
   totalTimeSpent: number;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'PomodoroRecord' }], default: [] })
+  @Prop({
+    type: [{ type: Types.ObjectId, ref: 'PomodoroRecord' }],
+    default: [],
+  })
   linkedPomodoroSessions: Types.ObjectId[];
 }
 

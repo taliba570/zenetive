@@ -5,14 +5,13 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 type TransporterOptions = {
-  sendMail: (arg0: { 
-    from: string; 
-    to: string; 
-    subject: any; 
-    html: string; 
-  }) => any; 
+  sendMail: (arg0: {
+    from: string;
+    to: string;
+    subject: any;
+    html: string;
+  }) => any;
 };
-
 
 @Injectable()
 export class EmailService {
@@ -23,8 +22,8 @@ export class EmailService {
       service: process.env.EMAIL_SERVICE,
       auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
+        pass: process.env.EMAIL_PASS,
+      },
     });
   }
 
@@ -33,7 +32,7 @@ export class EmailService {
       from: process.env.EMAIL_FROM,
       to,
       subject,
-      html: htmlContent
+      html: htmlContent,
     };
 
     try {

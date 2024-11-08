@@ -25,14 +25,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
     const message =
-      exception instanceof HttpException
-        ? exception.getResponse()
-        : exception;
+      exception instanceof HttpException ? exception.getResponse() : exception;
 
     this.logger.error(
       `Exception thrown: ${JSON.stringify(message)}`,
       exception instanceof Error ? exception.stack : '',
-      'ExceptionFilter'
+      'ExceptionFilter',
     );
 
     response.status(status).json({

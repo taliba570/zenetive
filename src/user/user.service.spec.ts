@@ -8,8 +8,8 @@ describe('UserService', () => {
   const mockUserServiceModel = {
     findOneAndUpdate: jest.fn(),
     findOne: jest.fn(),
-    updateOne: jest.fn()
-  }
+    updateOne: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -17,8 +17,8 @@ describe('UserService', () => {
         UserService,
         {
           provide: getModelToken('User'),
-          useValue: mockUserServiceModel
-        }
+          useValue: mockUserServiceModel,
+        },
       ],
     }).compile();
 

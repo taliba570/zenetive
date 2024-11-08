@@ -23,8 +23,8 @@ describe('TasksService', () => {
         TasksService,
         {
           provide: getModelToken(Task.name),
-          useValue: mockTaskModel
-        }
+          useValue: mockTaskModel,
+        },
       ],
     }).compile();
 

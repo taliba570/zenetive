@@ -14,6 +14,8 @@ import { CustomLogger } from './logger/custom-logger.service';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './logger/logging.interceptor';
 import configuration from './config/configuration';
+import { CorsMiddleware } from './commons/middlewares/cors.middleware';
+import { LoggerMiddleware } from './commons/middlewares/logger.middleware';
 
 @Module({
   imports: [
@@ -35,28 +37,33 @@ import configuration from './config/configuration';
       }),
       inject: [ConfigService],
     }),
-    TasksModule, 
-    PomodoroSettingsModule, 
+    TasksModule,
+    PomodoroSettingsModule,
     UserModule,
     TimerModule,
     AuthModule,
     LabelsModule,
     PomodoroRecordModule,
-    SoundPreferenceModule
+    SoundPreferenceModule,
   ],
   providers: [
     CustomLogger,
     {
       provide: APP_INTERCEPTOR,
-      useClass: LoggingInterceptor
-    }
+      useClass: LoggingInterceptor,
+    },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+    consumer.apply(CorsMiddleware).forRoutes('*');
+  }
+}
 
 function getEnvFilePath(): string | string[] {
   const nodeEnv = process.env.NODE_ENV || 'production';
-  switch(nodeEnv) {
+  switch (nodeEnv) {
     case 'production':
       return '.env.production';
     case 'development':

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from './jwt.strategy'; 
+import { JwtStrategy } from './jwt.strategy';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -21,7 +21,13 @@ dotenv.config();
       signOptions: { expiresIn: process.env.JWT_EXPIRATION },
     }),
   ],
-  providers: [JwtStrategy, JwtService, AuthService, FirebaseOtpSrevice, EmailService],
+  providers: [
+    JwtStrategy,
+    JwtService,
+    AuthService,
+    FirebaseOtpSrevice,
+    EmailService,
+  ],
   controllers: [AuthController],
   exports: [],
 })

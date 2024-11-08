@@ -7,11 +7,12 @@ import { UpdateLabelDto } from './dtos/update-label.dto';
 
 @Injectable()
 export class LabelsService {
-  constructor(
-    @InjectModel(Label.name) private labelModel: Model<Label>
-  ) {}
+  constructor(@InjectModel(Label.name) private labelModel: Model<Label>) {}
 
-  async createLabel(createLabelDto: CreateLabelDto, userId: string): Promise<Label> {
+  async createLabel(
+    createLabelDto: CreateLabelDto,
+    userId: string,
+  ): Promise<Label> {
     const newLabel = new this.labelModel({
       ...createLabelDto,
       userId,
@@ -24,7 +25,9 @@ export class LabelsService {
   }
 
   async update(id: string, updateLabelDto: UpdateLabelDto): Promise<Label> {
-    const updatedLabel = await this.labelModel.findByIdAndUpdate(id, updateLabelDto, { new: true }).exec();
+    const updatedLabel = await this.labelModel
+      .findByIdAndUpdate(id, updateLabelDto, { new: true })
+      .exec();
     if (!updatedLabel) {
       throw new NotFoundException(`Label with ID "${id}" not found`);
     }
@@ -39,28 +42,29 @@ export class LabelsService {
   }
 
   async findAllLabelsByUser(
-    page: number, 
-    limit: number, 
-    userId: string
+    page: number,
+    limit: number,
+    userId: string,
   ): Promise<{
-    labels: Label[],
-    totalLabels: number,
-    totalPages: number,
-    currentPage: number,
-    hasNext: boolean
+    labels: Label[];
+    totalLabels: number;
+    totalPages: number;
+    currentPage: number;
+    hasNext: boolean;
   }> {
     const skip = (page - 1) * limit;
-    const labels = await this.labelModel.find({ 
-      userId,
-     })
-    .skip(skip)
-    .limit(limit)
-    .sort({ "name": 1, "createdAt": -1 })
-    .exec();
+    const labels = await this.labelModel
+      .find({
+        userId,
+      })
+      .skip(skip)
+      .limit(limit)
+      .sort({ name: 1, createdAt: -1 })
+      .exec();
 
-    const totalLabels = await this.labelModel.countDocuments({ 
+    const totalLabels = await this.labelModel.countDocuments({
       userId: userId,
-      isCompleted: false
+      isCompleted: false,
     });
 
     return {
@@ -68,7 +72,7 @@ export class LabelsService {
       totalLabels,
       totalPages: Math.ceil(totalLabels / limit),
       currentPage: page,
-      hasNext: page < Math.ceil(totalLabels / limit)
+      hasNext: page < Math.ceil(totalLabels / limit),
     };
   }
 }
