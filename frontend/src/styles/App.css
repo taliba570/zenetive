@@ -1,0 +1,29 @@
+.navbar-light {
+  background: linear-gradient(120deg, rgba(255, 255, 255, 1) 0%, rgba(240, 228, 255, 1) 100%);
+}
+
+.button-light {
+  background: linear-gradient(90deg, rgba(255, 140, 0, 1) 0%, rgba(255, 215, 0, 1) 100%);
+}
+
+/* Dark mode gradients */
+.navbar-dark {
+  background: linear-gradient(120deg, rgba(26, 32, 44, 1) 0%, rgba(48, 54, 65, 1) 100%);
+}
+
+.button-light {
+  background: linear-gradient(90deg, rgb(104, 224, 228) 0%, rgb(13, 206, 219) 100%);
+  padding: 8px 10px;
+  border-radius: 4px;
+}
+
+.button-dark {
+  background: linear-gradient(90deg, rgb(104, 224, 228) 0%, rgb(13, 206, 219) 100%);
+  padding: 8px 10px;
+  border-radius: 4px;
+}
+
+/* Ensure button is aligned to the right */
+button.ml-auto {
+  margin-left: auto;
+}
