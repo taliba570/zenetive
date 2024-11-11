@@ -1,0 +1,76 @@
+.settings .logo {
+  margin-top: -215px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Container for the settings tabs */
+.settings-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 1) 0%, rgba(240, 228, 255, 1) 100%);
+  flex-direction: column;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+.dark .settings-container {
+  background: linear-gradient(120deg, rgba(26, 32, 44, 1) 0%, rgba(48, 54, 65, 1) 100%);
+}
+
+/* Tab buttons */
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 600px;
+}
+
+.tabs button {
+  flex: 1;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #e0e0e0;
+  color: #333;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+/* Active tab */
+.tabs button.active {
+  background: linear-gradient(120deg, #ffb88c, #ff616d ); 
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0px 4px 8px rgba(74, 144, 226, 0.4);
+}
+
+/* Hover effect */
+.tabs button:hover {
+  background-color: #d6d6d6;
+  transform: scale(1.02);
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .tabs {
+    flex-direction: column;
+    align-items: center;
+    max-width: 95%;
+  }
+
+  .tabs button {
+    width: 100%;
+  }
+}
+
+@media screen and (max-height: 1080px) {
+  .settings .logo {
+    margin-top: 350px;
+  }
+  
+}
