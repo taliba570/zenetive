@@ -27,6 +27,10 @@ package-lock.json
 backend/node_modules/
 backend/dist/
 backend/.env
+backend/.env.development
+backend/.env.production
+backend/pk.json
+backend/firebase.json
 
 # Shared package
 shared/node_modules/
