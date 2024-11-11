@@ -1,0 +1,6 @@
+export enum SessionLengthVariability {
+  CONSTANT = 'CONSTANT',
+  VARIABLE = 'VARIABLE',
+  INCREASING = 'INCREASING',
+  DECREASING = 'DECREASING',
+}
