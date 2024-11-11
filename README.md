@@ -1,7 +1,3 @@
-Got it, thank you for pointing that out. Here’s the README content without using code blocks for formatting:
-
-* * *
-
 Zenetive Monorepo
 =================
 
