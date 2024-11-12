@@ -32,6 +32,9 @@ backend/.env.production
 backend/pk.json
 backend/firebase.json
 
+# turbo
+.turbo
+
 # Shared package
 shared/node_modules/
 
@@ -39,6 +42,7 @@ shared/node_modules/
 .yarn/
 .pnp.*
 .pnp.js
+pnpm-lock.yaml
 
 # OS-specific files
 .DS_Store
