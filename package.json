@@ -2,6 +2,7 @@
   "name": "zenetive-monorepo",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "pnpm@9.12.3",
   "workspaces": [
     "frontend",
     "backend",
@@ -30,14 +31,14 @@
     "overrides": [
       {
         "files": [
-          "*.js",
-          "*.jsx",
-          "*.ts",
+          "*.js", 
+          "*.jsx", 
+          "*.ts", 
           "*.tsx"
         ],
         "parserOptions": {
           "project": [
-            "./frontend/tsconfig.json",
+            "./frontend/tsconfig.json", 
             "./backend/tsconfig.json"
           ]
         }
