@@ -68,24 +68,54 @@ const PhoneAuth: React.FC = () => {
   };
 
   return (
-    <div>
-      <input
-        type="text"
-        value={phoneNumber}
-        onChange={(e) => setPhoneNumber(e.target.value)}
-        placeholder="Enter phone number"
-      />
-      <button onClick={sendOtp}>Send OTP</button>
-      
-      <input
-        type="text"
-        value={otp}
-        onChange={(e) => setOtp(e.target.value)}
-        placeholder="Enter OTP"
-      />
-      <button onClick={verifyOtp}>Verify OTP</button>
+    <div className="flex h-screen">
+      {/* Left half: Login form */}
+      <div className="flex flex-col justify-center items-center w-1/2 bg-gray-100 p-8">
+        <div className="flex items-center justify-center w-1/2">
+          <img
+            src="/images/logo.png"
+            alt="Attractive Illustration"
+            className="h-40 object-cover"
+          />
+        </div>
+        <h2 className="text-2xl font-bold mb-4">Login</h2>
+        <input
+          type="text"
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
+          placeholder="Enter phone number"
+          className="mb-4 px-4 py-2 border border-gray-300 rounded w-80"
+        />
+        <button
+          onClick={sendOtp}
+          className="mb-4 bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition"
+        >
+          Send OTP
+        </button>
+        <input
+          type="text"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          placeholder="Enter OTP"
+          className="mb-4 px-4 py-2 border border-gray-300 rounded w-80"
+        />
+        <button
+          onClick={verifyOtp}
+          className="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition"
+        >
+          Verify OTP
+        </button>
+        <div id="recaptcha-container" className="mt-4"></div>
+      </div>
 
-      <div id="recaptcha-container"></div>
+      {/* Right half: Image */}
+      <div className="flex items-center justify-center w-1/2 bg-blue-500">
+        <img
+          src="/images/login.JPG"
+          alt="Attractive Illustration"
+          className="h-full object-cover"
+        />
+      </div>
     </div>
   );
 };
