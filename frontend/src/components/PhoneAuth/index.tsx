@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { Link } from 'react-router-dom';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAgnTtSfhohkqK8sb98F9b72KRVuPLqJ7w",
@@ -105,6 +106,8 @@ const PhoneAuth: React.FC = () => {
         >
           Verify OTP
         </button>
+
+        <Link to="/signup" className='px-8 py-4 bg-blue-500 rounded text-white mt-5'>Create an account!</Link>
         <div id="recaptcha-container" className="mt-4"></div>
       </div>
 

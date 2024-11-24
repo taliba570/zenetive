@@ -6,6 +6,8 @@ import NotFound from '../../pages/NotFound';
 import TaskList from '../tasks/TaskList';
 import PhoneAuth from '../PhoneAuth';
 import Header from '../common/Header';
+import Signup from '../Signup';
+import GithubCallback from '../GithubCallback';
 
 const RoutesConfig: React.FC = () => {
   const location = useLocation();
@@ -14,7 +16,7 @@ const RoutesConfig: React.FC = () => {
     const savedState = localStorage.getItem('soundNotification');
     return savedState ? JSON.parse(savedState) : true;
   });
-  const hideHeaderRoutes = ['/signin'];
+  const hideHeaderRoutes = ['/signin', '/signup', '/auth/github/callback'];
   
   const handleSoundNotificationChange = () => {
     setSoundNotification(() => !soundNotification);
@@ -37,6 +39,8 @@ const RoutesConfig: React.FC = () => {
           handleSoundNotificationChange={handleSoundNotificationChange}  />} />
         <Route path="/todos" element={<TaskList />} />
         <Route path="/signin" element={<PhoneAuth />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/auth/github/callback" element={<GithubCallback />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

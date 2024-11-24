@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dtos/login-user.dto';
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -34,6 +34,11 @@ export class AuthController {
         email: user.email,
       },
     };
+  }
+
+  @Get('github/callback')
+  async githubCallback(@Request() req: any) {
+    console.log(req);
   }
 
   @Post('login')
