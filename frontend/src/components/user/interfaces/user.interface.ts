@@ -2,7 +2,7 @@ export interface User {
   userId: string | null;
   name?: string | null;
   email?: string | null;
-  photo?: string | null;
+  photoURL?: string | null;
   phone?: string | null;
   isVerified?: boolean;
   accessToken?: string | null;
