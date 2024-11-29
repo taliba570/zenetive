@@ -28,8 +28,6 @@ async function bootstrap() {
   const customLogger = await app.resolve(CustomLogger);
   app.useLogger(customLogger);
 
-  app.useGlobalFilters(new AllExceptionsFilter(customLogger));
-
   await app.listen(port);
 }
 
