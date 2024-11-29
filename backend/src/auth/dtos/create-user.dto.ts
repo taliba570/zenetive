@@ -27,9 +27,9 @@ export class CreateLinkedUserDto {
 
   @ApiProperty({
     example: 'https://zeeshan-images.s3.eu-north-1.amazonaws.com/favicon2.png',
-    description: 'user photo',
+    description: 'user photo URL',
   })
-  photo?: string;
+  photoURL?: string;
 
   @ApiProperty({
     example: '+923430505458',
