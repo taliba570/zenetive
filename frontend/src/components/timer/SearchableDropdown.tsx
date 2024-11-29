@@ -6,7 +6,7 @@ import { debounce } from "../../utils/debounce";
 import { Task } from "../tasks/interface/Task.interface";
 import { SearchableDropdownProps } from "./interfaces/PomodoroRecord.interface";
 import { customSelectStyles } from "./styles/styles";
-import { searchTasks } from "../../redux/slices/asyncThunks.ts/taskThunks";
+import { searchTasks } from "../../redux/slices/asyncThunks/taskThunks";
 
 const SearchableDropdown: React.FC<SearchableDropdownProps> = ({ onChange, value }) => {
   const dispatch = useDispatch<AppDispatch>();

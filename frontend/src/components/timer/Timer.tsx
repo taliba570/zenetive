@@ -32,12 +32,12 @@ import { setCurrentTask } from '../../redux/slices/taskSlice';
 import SearchableDropdown from './SearchableDropdown';
 import SelectedTaskDisplay from './SelectedTaskDisplay';
 import { Task } from '../tasks/interface/Task.interface';
-import { fetchTasks } from '../../redux/slices/asyncThunks.ts/taskThunks';
-import { fetchPomodoroSettings } from '../../redux/slices/asyncThunks.ts/timerThunks';
-import { completeSession, createPomodoroSession, updatePomodoroRecord } from '../../redux/slices/asyncThunks.ts/pomodoroRecordThunks';
+import { fetchTasks } from '../../redux/slices/asyncThunks/taskThunks';
+import { fetchPomodoroSettings } from '../../redux/slices/asyncThunks/timerThunks';
+import { createPomodoroSession, updatePomodoroRecord } from '../../redux/slices/asyncThunks/pomodoroRecordThunks';
 import { TimerProps } from './interfaces/Timer.interface';
 import { debounce } from '../../utils/debounce';
-import { PomorodoState, UpdatePomodoroRecordDto, UpdatePomodoroRecordParams } from './interfaces/PomodoroRecord.interface';
+import { PomorodoState, UpdatePomodoroRecordParams } from './interfaces/PomodoroRecord.interface';
 
 const Timer: React.FC<TimerProps> = () => {
   const dispatch = useDispatch<AppDispatch>();

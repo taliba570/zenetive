@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../redux/store';
 import { TaskPriority } from '../../utils/types';
 import { AddTaskModalProps } from './interface/Task.interface';
-import { addTask, updateTask } from '../../redux/slices/asyncThunks.ts/taskThunks';
+import { addTask, updateTask } from '../../redux/slices/asyncThunks/taskThunks';
 import AddTaskModalForm from './AddTaskModalForm';
 
 const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, task = null }) => {

@@ -5,7 +5,7 @@ import {
   updateLongBreakDuration, 
   updateShortBreakDuration, 
   updateWorkDuration 
-} from "./asyncThunks.ts/timerThunks";
+} from "./asyncThunks/timerThunks";
 import { TimerState } from "../../components/timer/interfaces/Timer.interface";
 
 const initialState: TimerState = {

@@ -3,7 +3,7 @@ import {
   PayloadAction
 } from '@reduxjs/toolkit';
 import { FetchLabelsResponse, Label, LabelState } from '../../components/labels/interfaces/label.interface';
-import { addLabel, fetchLabels } from './asyncThunks.ts/labelThunks';
+import { addLabel, fetchLabels } from './asyncThunks/labelThunks';
 
 export const initialState: LabelState = {
   labels: [],

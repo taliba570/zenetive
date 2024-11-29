@@ -22,6 +22,59 @@ export class UserService {
     return newUser.save();
   }
 
+  async createUserWithGithub(profile: any) {
+    const user = new User();
+    return user;
+  }
+
+  async validateGoogleUser(profile: any): Promise<User> {
+    const { email, displayName, photos } = profile;
+
+    let user = await this.userModel.findOne({ email });
+
+    if (!user) {
+      user = new this.userModel({
+        name: displayName,
+        email,
+        photo: photos[0].value,
+        password: '', // Password not required for social login
+        isVerified: true,
+        googleLinked: true,
+      });
+      await user.save();
+    } else if (!user.googleLinked) {
+      user.googleLinked = true;
+      await user.save();
+    }
+
+    return user;
+  }
+
+  async validateGithubUser(profile: any): Promise<User> {
+    const { username, emails, photos } = profile;
+
+    const email = emails[0].value;
+
+    let user = await this.userModel.findOne({ email });
+
+    if (!user) {
+      user = new this.userModel({
+        name: username,
+        email,
+        photo: photos[0].value,
+        password: '', // Password not required for social login
+        isVerified: true,
+        githubLinked: true,
+      });
+      await user.save();
+    } else if (!user.githubLinked) {
+      user.githubLinked = true;
+      await user.save();
+    }
+
+    return user;
+  }
+
   async findUserByEmail(email: string): Promise<User> {
     return this.userModel.findOne({ email }).exec();
   }

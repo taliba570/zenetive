@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import timerReducer from "./slices/timerSlice";
 import taskReducer from "./slices/taskSlice";
 import labelReducer from "./slices/labelSlice";
+import userReducer from "./slices/userSlice";
 import pomodoroRecordReducer from "./slices/pomodoroRecordSlice";
 
 const config = {
@@ -9,6 +10,7 @@ const config = {
     timer: timerReducer,
     tasks: taskReducer,
     labels: labelReducer,
+    user: userReducer,
     pomodoroRecord: pomodoroRecordReducer
   },
 };

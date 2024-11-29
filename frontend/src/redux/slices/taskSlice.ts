@@ -15,7 +15,7 @@ import {
   searchTasks, 
   toggleTaskComplete, 
   updateTask 
-} from './asyncThunks.ts/taskThunks';
+} from './asyncThunks/taskThunks';
 
 const initialState: TaskState = {
   tasks: [],

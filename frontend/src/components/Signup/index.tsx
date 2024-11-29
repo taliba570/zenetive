@@ -5,8 +5,12 @@ import {
   GoogleAuthProvider,
   GithubAuthProvider,
   signInWithPopup,
+  UserCredential,
 } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { useDispatch } from 'react-redux';
+import { signupGithubUser } from '../../redux/slices/asyncThunks/userThunk';
+import { AppDispatch } from '../../redux/store';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAgnTtSfhohkqK8sb98F9b72KRVuPLqJ7w",
@@ -26,6 +30,7 @@ const googleProvider = new GoogleAuthProvider();
 const githubProvider = new GithubAuthProvider();
 
 const Signup: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>(); 
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -53,10 +58,27 @@ const Signup: React.FC = () => {
   // Sign up with GitHub
   const signUpWithGithub = async () => {
     try {
-      const result = await signInWithPopup(auth, githubProvider);
+      const result: UserCredential = await signInWithPopup(auth, githubProvider);
+  
+      // Get the access token from the credential
+      const credential = GithubAuthProvider.credentialFromResult(result);
+      const accessToken = credential?.accessToken;
+  
       console.log('GitHub sign-in successful:', result.user);
+  
+      if (accessToken) {
+        dispatch(signupGithubUser({
+          userId: result.user.uid,
+          name: result.user.displayName,
+          email: result.user.email,
+          isVerified: result.user.emailVerified,
+          accessToken: accessToken,
+        }));
+      } else {
+        console.error('No access token retrieved from GitHub sign-in.');
+      }
     } catch (error) {
-      console.error('Error signing in with GitHub:', error);
+      console.error('Error during GitHub sign-in:', error);
     }
   };
 

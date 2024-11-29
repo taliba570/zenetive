@@ -10,7 +10,7 @@ import Modal from './../common/Modal';
 import Toast from '../common/Toast';
 import TaskListContainer from './TaskListContainer';
 import { Task } from './interface/Task.interface';
-import { deleteTask, toggleTaskComplete } from '../../redux/slices/asyncThunks.ts/taskThunks';
+import { deleteTask, toggleTaskComplete } from '../../redux/slices/asyncThunks/taskThunks';
 
 const TaskList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();

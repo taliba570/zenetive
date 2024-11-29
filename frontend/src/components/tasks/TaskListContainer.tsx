@@ -4,8 +4,8 @@ import TaskItem from './TaskItem';
 import { AppDispatch, RootState } from '../../redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from '../../utils/debounce';
-import { fetchTasks } from '../../redux/slices/asyncThunks.ts/taskThunks';
-import { fetchLabels } from '../../redux/slices/asyncThunks.ts/labelThunks';
+import { fetchTasks } from '../../redux/slices/asyncThunks/taskThunks';
+import { fetchLabels } from '../../redux/slices/asyncThunks/labelThunks';
 
 const TaskListContainer: React.FC<TaskListContainerProps> = ({ onEdit, onDelete, onToggleComplete  }) => {
   
