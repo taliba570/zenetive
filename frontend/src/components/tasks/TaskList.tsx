@@ -24,10 +24,10 @@ const TaskList: React.FC = () => {
     if (deletingTaskId) {
       try {
         await dispatch(deleteTask(deletingTaskId)).unwrap();
-        setToast({ message: 'Task deleted successfully!', type: 'success' });
+        setToast({ message: 'Task deleted successfully', type: 'success' });
       } catch (error: any) {
         console.error('Error deleting task:', error);
-        setToast({ message: 'Unable to delete task!', type: 'error' });
+        setToast({ message: 'Unable to delete task', type: 'error' });
       } finally {
         setDeletingTaskId(null);
       }
@@ -62,10 +62,10 @@ const TaskList: React.FC = () => {
   const handleToggleTaskComplete = async (task: Task) => {
     try {
       await dispatch(toggleTaskComplete(task)).unwrap();
-      setToast({ message: 'Task completion status updated!', type: 'success' });
+      setToast({ message: 'Task completion status updated', type: 'success' });
     } catch (error: any) {
       console.error('Error toggling task completion:', error);
-      setToast({ message: 'Unable to update task status!', type: 'error' });
+      setToast({ message: 'Unable to update task status', type: 'error' });
     }
   };
 

@@ -1,25 +1,114 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './user.entity';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
+import { PasswordService } from './password.service';
+import { randomBytes } from 'crypto';
+import { VerifyEmailTemplateData } from '../tools/email/interfaces/verify-user.interface';
+import { EmailService } from '../tools/email/email.service';
+import { UpdateUserDTO } from './dtos/update-user.dto';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  private readonly baseURL = process.env.BASE_URL || 'https://localhost:3000/';
+
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private readonly passwordService: PasswordService,
+    private emailService: EmailService,
+  ) {}
+
+  protected formatUser(user: User): Partial<User> {
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      photoURL: user.photoURL,
+    };
+  }
 
   async createUser(
     name: string,
     email: string,
     password: string,
-  ): Promise<User> {
-    const hashedPassword = await bcrypt.hash(password, 10);
+  ): Promise<Partial<User>> {
+    const existingUser = await this.findUserByEmail(email);
+    
+    if (existingUser) throw new BadRequestException('User already exist');
+
+    if (!password) throw new BadRequestException('Passowrd can not be empty')
+
+    const hashedPassword = await this.passwordService.hashPassword(password);
+    const verificationToken = randomBytes(32).toString('hex');
+
     const newUser = new this.userModel({
       name,
-      email: email.toLowerCase(),
+      email: email.toLowerCase().trim(),
       password: hashedPassword,
+      verificationToken
     });
-    return newUser.save();
+
+    try {
+      await newUser.save();
+      if (verificationToken) {
+        await this.sendVerificationEmail(newUser);
+      }
+    } catch (error) {
+      this.handleDatabaseError(error);
+    }
+    return this.formatUser(newUser);
+  }
+
+  private handleDatabaseError(error: any): never {
+    console.log(error);
+    if (error.code === 11000) {
+      throw new ConflictException('User with the given email already exists.');
+    }
+    throw new InternalServerErrorException('An error occurred while saving the user.');
+  }
+
+  private async sendVerificationEmail(user: User): Promise<void> {
+    const data: VerifyEmailTemplateData = {
+      name: user.name ?? undefined,
+      verification_url: this.getVerificationURL(user.verificationToken, user.email)
+    };
+    try {
+      await this.emailService.sendMail(
+        user.email,
+        'Account verification',
+        `Hello ${data.name}, Verify your account ${data.verification_url}`,
+      );
+    } catch (error) {
+      throw new InternalServerErrorException('Unable to send email')
+    }
+  }
+
+  async verifyToken(token: string, email: string): Promise<boolean> {
+    if (!token) throw new BadRequestException('Token is empty');
+
+    const user = await this.userModel.findOne({email});
+    if (!user) throw new NotFoundException('User does not exsit');
+    if (!user.verificationToken) {
+      throw new BadRequestException('User is already verified.');
+    }
+    try {
+      await this.updateUser({verificationToken: null, isVerified: true}, user._id.toString());
+    } catch (error) {
+      throw new InternalServerErrorException('Unable to update user status');
+    }
+    return true;
+  }
+
+  async updateUser(fields: UpdateUserDTO, userId: string) {
+    const result = await this.userModel.updateOne({ _id: userId }, { $set: fields }).exec();
+    if (result.modifiedCount === 0) {
+      throw new BadRequestException('Unable to update the user');
+    }
+  }
+
+  private getVerificationURL(token: string, email: string) {
+    return `${this.baseURL}/auth/verify/${email}/${token}`;
   }
 
   async createUserWithGithub(profile: any) {
@@ -36,7 +125,7 @@ export class UserService {
       user = new this.userModel({
         name: displayName,
         email,
-        photo: photos[0].value,
+        photoURL: photos[0].value,
         password: '', // Password not required for social login
         isVerified: true,
         googleLinked: true,
@@ -61,7 +150,7 @@ export class UserService {
       user = new this.userModel({
         name: username,
         email,
-        photo: photos[0].value,
+        photoURL: photos[0].value,
         password: '', // Password not required for social login
         isVerified: true,
         githubLinked: true,

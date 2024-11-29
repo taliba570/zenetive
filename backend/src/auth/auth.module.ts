@@ -8,6 +8,7 @@ import { AuthService } from './auth.service';
 import { FirebaseOtpSrevice } from '../tools/firebase/firebase-otp.service';
 import { EmailService } from '../tools/email/email.service';
 import * as dotenv from 'dotenv';
+import { PasswordService } from '../user/password.service';
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ dotenv.config();
     AuthService,
     FirebaseOtpSrevice,
     EmailService,
+    PasswordService
   ],
   controllers: [AuthController],
   exports: [],
