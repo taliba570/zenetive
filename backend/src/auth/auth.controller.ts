@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Post, Request } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dtos/login-user.dto';
 import { CreateLinkedUserDto, CreateUserDto } from './dtos/create-user.dto';
@@ -21,11 +21,6 @@ export class AuthController {
   @Post('signup')
   async signup(@Body() createUserDto: CreateUserDto) {
     const { name, email, password } = createUserDto;
-    const existingUser = await this.userService.findUserByEmail(email);
-    if (existingUser) {
-      throw new BadRequestException('User already exist!');
-    }
-
     const user = await this.userService.createUser(name, email, password);
     return {
       message: 'User registered successfully',
@@ -36,12 +31,22 @@ export class AuthController {
     };
   }
 
+  @Get('verify/:email/:token')
+  async verifyToken(@Param('email') email: string, @Param('token') token: string): Promise<any> {
+    const response = await this.userService.verifyToken(token, email);
+    if (response) {
+      return {
+        message: 'Account successfully verified'
+      }
+    }
+  }
+
   @Get('github/callback')
   async githubCallback(@Body() profile: CreateLinkedUserDto, @Request() req: any) {
-    const { name, email, phone, photo } = profile;
+    const { email } = profile;
     const existingUser = await this.userService.findUserByEmail(email);
     if (existingUser) {
-      throw new BadRequestException('User already exist!');
+      throw new BadRequestException('User already exist');
     }
 
     const user = await this.userService.createUserWithGithub(profile);
@@ -65,7 +70,7 @@ export class AuthController {
     const { email } = forgotPasswordDto;
     const user = await this.userService.findUserByEmail(email);
     if (!user) {
-      throw new BadRequestException('User not found!');
+      throw new BadRequestException('User not found');
     }
 
     const response = await this.authService.setResetPasswordToken(user.id);
@@ -79,7 +84,7 @@ export class AuthController {
       body.token,
       body.newPassword,
     );
-    return { user: user, message: 'Password has been reset successfully!' };
+    return { user: user, message: 'Password has been reset successfully' };
   }
 
   @Post('forgot-password-otp')
