@@ -8,6 +8,7 @@ import PhoneAuth from '../PhoneAuth';
 import Header from '../common/Header';
 import Signup from '../Signup';
 import GithubCallback from '../GithubCallback';
+import HomePage from '../homepage/Homepage';
 
 const RoutesConfig: React.FC = () => {
   const location = useLocation();
@@ -28,9 +29,10 @@ const RoutesConfig: React.FC = () => {
 
   return (
     <div>
-      {!hideHeaderRoutes.includes(location.pathname) && <Header />}
+      {/* {!hideHeaderRoutes.includes(location.pathname) && <Header />} */}
       <Routes>
-        <Route path="/" element={<Home
+        <Route path="/" element={<HomePage />} />
+        <Route path="/dashbaord" element={<Home
           mode={mode}
           setMode={setMode}
           soundNotification={soundNotification} />} />
