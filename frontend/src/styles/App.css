@@ -4,9 +4,39 @@
   font-weight: normal;
   font-style: normal;
 }
+@font-face {
+  font-family: 'OpenSans-SemiBold';
+  src: url('/public/fonts/OpenSans-SemiBold.ttf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'OpenSans-Bold';
+  src: url('/public/fonts/OpenSans-Bold.ttf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'OpenSans-ExtraBold';
+  src: url('/public/fonts/OpenSans-ExtraBold.ttf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
 
 body {
   font-family: 'OpenSans-Regular', sans-serif;
+}
+
+.openSans-SemiBold {
+  font-family: 'OpenSans-SemiBold', sans-serif;
+}
+
+.openSans-Bold {
+  font-family: 'OpenSans-Bold', sans-serif;
+}
+
+.openSans-ExtraBold {
+  font-family: 'OpenSans-ExtraBold', sans-serif;
 }
 
 .navbar-light {
