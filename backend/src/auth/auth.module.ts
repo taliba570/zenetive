@@ -11,6 +11,8 @@ import * as dotenv from 'dotenv';
 import { PasswordService } from '../user/password.service';
 import { SocialAuthController } from './social-auth.controller';
 import { SocialAuthService } from './social-auth.service';
+import { LocalStrategy } from './strategies/local.strategy';
+import jwtConfig from 'src/config/jwt.config';
 
 dotenv.config();
 
@@ -18,11 +20,7 @@ dotenv.config();
   imports: [
     UserModule,
     PassportModule,
-    JwtModule.register({
-      global: true,
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: process.env.JWT_EXPIRATION },
-    }),
+    JwtModule.registerAsync(jwtConfig.asProvider()),
   ],
   providers: [
     JwtStrategy,
@@ -31,7 +29,8 @@ dotenv.config();
     FirebaseOtpSrevice,
     EmailService,
     PasswordService,
-    SocialAuthService
+    SocialAuthService,
+    LocalStrategy
   ],
   controllers: [AuthController, SocialAuthController],
   exports: [],

@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Put, Request } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
 import { ApiTags } from '@nestjs/swagger';
@@ -13,6 +13,7 @@ import {
   SendVerificationEmailDto, 
   VerifyOtpDto
 } from './dtos/user.dto';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -25,7 +26,7 @@ export class AuthController {
   @Post('signup')
   async signup(@Body() createUserDto: CreateUserDto) {
     const { name, email, password } = createUserDto;
-    const user = await this.userService.createUser(name, email, password);
+    const user = await this.userService.create(name, email, password);
     return {
       message: 'User registered successfully',
       user: {
@@ -35,10 +36,10 @@ export class AuthController {
     };
   }
 
+  @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Body() loginUserDto: LoginUserDto) {
-    const { email, password } = loginUserDto;
-    return await this.authService.authenticate(email, password);
+  async login(@Request() req, @Body() loginUserDto: LoginUserDto) {
+    return await this.authService.signIn(req.user);
   }
 
   @Post('refresh-token')
@@ -50,7 +51,7 @@ export class AuthController {
   @Post('forgot-password')
   async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
     const { email } = forgotPasswordDto;
-    const user = await this.userService.findUserByEmail(email);
+    const user = await this.userService.findByEmail(email);
     if (!user) {
       throw new BadRequestException('User not found');
     }
@@ -97,7 +98,7 @@ export class AuthController {
   @Get('github/callback')
   async githubCallback(@Body() profile: CreateLinkedUserDto, @Request() req: any) {
     const { email } = profile;
-    const existingUser = await this.userService.findUserByEmail(email);
+    const existingUser = await this.userService.findByEmail(email);
     if (existingUser) {
       throw new BadRequestException('User already exist');
     }

@@ -6,6 +6,7 @@ import { FirebaseOtpSrevice } from './../tools/firebase/firebase-otp.service';
 import { EmailService } from '../tools/email/email.service';
 import * as dotenv from 'dotenv';
 import { SignInData } from './dtos/user.dto';
+import { PasswordService } from 'src/user/password.service';
 
 dotenv.config();
 
@@ -16,28 +17,24 @@ export class AuthService {
     private jwtService: JwtService,
     private firebaseOtpService: FirebaseOtpSrevice,
     private emailService: EmailService,
+    private passwordService: PasswordService,
   ) {}
   private readonly port = process.env.PORT || 3000;
   private readonly baseURL = process.env.BASE_URL || `http://localhost:${this.port}`;
 
-  async authenticate(email: string, password: string) {
-    const user = await this.validateUser(email, password);
-    if (!user) {
-      throw new BadRequestException('Invalid credentials');
-    }
-
-    return await this.signIn(user);
-  }
-
   async validateUser(email: string, password: string): Promise<SignInData> {
-    const user = await this.userService.findUserByEmail(email);
-    if (user && (await bcrypt.compare(password, user.password))) {
+    const user = await this.userService.findByEmail( email);
+    
+    if (!user) throw new NotFoundException('User not found');
+
+    if (await this.passwordService.comparePassword(password, user.password)) {
       return {
         id: user.id,
         email: user.email,
       };
+    } else {
+      throw new BadRequestException('Invalid credentials')
     }
-    return null;
   }
 
   async signIn(user: SignInData) {
@@ -59,7 +56,7 @@ export class AuthService {
   async setResetPasswordToken(userId: string) {
     const token = Math.random().toString(36).substr(2);
     const expirationDate = new Date(Date.now() + 3600 * 1000);
-    const user = await this.userService.findUserById(userId);
+    const user = await this.userService.findOne(userId);
     
     if (!user) {
       throw new NotFoundException('User does not exist!');
@@ -83,7 +80,7 @@ export class AuthService {
   }
 
   async forgotPasswordWithOtp(email: string, phoneNumber: string) {
-    const user = await this.userService.findUserByEmail(email);
+    const user = await this.userService.findByEmail( email);
     console.log(user);
     if (!user) {
       throw new BadRequestException('User not found');
