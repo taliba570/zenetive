@@ -1,14 +1,18 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Request } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post, Put, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginUserDto } from './dtos/login-user.dto';
-import { CreateLinkedUserDto, CreateUserDto } from './dtos/create-user.dto';
-import {
-  ForgotPasswordDto,
-  ForgotPasswordOtpDto,
-  VerifyOtpDto,
-} from './dtos/forgot-password.dto';
 import { UserService } from '../user/user.service';
 import { ApiTags } from '@nestjs/swagger';
+import { 
+  ChangePasswordDto, 
+  CreateLinkedUserDto, 
+  CreateUserDto, 
+  ForgotPasswordDto, 
+  ForgotPasswordOtpDto, 
+  LoginUserDto, 
+  RefreshTokenDto, 
+  SendVerificationEmailDto, 
+  VerifyOtpDto
+} from './dtos/user.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -31,38 +35,16 @@ export class AuthController {
     };
   }
 
-  @Get('verify/:email/:token')
-  async verifyToken(@Param('email') email: string, @Param('token') token: string): Promise<any> {
-    const response = await this.userService.verifyToken(token, email);
-    if (response) {
-      return {
-        message: 'Account successfully verified'
-      }
-    }
-  }
-
-  @Get('github/callback')
-  async githubCallback(@Body() profile: CreateLinkedUserDto, @Request() req: any) {
-    const { email } = profile;
-    const existingUser = await this.userService.findUserByEmail(email);
-    if (existingUser) {
-      throw new BadRequestException('User already exist');
-    }
-
-    const user = await this.userService.createUserWithGithub(profile);
-    return {
-      message: 'User registered successfully',
-      user: {
-        name: user.name,
-        email: user.email,
-      },
-    };
-  }
-
   @Post('login')
   async login(@Body() loginUserDto: LoginUserDto) {
     const { email, password } = loginUserDto;
     return await this.authService.authenticate(email, password);
+  }
+
+  @Post('refresh-token')
+  async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+    const { refreshToken } = refreshTokenDto;
+    return await this.authService.refreshToken(refreshToken);
   }
 
   @Post('forgot-password')
@@ -85,6 +67,49 @@ export class AuthController {
       body.newPassword,
     );
     return { user: user, message: 'Password has been reset successfully' };
+  }
+
+  @Put('change-password')
+  async changePassword(@Body() changePasswordDto: ChangePasswordDto) {
+
+  }
+
+  @Post('send-verification-email')
+  async sendVerificationEmail(@Body() sendVerificationEmailDto: SendVerificationEmailDto) {
+
+  }
+
+  @Get('verify/:email/:token')
+  async verifyToken(@Param('email') email: string, @Param('token') token: string): Promise<any> {
+    const response = await this.userService.verifyToken(token, email);
+    if (response) {
+      return {
+        message: 'Account successfully verified'
+      }
+    }
+  }
+
+  @Get('social/:provider/callback')
+  async socialCallback() {
+
+  }
+
+  @Get('github/callback')
+  async githubCallback(@Body() profile: CreateLinkedUserDto, @Request() req: any) {
+    const { email } = profile;
+    const existingUser = await this.userService.findUserByEmail(email);
+    if (existingUser) {
+      throw new BadRequestException('User already exist');
+    }
+
+    const user = await this.userService.createUserWithGithub(profile);
+    return {
+      message: 'User registered successfully',
+      user: {
+        name: user.name,
+        email: user.email,
+      },
+    };
   }
 
   @Post('forgot-password-otp')

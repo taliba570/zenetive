@@ -1,11 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
-import { SignInData } from './dtos/signin-data.dto';
 import * as bcrypt from 'bcrypt';
 import { FirebaseOtpSrevice } from './../tools/firebase/firebase-otp.service';
 import { EmailService } from '../tools/email/email.service';
 import * as dotenv from 'dotenv';
+import { SignInData } from './dtos/user.dto';
 
 dotenv.config();
 
@@ -17,6 +17,8 @@ export class AuthService {
     private firebaseOtpService: FirebaseOtpSrevice,
     private emailService: EmailService,
   ) {}
+  private readonly port = process.env.PORT || 3000;
+  private readonly baseURL = process.env.BASE_URL || `http://localhost:${this.port}`;
 
   async authenticate(email: string, password: string) {
     const user = await this.validateUser(email, password);
@@ -57,8 +59,19 @@ export class AuthService {
   async setResetPasswordToken(userId: string) {
     const token = Math.random().toString(36).substr(2);
     const expirationDate = new Date(Date.now() + 3600 * 1000);
+    const user = await this.userService.findUserById(userId);
+    
+    if (!user) {
+      throw new NotFoundException('User does not exist!');
+    }
+
+    if (user.verificationToken) {
+      throw new BadRequestException('User not activated yet');
+    }
 
     await this.userService.setResetPasswordToken(userId, token, expirationDate);
+
+    await this.sendResetPasswordEmail(user.email, token)
 
     return {
       message: 'Password reset link has been sent to your email.',
@@ -101,8 +114,12 @@ export class AuthService {
     throw new BadRequestException('OTP verification failed');
   }
 
+  async refreshToken(refreshToken: string) {
+
+  }
+
   async sendResetPasswordEmail(email: string, resetToken: string) {
-    const resetLink = `${process.env.BASE_URL}/reset-password?token=${resetToken}`;
+    const resetLink = `${this.baseURL}/reset-password/${email}/${resetToken}`;
 
     const emailContent = `
       <p>You requested to reset your password.</p>

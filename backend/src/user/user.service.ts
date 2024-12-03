@@ -168,6 +168,10 @@ export class UserService {
     return this.userModel.findOne({ email }).exec();
   }
 
+  async findUserById(userId: string): Promise<User> {
+    return this.userModel.findOne({ _id: userId }).exec();
+  }
+
   async setResetPasswordToken(userId: string, token: string, expires: Date) {
     return this.userModel.findByIdAndUpdate(userId, {
       resetPasswordToken: token,

@@ -9,6 +9,7 @@ import Header from '../common/Header';
 import Signup from '../Signup';
 import GithubCallback from '../GithubCallback';
 import HomePage from '../homepage/Homepage';
+import GoogleCallback from '../GoogleCallback';
 
 const RoutesConfig: React.FC = () => {
   const location = useLocation();
@@ -43,6 +44,7 @@ const RoutesConfig: React.FC = () => {
         <Route path="/signin" element={<PhoneAuth />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/auth/github/callback" element={<GithubCallback />} />
+        <Route path="/auth/google/callback" element={<GoogleCallback />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

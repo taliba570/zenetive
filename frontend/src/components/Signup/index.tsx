@@ -9,8 +9,10 @@ import {
 } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import { useDispatch } from 'react-redux';
-import { signupGithubUser } from '../../redux/slices/asyncThunks/userThunk';
+import { signupGithubUser, signupGoogleUser } from '../../redux/slices/asyncThunks/userThunk';
 import { AppDispatch } from '../../redux/store';
+import { User } from '../user/interfaces/user.interface';
+import GetUserInfoModal from '../GetUserInfoModal';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAgnTtSfhohkqK8sb98F9b72KRVuPLqJ7w",
@@ -21,7 +23,7 @@ const firebaseConfig = {
   appId: "1:306170685493:web:6e2c8834b8769c906d697c",
   measurementId: "G-PJN6QB8VS4",
 };
-
+``
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
@@ -31,6 +33,8 @@ const githubProvider = new GithubAuthProvider();
 
 const Signup: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>(); 
+  const [completeSignup, setCompleteSignup] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -49,7 +53,31 @@ const Signup: React.FC = () => {
   const signUpWithGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const accessToken = credential?.accessToken;
+      const user = result.user;
       console.log('Google sign-in successful:', result.user);
+
+      if (!user.email) {
+        setCompleteSignup(true);
+        setUser({
+          userId: result.user.uid,
+          name: result.user.displayName,
+          email: result.user.email,
+          isVerified: result.user.emailVerified,
+          accessToken: accessToken,
+        });
+      }
+
+      if (accessToken) {
+        dispatch(signupGoogleUser({
+          userId: result.user.uid,
+          name: result.user.displayName,
+          email: result.user.email,
+          isVerified: result.user.emailVerified,
+          accessToken: accessToken,
+        }));
+      }
     } catch (error) {
       console.error('Error signing in with Google:', error);
     }
@@ -147,6 +175,7 @@ const Signup: React.FC = () => {
           className="h-full object-cover"
         />
       </div>
+      {completeSignup && <GetUserInfoModal user={user} />}
     </div>
   );
 };
