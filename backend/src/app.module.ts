@@ -1,7 +1,6 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import * as Joi from 'joi';
+import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { LabelsModule } from './labels/labels.module';
@@ -13,30 +12,15 @@ import { SoundPreferenceModule } from './sound-preference/sound-preference.modul
 import { CustomLogger } from './logger/custom-logger.service';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './logger/logging.interceptor';
-import configuration from './config/configuration';
 import { CorsMiddleware } from './commons/middlewares/cors.middleware';
 import { LoggerMiddleware } from './commons/middlewares/logger.middleware';
+import dbConfig from './config/db.config';
+import { configOptions } from './config/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: getEnvFilePath(),
-      load: [configuration],
-      validationSchema: Joi.object({
-        MONGODB_URI: Joi.string().required().uri(),
-        JWT_SECRET: Joi.string().required(),
-        JWT_EXPIRATION: Joi.string().default('30d'),
-        API_PORT: Joi.number().default(3000),
-      }),
-    }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('mongodb.uri'),
-      }),
-      inject: [ConfigService],
-    }),
+    ConfigModule.forRoot(configOptions),
+    MongooseModule.forRootAsync(dbConfig.asProvider()),
     TasksModule,
     PomodoroSettingsModule,
     UserModule,
@@ -58,16 +42,5 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');
     consumer.apply(CorsMiddleware).forRoutes('*');
-  }
-}
-
-function getEnvFilePath(): string | string[] {
-  const nodeEnv = process.env.NODE_ENV || 'production';
-  switch (nodeEnv) {
-    case 'production':
-      return '.env.production';
-    case 'development':
-    default:
-      return '.env.development';
   }
 }

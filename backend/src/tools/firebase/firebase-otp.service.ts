@@ -6,7 +6,6 @@ import './firebase-admin.config';
 export class FirebaseOtpSrevice {
   async sendOtp(phoneNumber: string): Promise<string> {
     try {
-      console.log(phoneNumber);
       try {
         const userExist = await admin.auth().getUserByPhoneNumber(phoneNumber);
         return userExist.uid;
@@ -19,7 +18,6 @@ export class FirebaseOtpSrevice {
         }
       }
     } catch (error) {
-      console.log(error);
       throw new BadRequestException('Error sending OTP');
     }
   }

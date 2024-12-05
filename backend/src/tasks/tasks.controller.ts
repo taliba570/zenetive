@@ -22,10 +22,10 @@ import {
 import { TasksService } from './tasks.service';
 import { Task } from './task.entity';
 import { CreateTaskDto } from './dtos/create-task.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UpdateTaskDto } from './dtos/update-task.dto';
 import { AssignLabelToTask } from './dtos/assign-label-to-task.dto';
 import { SearchTasksDto } from './dtos/search-tasks.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Tasks')
 @ApiBearerAuth()
@@ -42,7 +42,7 @@ export class TasksController {
     @Query('limit') limit: number = 10,
     @Request() req,
   ): Promise<Task[]> {
-    return this.tasksService.findAll(page, limit, req.user.userId);
+    return this.tasksService.findAll(page, limit, req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -52,11 +52,9 @@ export class TasksController {
     @Query() searchTasksDto: SearchTasksDto,
     @Request() req: any,
   ) {
-    console.log('received');
     const { q } = searchTasksDto;
-    const userId = req.user.userId;
+    const userId = req.user.id;
 
-    console.log('got values');
     return this.tasksService.searchTasks(userId, q);
   }
 
@@ -66,7 +64,7 @@ export class TasksController {
   @ApiResponse({ status: 200, description: 'Return task by Id' })
   @ApiParam({ name: 'id', description: 'Task ID' })
   async findById(@Param('id') taskId: string, @Request() req) {
-    return await this.tasksService.findById(taskId, req.user.userId);
+    return await this.tasksService.findById(taskId, req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -75,7 +73,7 @@ export class TasksController {
   @ApiResponse({ status: 201, description: 'Task created successfully.' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   async create(@Request() req, @Body() taskData: CreateTaskDto): Promise<Task> {
-    return this.tasksService.create(taskData, req.user.userId);
+    return this.tasksService.create(taskData, req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -86,7 +84,7 @@ export class TasksController {
     @Body() updateTaskDto: UpdateTaskDto,
     @Request() req: any,
   ) {
-    const userId = req.user.userId;
+    const userId = req.user.id;
     return await this.tasksService.updateTask(taskId, userId, updateTaskDto);
   }
 
@@ -94,7 +92,7 @@ export class TasksController {
   @Delete(':id')
   @ApiParam({ name: 'id', description: 'Task ID' }) // Document the task ID parameter
   async deleteTask(@Param('id') taskId: string, @Request() req: any) {
-    const userId = req.user.userId;
+    const userId = req.user.id;
     return this.tasksService.deleteTask(taskId, userId);
   }
 

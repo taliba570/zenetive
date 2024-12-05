@@ -13,7 +13,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className=' bg-gradient-to-r from-[#0F2027] via-[#203A43] to-[#24243e]'>
       <RoutesConfig />
     </div>
   );

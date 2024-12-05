@@ -119,7 +119,6 @@ export class TasksService {
   }
 
   async searchTasks(userId: string, query: string): Promise<Task[]> {
-    console.log('attempting to query');
     const regex = new RegExp(query, 'i');
 
     return this.taskModel

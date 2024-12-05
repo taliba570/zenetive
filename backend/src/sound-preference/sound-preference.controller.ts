@@ -1,7 +1,6 @@
 import { Controller, Get, Body, Request, Put, UseGuards } from '@nestjs/common';
 import { SoundPreferenceService } from './sound-preference.service';
 import { UpdateSoundPreferenceDto } from './dto/update-sound-setting.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -9,6 +8,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { SoundPreference } from './entities/sound-setting.entity';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Sound Settings')
 @ApiBearerAuth()
@@ -27,7 +27,6 @@ export class SoundPreferenceController {
     type: SoundPreference,
   })
   update(@Request() req: any, @Body() updateData: UpdateSoundPreferenceDto) {
-    console.log(updateData, 'controller');
     return this.SoundPreferenceService.update(req?.user?.userId, updateData);
   }
 

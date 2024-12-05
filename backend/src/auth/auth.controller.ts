@@ -1,7 +1,7 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post, Put, Req, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { 
   ChangePasswordDto, 
   CreateLinkedUserDto, 
@@ -14,6 +14,8 @@ import {
   VerifyOtpDto
 } from './dtos/user.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { RefreshAuthGuard } from './guards/refresh-auth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -42,10 +44,25 @@ export class AuthController {
     return await this.authService.signIn(req.user);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('signout')
+  async signout(@Request() req) {
+    if(await this.authService.signOut(req.user.id)) {
+      return {
+        message: 'User has been signed out'
+      }
+    } else {
+      return {
+        message: 'Unable to signout user'
+      }
+    }
+  }
+
+  @UseGuards(RefreshAuthGuard)
   @Post('refresh-token')
-  async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
-    const { refreshToken } = refreshTokenDto;
-    return await this.authService.refreshToken(refreshToken);
+  async refreshToken(@Req() req, @Body() refreshTokenDto: RefreshTokenDto) {
+    return await this.authService.signIn(req.user);
   }
 
   @Post('forgot-password')
