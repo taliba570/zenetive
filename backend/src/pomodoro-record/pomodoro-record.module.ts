@@ -9,6 +9,8 @@ import {
   PomodoroSettingsSchema,
 } from '../settings/pomodoro-setting.entity';
 import { Task, TaskSchema } from '../tasks/task.entity';
+import { JwtModule } from '@nestjs/jwt';
+import jwtConfig from 'src/config/jwt.config';
 
 @Module({
   imports: [
@@ -18,6 +20,7 @@ import { Task, TaskSchema } from '../tasks/task.entity';
       { name: Task.name, schema: TaskSchema },
     ]),
     PomodoroSettingsModule,
+    JwtModule.registerAsync(jwtConfig.asProvider()),
   ],
   controllers: [PomodoroRecordController],
   providers: [PomodoroRecordService],

@@ -6,19 +6,18 @@ import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
 import { ConfigService } from '@nestjs/config';
 import { CustomLogger } from './logger/custom-logger.service';
-import { AllExceptionsFilter } from './logger/all-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
-  const port = configService.get<number>('api.port');
-  const methods = configService.get('api.methods');
-  const whitelistedIPs = configService.get('api.whitelistedIPs');
-
+  const cors = configService.get<string[]>('app.cors');
+  const methods = configService.get<string[]>('app.methods');
+  const port = configService.get<number>('app.port');
+  
   app.enableCors({
     methods: methods,
     origin: function (origin, callback) {
-      determineOrigin(origin, callback, whitelistedIPs);
+      determineOrigin(origin, callback, cors);
     },
   });
   useBodyParser(app);

@@ -18,12 +18,12 @@ import {
 } from '@nestjs/swagger';
 import { PomodoroRecordService } from './pomodoro-record.service';
 import { PomodoroRecord } from './pomodoro-record.entity';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {
   CreatePomodoroRecordDto,
   UpdatePomodoroRecordDto,
 } from './dtos/create-pomodoro-record.dto';
 import { DateRangeDto } from './dtos/date-range.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Pomodoro Records')
 @ApiBearerAuth()
@@ -45,7 +45,7 @@ export class PomodoroRecordController {
   ) {
     return await this.pomodoroRecordService.saveRecord(
       createPomodoroRecordDto,
-      req.user.userId,
+      req.user.id,
     );
   }
 
@@ -58,7 +58,7 @@ export class PomodoroRecordController {
     type: [PomodoroRecord],
   })
   getUserRecords(@Request() req: any): Promise<PomodoroRecord[]> {
-    return this.pomodoroRecordService.getUserRecords(req.user.userId);
+    return this.pomodoroRecordService.getUserRecords(req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -72,7 +72,7 @@ export class PomodoroRecordController {
   ): Promise<PomodoroRecord> {
     return await this.pomodoroRecordService.updateRecord(
       id,
-      req.user.userId,
+      req.user.id,
       updatePomodoroRecordDto,
     );
   }
@@ -87,7 +87,7 @@ export class PomodoroRecordController {
   ): Promise<void> {
     return this.pomodoroRecordService.deletePomodoroRecord(
       recordId,
-      req.user.userId,
+      req.user.id,
     );
   }
 
@@ -101,7 +101,7 @@ export class PomodoroRecordController {
     @Request() req: any,
   ) {
     return this.pomodoroRecordService.getPomodoroSessionsCountByDay(
-      req.user.userId,
+      req.user.id,
       dateRangeDto,
     );
   }

@@ -15,13 +15,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { PomodoroSettings } from './pomodoro-setting.entity';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {
   UpdateLongBreakDurationDto,
   UpdatePomodoroSettingsDto,
   UpdateShortBreakDurationDto,
   UpdateWorkDurationDto,
 } from './dtos/update-pomodoro-settings.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Pomodoro Settings')
 @ApiBearerAuth()
@@ -41,7 +41,7 @@ export class PomodoroSettingsController {
   })
   @ApiResponse({ status: 404, description: 'Settings not found' })
   getSettings(@Request() req: any): Promise<PomodoroSettings> {
-    return this.pomodoroSettingsService.getSettings(req.user.userId);
+    return this.pomodoroSettingsService.getSettings(req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -57,7 +57,7 @@ export class PomodoroSettingsController {
     @Body() updateData: UpdatePomodoroSettingsDto,
   ): Promise<PomodoroSettings> {
     return this.pomodoroSettingsService.updateSettings(
-      req.user.userId,
+      req.user.id,
       updateData,
     );
   }
@@ -75,7 +75,7 @@ export class PomodoroSettingsController {
     @Body() updateData: UpdateWorkDurationDto,
   ): Promise<PomodoroSettings> {
     return this.pomodoroSettingsService.updateSettings(
-      req.user.userId,
+      req.user.id,
       updateData,
     );
   }
@@ -93,7 +93,7 @@ export class PomodoroSettingsController {
     @Body() updateData: UpdateShortBreakDurationDto,
   ): Promise<PomodoroSettings> {
     return this.pomodoroSettingsService.updateSettings(
-      req.user.userId,
+      req.user.id,
       updateData,
     );
   }
@@ -111,7 +111,7 @@ export class PomodoroSettingsController {
     @Body() updateData: UpdateLongBreakDurationDto,
   ): Promise<PomodoroSettings> {
     return this.pomodoroSettingsService.updateSettings(
-      req.user.userId,
+      req.user.id,
       updateData,
     );
   }
@@ -125,6 +125,6 @@ export class PomodoroSettingsController {
     type: PomodoroSettings,
   })
   resetSettings(@Request() req: any): Promise<PomodoroSettings> {
-    return this.pomodoroSettingsService.resetSettings(req.user.userId);
+    return this.pomodoroSettingsService.resetSettings(req.user.id);
   }
 }

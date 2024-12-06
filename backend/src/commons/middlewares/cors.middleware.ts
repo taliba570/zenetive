@@ -14,7 +14,6 @@ export class CorsMiddleware implements NestMiddleware {
 
     // Handle preflight requests
     if (req.method === 'OPTIONS') {
-      console.log('received 204', req.method);
       return res.status(204).end();
     }
 

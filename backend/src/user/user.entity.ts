@@ -32,6 +32,9 @@ export class User extends Document {
 
   @Prop({ nullable: true })
   resetPasswordExpires?: Date;
+
+  @Prop({ nullable: true })
+  hashedRefreshToken?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

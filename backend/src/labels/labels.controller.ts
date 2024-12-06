@@ -20,7 +20,7 @@ import { LabelsService } from './labels.service';
 import { Label } from './label.entity';
 import { CreateLabelDto } from './dtos/create-label.dto';
 import { UpdateLabelDto } from './dtos/update-label.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Labels')
 @ApiBearerAuth()
@@ -41,7 +41,7 @@ export class LabelsController {
     @Body() createLabelDto: CreateLabelDto,
     @Request() req,
   ): Promise<Label> {
-    return this.labelsService.createLabel(createLabelDto, req.user.userId);
+    return this.labelsService.createLabel(createLabelDto, req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -59,7 +59,7 @@ export class LabelsController {
     currentPage: number;
     hasNext: boolean;
   }> {
-    return this.labelsService.findAllLabelsByUser(page, limit, req.user.userId);
+    return this.labelsService.findAllLabelsByUser(page, limit, req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)

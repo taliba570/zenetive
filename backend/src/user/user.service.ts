@@ -28,12 +28,12 @@ export class UserService {
     };
   }
 
-  async createUser(
+  async create(
     name: string,
     email: string,
     password: string,
   ): Promise<Partial<User>> {
-    const existingUser = await this.findUserByEmail(email);
+    const existingUser = await this.findByEmail(email);
     
     if (existingUser) throw new BadRequestException('User already exist');
 
@@ -61,7 +61,6 @@ export class UserService {
   }
 
   private handleDatabaseError(error: any): never {
-    console.log(error);
     if (error.code === 11000) {
       throw new ConflictException('User with the given email already exists.');
     }
@@ -105,6 +104,12 @@ export class UserService {
     if (result.modifiedCount === 0) {
       throw new BadRequestException('Unable to update the user');
     }
+  }
+
+  async updateHashedRefreshToken(userId: string, hashedRefreshToken: string) {
+    return await this.userModel.updateOne({_id: userId}, {
+      hashedRefreshToken
+    });
   }
 
   private getVerificationURL(token: string, email: string) {
@@ -164,11 +169,11 @@ export class UserService {
     return user;
   }
 
-  async findUserByEmail(email: string): Promise<User> {
+  async findByEmail(email: string): Promise<User> {
     return this.userModel.findOne({ email }).exec();
   }
 
-  async findUserById(userId: string): Promise<User> {
+  async findOne(userId: string): Promise<User> {
     return this.userModel.findOne({ _id: userId }).exec();
   }
 

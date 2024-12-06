@@ -15,7 +15,6 @@ export class SoundPreferenceService {
     userId: string,
     updateData: UpdateSoundPreferenceDto,
   ): Promise<SoundPreference> {
-    console.log(updateData, 'service'); // Log to see the structure of updateData
     const settings = await this.soundPrefereceModel
       .findOneAndUpdate(
         { userId },

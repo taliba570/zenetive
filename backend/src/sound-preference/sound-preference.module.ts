@@ -6,12 +6,15 @@ import {
   SoundPreference,
   SoundPreferenceSchema,
 } from './entities/sound-setting.entity';
+import { JwtModule } from '@nestjs/jwt';
+import jwtConfig from 'src/config/jwt.config';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: SoundPreference.name, schema: SoundPreferenceSchema },
     ]),
+    JwtModule.registerAsync(jwtConfig.asProvider()),
   ],
   controllers: [SoundPreferenceController],
   providers: [SoundPreferenceService],

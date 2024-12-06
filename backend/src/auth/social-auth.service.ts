@@ -54,8 +54,7 @@ export class SocialAuthService {
     async registerOrLoginUser(userProfile: any) {
         const { email, name, id } = userProfile;
 
-        const user = await this.userService.findUserByEmail(email);
-        console.log(user);
+        const user = await this.userService.findByEmail(email);
         if (!user) {
             // signup
         } else {

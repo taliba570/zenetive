@@ -9,29 +9,29 @@ const HomePage: React.FC = () => {
                 <div className="logo flex justify-center items-center hover:cursor-pointer pl-5">
                     <span className='bg-gradient-to-b from-[#fb57b9] to-[#8f52fc] rounded-3xl w-9 h-9 mr-1'></span>
                     <div className="text-description flex flex-col">
-                        <span className='text-black text-2xl openSans-SemiBold leading-5'>Zenetive</span>
-                        <span className='text-[#1e1e1e] text-[9px] openSans-SemiBold tracking-wide underline'>productive everyday!</span>
+                        <span className='text-white text-2xl openSans-SemiBold leading-5'>Zenetive</span>
+                        <span className='text-white text-[9px] openSans-SemiBold tracking-wide underline'>productive everyday!</span>
                     </div>
                 </div>
                 <div className="navbar flex">
                     <ul className='flex h-[56px] openSans-SemiBold'>
-                        <li className="text-sm my-2 mx-1 py-2 px-4 bg-gradient-to-r from-[#7f00ff] to-[#e100ff] hover:border-red-300 hover:drop-shadow-[0_8px_8px_rgba(127,0,255,0.35)] hover:px-6 transition-all duration-300 ease-in-out font-bold drop-shadow-md flex hover:cursor-pointer rounded-2xl items-center justify-center tracking-wider">
+                        <li className="text-md my-2 mx-1 py-2 px-4 bg-gradient-to-r from-[#7f00ff] to-[#e100ff] hover:border-red-300 hover:drop-shadow-[0_8px_8px_rgba(127,0,255,0.35)] hover:px-6 transition-all duration-300 ease-in-out font-bold drop-shadow-md flex hover:cursor-pointer rounded-2xl items-center justify-center tracking-wider">
                             Home
                         </li>
-                        <li className="text-sm my-2 mx-1 py-2 px-4 bg-gradient-to-r from-[#7f00ff] to-[#e100ff] hover:border-red-300 hover:drop-shadow-[0_8px_8px_rgba(127,0,255,0.35)] hover:px-6 transition-all duration-300 ease-in-out font-bold drop-shadow-md flex hover:cursor-pointer rounded-2xl items-center justify-center tracking-wider">
+                        <li className="text-md my-2 mx-1 py-2 px-4 bg-gradient-to-r from-[#7f00ff] to-[#e100ff] hover:border-red-300 hover:drop-shadow-[0_8px_8px_rgba(127,0,255,0.35)] hover:px-6 transition-all duration-300 ease-in-out font-bold drop-shadow-md flex hover:cursor-pointer rounded-2xl items-center justify-center tracking-wider">
                             Features
                         </li>
-                        <li className="text-sm my-2 mx-1 py-2 px-4 bg-gradient-to-r from-[#7f00ff] to-[#e100ff] hover:border-red-300 hover:drop-shadow-[0_8px_8px_rgba(127,0,255,0.35)] hover:px-6 transition-all duration-300 ease-in-out font-bold drop-shadow-md flex hover:cursor-pointer rounded-2xl items-center justify-center tracking-wider">
+                        <li className="text-md my-2 mx-1 py-2 px-4 bg-gradient-to-r from-[#7f00ff] to-[#e100ff] hover:border-red-300 hover:drop-shadow-[0_8px_8px_rgba(127,0,255,0.35)] hover:px-6 transition-all duration-300 ease-in-out font-bold drop-shadow-md flex hover:cursor-pointer rounded-2xl items-center justify-center tracking-wider">
                             Pricing
                         </li>
-                        <li className="text-sm my-2 mx-1 py-2 px-4 bg-gradient-to-r from-[#7f00ff] to-[#e100ff] hover:border-red-300 hover:drop-shadow-[0_8px_8px_rgba(127,0,255,0.35)] hover:px-6 transition-all duration-300 ease-in-out font-bold drop-shadow-md flex hover:cursor-pointer rounded-2xl items-center justify-center tracking-wider">
+                        <li className="text-md my-2 mx-1 py-2 px-4 bg-gradient-to-r from-[#7f00ff] to-[#e100ff] hover:border-red-300 hover:drop-shadow-[0_8px_8px_rgba(127,0,255,0.35)] hover:px-6 transition-all duration-300 ease-in-out font-bold drop-shadow-md flex hover:cursor-pointer rounded-2xl items-center justify-center tracking-wider">
                             Contact
                         </li>
                     </ul>
                 </div>
                 <div className="cta">
                     <ul className='flex border-1 p-[2px] rounded-2xl border-2 h-[46px] openSans-SemiBold'>
-                        <li className='mr-[2px] px-4 py-2 hover:bg-gray-100 text-[#464646] flex hover:cursor-pointer rounded-xl items-center justify-center'>Login</li>
+                        <li className='mr-[2px] px-4 py-2 hover:bg-gray-100 text-white flex hover:cursor-pointer rounded-xl items-center justify-center'>Login</li>
                         <li className='px-4 py-2 bg-gradient-to-r from-[#7f00ff] to-[#e100ff] hover:from-[#3fded2] hover:to-[#a386f8] flex hover:cursor-pointer rounded-xl items-center justify-center transition-all duration-300 ease-in-out'>Signup</li>
                     </ul>
                 </div>
@@ -40,15 +40,15 @@ const HomePage: React.FC = () => {
             {/* Main Content */}
             <div className="main w-full">
                 <div className="hero-section w-4/6 mx-auto py-10">
-                    <h1 className='text-black text-6xl openSans-ExtraBold text-center pt-16'>Unlock Your Full Potential</h1>
-                    <h2 className='text-black text-2xl w-5/6 mx-auto openSans-Regular font-bold text-center pt-4 pb-10'>Stay focused, track progress, and boost performance with personalized insights and powerful tools—all in one place.</h2>
+                    <h1 className='text-white text-6xl openSans-ExtraBold text-center pt-16'>Unlock Your Full Potential</h1>
+                    <h2 className='text-white text-2xl w-5/6 mx-auto openSans-Regular font-bold text-center pt-4 pb-10'>Stay focused, track progress, and boost performance with personalized insights and powerful tools—all in one place.</h2>
                     <button className="text-lg my-2 py-4 px-14 drop-shadow-lg openSans-SemiBold bg-gradient-to-r from-[#7f00ff] to-[#e100ff] hover:px-16 hover:drop-shadow-[0_15px_15px_rgba(127,0,255,0.35)] transition-all duration-200 ease-in-out font-bold flex hover:cursor-pointer rounded-xl items-center justify-center tracking-wider mx-auto">
                         Join the Beta Today!
                     </button>
                     <span className='text-[#b1b1b1] flex justify-center openSans-SemiBold'>No Credit Card Required</span>
                 </div>
                 <div className="main-section p-4">
-                <div className="p-6 bg-gray-50">
+                <div className="p-6">
                     <div className="grid grid-cols-12 gap-6">
                         <div className="bg-[linear-gradient(45deg,#7f00ff,#e100ff)] col-span-4 row-span-12 p-6 rounded-lg shadow-lg flex flex-col items-start">
                             <h2 className="text-2xl text-white openSans-Bold mb-4">Pomodoro Timer</h2>

@@ -14,8 +14,6 @@ const GetUserInfoModal: React.FC<GetUserInfoModalProps> = ({ user }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Email:', email);
-    console.log('Password:', password);
     // Add logic to save email and password
   };
 

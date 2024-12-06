@@ -1,37 +1,36 @@
 import { Module } from '@nestjs/common';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from './jwt.strategy';
+import refreshJwtConfig from '../config/refresh-jwt.config';
+import { EmailService } from '../tools/email/email.service';
+import { FirebaseOtpSrevice } from '../tools/firebase/firebase-otp.service';
+import { PasswordService } from '../user/password.service';
 import { UserModule } from '../user/user.module';
+import jwtConfig from './../config/jwt.config';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { FirebaseOtpSrevice } from '../tools/firebase/firebase-otp.service';
-import { EmailService } from '../tools/email/email.service';
-import * as dotenv from 'dotenv';
-import { PasswordService } from '../user/password.service';
 import { SocialAuthController } from './social-auth.controller';
 import { SocialAuthService } from './social-auth.service';
-
-dotenv.config();
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
+import { RefreshJwtStrategy } from './strategies/refresh-jwt.strategy';
 
 @Module({
   imports: [
     UserModule,
     PassportModule,
-    JwtModule.register({
-      global: true,
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: process.env.JWT_EXPIRATION },
-    }),
+    JwtModule.registerAsync(jwtConfig.asProvider()),
+    JwtModule.registerAsync(refreshJwtConfig.asProvider()),
   ],
   providers: [
-    JwtStrategy,
-    JwtService,
     AuthService,
     FirebaseOtpSrevice,
     EmailService,
     PasswordService,
-    SocialAuthService
+    SocialAuthService,
+    LocalStrategy,
+    JwtStrategy,
+    RefreshJwtStrategy,
   ],
   controllers: [AuthController, SocialAuthController],
   exports: [],

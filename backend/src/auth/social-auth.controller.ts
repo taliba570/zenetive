@@ -14,7 +14,6 @@ export class SocialAuthController {
         @Param('provider') provider: string,
         @Query('code') code: string
     ) {
-        console.log(provider, code)
         return this.socialAuthService.handleCallback(provider, code);
     }
 }
