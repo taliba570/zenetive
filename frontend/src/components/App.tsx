@@ -13,7 +13,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className=' bg-gradient-to-r from-[#0F2027] via-[#203A43] to-[#24243e]'>
+    <div className={darkMode ? `bg-gradient-to-r from-[#0F2027] via-[#203A43] to-[#24243e]` : 'bg-white'}>
       <RoutesConfig />
     </div>
   );

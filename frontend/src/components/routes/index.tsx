@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import Home from '../../pages/Home';
-import Settings from '../../pages/Settings';
 import NotFound from '../../pages/NotFound';
-import TaskList from '../tasks/TaskList';
-import PhoneAuth from '../PhoneAuth';
-import Header from '../common/Header';
-import Signup from '../Signup';
+import Settings from '../../pages/Settings';
 import GithubCallback from '../GithubCallback';
-import HomePage from '../homepage/Homepage';
 import GoogleCallback from '../GoogleCallback';
+import HomePage from '../homepage/Homepage';
+import PhoneAuth from '../PhoneAuth';
+import Signup from '../Signup';
+import TaskList from '../tasks/TaskList';
 
 const RoutesConfig: React.FC = () => {
   const location = useLocation();
@@ -33,7 +32,7 @@ const RoutesConfig: React.FC = () => {
       {/* {!hideHeaderRoutes.includes(location.pathname) && <Header />} */}
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/dashbaord" element={<Home
+        <Route path="/dashboard" element={<Home
           mode={mode}
           setMode={setMode}
           soundNotification={soundNotification} />} />
