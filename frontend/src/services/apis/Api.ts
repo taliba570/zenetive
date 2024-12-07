@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { randomUUID } from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 import { generateHmac } from '../../utils/request-signature';
 
 const Api = axios.create({
@@ -13,7 +13,7 @@ const Api = axios.create({
 Api.interceptors.request.use(config => {
   const body = config.data || [];
   const url = config?.url;
-  const nonce = randomUUID();
+  const nonce = uuidv4();
   const timestamp = new Date()?.getTime();
 
   const messageParams = { url, body, nonce, timestamp };
