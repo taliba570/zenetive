@@ -13,7 +13,7 @@ async function bootstrap() {
   const cors = configService.get<string[]>('app.cors');
   const methods = configService.get<string[]>('app.methods');
   const port = configService.get<number>('app.port');
-  
+
   app.enableCors({
     methods: methods,
     origin: function (origin, callback) {

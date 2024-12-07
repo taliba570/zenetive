@@ -14,7 +14,6 @@ export class CreateUserDto {
   password: string;
 }
 
-
 export class CreateLinkedUserDto {
   @ApiProperty({ example: 'Talib Allauddin', description: 'user full name' })
   name: string;

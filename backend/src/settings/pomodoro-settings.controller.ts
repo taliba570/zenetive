@@ -56,10 +56,7 @@ export class PomodoroSettingsController {
     @Request() req: any,
     @Body() updateData: UpdatePomodoroSettingsDto,
   ): Promise<PomodoroSettings> {
-    return this.pomodoroSettingsService.updateSettings(
-      req.user.id,
-      updateData,
-    );
+    return this.pomodoroSettingsService.updateSettings(req.user.id, updateData);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -74,10 +71,7 @@ export class PomodoroSettingsController {
     @Request() req: any,
     @Body() updateData: UpdateWorkDurationDto,
   ): Promise<PomodoroSettings> {
-    return this.pomodoroSettingsService.updateSettings(
-      req.user.id,
-      updateData,
-    );
+    return this.pomodoroSettingsService.updateSettings(req.user.id, updateData);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -92,10 +86,7 @@ export class PomodoroSettingsController {
     @Request() req: any,
     @Body() updateData: UpdateShortBreakDurationDto,
   ): Promise<PomodoroSettings> {
-    return this.pomodoroSettingsService.updateSettings(
-      req.user.id,
-      updateData,
-    );
+    return this.pomodoroSettingsService.updateSettings(req.user.id, updateData);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -110,10 +101,7 @@ export class PomodoroSettingsController {
     @Request() req: any,
     @Body() updateData: UpdateLongBreakDurationDto,
   ): Promise<PomodoroSettings> {
-    return this.pomodoroSettingsService.updateSettings(
-      req.user.id,
-      updateData,
-    );
+    return this.pomodoroSettingsService.updateSettings(req.user.id, updateData);
   }
 
   @UseGuards(JwtAuthGuard)

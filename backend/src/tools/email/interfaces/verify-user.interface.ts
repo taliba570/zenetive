@@ -1,4 +1,4 @@
 export interface VerifyEmailTemplateData {
-    verification_url: string;
-    name?: string;
+  verification_url: string;
+  name?: string;
 }

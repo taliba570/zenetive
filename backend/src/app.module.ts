@@ -16,11 +16,14 @@ import { CorsMiddleware } from './commons/middlewares/cors.middleware';
 import { LoggerMiddleware } from './commons/middlewares/logger.middleware';
 import dbConfig from './config/db.config';
 import { configOptions } from './config/config';
+import { RedisModule } from '@nestjs-modules/ioredis';
+import redisConfig from './config/redis.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot(configOptions),
     MongooseModule.forRootAsync(dbConfig.asProvider()),
+    RedisModule.forRootAsync(redisConfig.asProvider()),
     TasksModule,
     PomodoroSettingsModule,
     UserModule,

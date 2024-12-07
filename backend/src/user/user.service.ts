@@ -1,13 +1,19 @@
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './user.entity';
-import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-import { PasswordService } from './password.service';
 import { randomBytes } from 'crypto';
-import { VerifyEmailTemplateData } from '../tools/email/interfaces/verify-user.interface';
+import { Model } from 'mongoose';
 import { EmailService } from '../tools/email/email.service';
+import { VerifyEmailTemplateData } from '../tools/email/interfaces/verify-user.interface';
 import { UpdateUserDTO } from './dtos/update-user.dto';
+import { PasswordService } from './password.service';
+import { User } from './user.entity';
 
 @Injectable()
 export class UserService {
@@ -34,10 +40,10 @@ export class UserService {
     password: string,
   ): Promise<Partial<User>> {
     const existingUser = await this.findByEmail(email);
-    
+
     if (existingUser) throw new BadRequestException('User already exist');
 
-    if (!password) throw new BadRequestException('Passowrd can not be empty')
+    if (!password) throw new BadRequestException('Passowrd can not be empty');
 
     const hashedPassword = await this.passwordService.hashPassword(password);
     const verificationToken = randomBytes(32).toString('hex');
@@ -46,7 +52,7 @@ export class UserService {
       name,
       email: email.toLowerCase().trim(),
       password: hashedPassword,
-      verificationToken
+      verificationToken,
     });
 
     try {
@@ -64,13 +70,18 @@ export class UserService {
     if (error.code === 11000) {
       throw new ConflictException('User with the given email already exists.');
     }
-    throw new InternalServerErrorException('An error occurred while saving the user.');
+    throw new InternalServerErrorException(
+      'An error occurred while saving the user.',
+    );
   }
 
   private async sendVerificationEmail(user: User): Promise<void> {
     const data: VerifyEmailTemplateData = {
       name: user.name ?? undefined,
-      verification_url: this.getVerificationURL(user.verificationToken, user.email)
+      verification_url: this.getVerificationURL(
+        user.verificationToken,
+        user.email,
+      ),
     };
     try {
       await this.emailService.sendMail(
@@ -79,37 +90,42 @@ export class UserService {
         `Hello ${data.name}, Verify your account ${data.verification_url}`,
       );
     } catch (error) {
-      throw new InternalServerErrorException('Unable to send email')
+      throw new InternalServerErrorException(
+        'Unable to send email',
+        error.message,
+      );
     }
   }
 
   async verifyToken(token: string, email: string): Promise<boolean> {
     if (!token) throw new BadRequestException('Token is empty');
 
-    const user = await this.userModel.findOne({email});
+    const user = await this.userModel.findOne({ email });
     if (!user) throw new NotFoundException('User does not exsit');
     if (!user.verificationToken) {
       throw new BadRequestException('User is already verified.');
     }
     try {
-      await this.updateUser({verificationToken: null, isVerified: true}, user._id.toString());
+      await this.updateUser(
+        { verificationToken: null, isVerified: true },
+        user._id.toString(),
+      );
     } catch (error) {
-      throw new InternalServerErrorException('Unable to update user status');
+      throw new InternalServerErrorException(
+        'Unable to update user status',
+        error.message,
+      );
     }
     return true;
   }
 
   async updateUser(fields: UpdateUserDTO, userId: string) {
-    const result = await this.userModel.updateOne({ _id: userId }, { $set: fields }).exec();
+    const result = await this.userModel
+      .updateOne({ _id: userId }, { $set: fields })
+      .exec();
     if (result.modifiedCount === 0) {
       throw new BadRequestException('Unable to update the user');
     }
-  }
-
-  async updateHashedRefreshToken(userId: string, hashedRefreshToken: string) {
-    return await this.userModel.updateOne({_id: userId}, {
-      hashedRefreshToken
-    });
   }
 
   private getVerificationURL(token: string, email: string) {
