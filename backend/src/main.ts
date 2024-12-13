@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ImATeapotException, INestApplication } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
 import { ConfigService } from '@nestjs/config';
@@ -10,23 +10,24 @@ import { CustomLogger } from './logger/custom-logger.service';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
-  const cors = configService.get<string[]>('app.cors');
+  const whitelistedIPs = configService.get<string[]>('app.cors');
   const methods = configService.get<string[]>('app.methods');
   const port = configService.get<number>('app.port');
 
-  app.enableCors({
-    methods: methods,
-    origin: function (origin, callback) {
-      determineOrigin(origin, callback, cors);
-    },
-  });
+  // app.enableCors({
+  //   methods: methods,
+  //   origin: function (origin, callback) {
+  //     determineOrigin(origin, callback, whitelistedIPs);
+  //   },
+  // });
+  app.enableCors();
   useBodyParser(app);
   app.use(compression());
   bootstrapSwagger(app);
 
   const customLogger = await app.resolve(CustomLogger);
   app.useLogger(customLogger);
-
+ 
   await app.listen(port);
 }
 
@@ -42,7 +43,7 @@ function determineOrigin(origin, callback, whitelistedIPs) {
   ) {
     callback(null, true);
   } else {
-    callback(new ImATeapotException('Not allowed by CORS'), false);
+    callback(false);
   }
 }
 
@@ -72,6 +73,38 @@ function bootstrapSwagger(app: INestApplication) {
     .setTitle('Pomodoro Tracker API')
     .setDescription('API documentation for Pomodoro Tracker project')
     .setVersion('1.0')
+    .addGlobalParameters({
+      in: 'header',
+      required: true,
+      name: 'x-signature',
+      schema: {
+        example: 'x-signature'
+      }
+    })
+    .addGlobalParameters({
+      in: 'header',
+      required: true,
+      name: 'x-client-id',
+      schema: {
+        example: 'x-client-id'
+      }
+    })
+    .addGlobalParameters({
+      in: 'header',
+      required: true,
+      name: 'x-timestamp',
+      schema: {
+        example: new Date().getTime()
+      }
+    })
+    .addGlobalParameters({
+      in: 'header',
+      required: true,
+      name: 'x-request-nonce',
+      schema: {
+        example: 'x-request-nonce'
+      }
+    })
     .addTag('pomodoro')
     .addBearerAuth()
     .build();

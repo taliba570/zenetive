@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { genSalt, hash, compare } from 'bcrypt';
 import * as argon2 from 'argon2';
 import * as crypto from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class PasswordService {
@@ -68,6 +69,10 @@ export class PasswordService {
   }
 
   generateUUID(): string {
-    return crypto.randomBytes(16).toString('hex');
+    return uuidv4();
+  }
+
+  async createHmacSignature(message: string, secret: string) {
+    return crypto.createHmac(this.configService.get<string>('app.algorithm'), secret).update(message).digest('hex');
   }
 }
