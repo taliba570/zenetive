@@ -1,24 +1,37 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Put, Req, Request, UseGuards } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { UserService } from '../user/user.service';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Req,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { 
-  ChangePasswordDto, 
-  CreateLinkedUserDto, 
-  CreateUserDto, 
-  ForgotPasswordDto, 
-  ForgotPasswordOtpDto, 
-  LoginUserDto, 
-  RefreshTokenDto, 
-  SendVerificationEmailDto, 
-  VerifyOtpDto
+import { UserService } from '../user/user.service';
+import { AuthService } from './auth.service';
+import {
+  ChangePasswordDto,
+  CreateLinkedUserDto,
+  CreateUserDto,
+  ForgotPasswordDto,
+  ForgotPasswordOtpDto,
+  LoginUserDto,
+  RefreshTokenDto,
+  SendVerificationEmailDto,
+  VerifyOtpDto,
 } from './dtos/user.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RefreshAuthGuard } from './guards/refresh-auth.guard';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @ApiTags('Auth')
 @Controller('auth')
+@UseGuards(ThrottlerGuard)
 export class AuthController {
   constructor(
     private authService: AuthService,
@@ -48,14 +61,14 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('signout')
   async signout(@Request() req) {
-    if(await this.authService.signOut(req.user.id)) {
+    if (await this.authService.signOut(req.user.id)) {
       return {
-        message: 'User has been signed out'
-      }
+        message: 'User has been signed out',
+      };
     } else {
       return {
-        message: 'Unable to signout user'
-      }
+        message: 'Unable to signout user',
+      };
     }
   }
 
@@ -88,32 +101,34 @@ export class AuthController {
   }
 
   @Put('change-password')
-  async changePassword(@Body() changePasswordDto: ChangePasswordDto) {
-
-  }
+  async changePassword(@Body() changePasswordDto: ChangePasswordDto) {}
 
   @Post('send-verification-email')
-  async sendVerificationEmail(@Body() sendVerificationEmailDto: SendVerificationEmailDto) {
-
-  }
+  async sendVerificationEmail(
+    @Body() sendVerificationEmailDto: SendVerificationEmailDto,
+  ) {}
 
   @Get('verify/:email/:token')
-  async verifyToken(@Param('email') email: string, @Param('token') token: string): Promise<any> {
+  async verifyToken(
+    @Param('email') email: string,
+    @Param('token') token: string,
+  ): Promise<any> {
     const response = await this.userService.verifyToken(token, email);
     if (response) {
       return {
-        message: 'Account successfully verified'
-      }
+        message: 'Account successfully verified',
+      };
     }
   }
 
   @Get('social/:provider/callback')
-  async socialCallback() {
-
-  }
+  async socialCallback() {}
 
   @Get('github/callback')
-  async githubCallback(@Body() profile: CreateLinkedUserDto, @Request() req: any) {
+  async githubCallback(
+    @Body() profile: CreateLinkedUserDto,
+    @Request() req: any,
+  ) {
     const { email } = profile;
     const existingUser = await this.userService.findByEmail(email);
     if (existingUser) {

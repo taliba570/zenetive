@@ -14,6 +14,7 @@ import { SocialAuthService } from './social-auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { RefreshJwtStrategy } from './strategies/refresh-jwt.strategy';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -21,6 +22,10 @@ import { RefreshJwtStrategy } from './strategies/refresh-jwt.strategy';
     PassportModule,
     JwtModule.registerAsync(jwtConfig.asProvider()),
     JwtModule.registerAsync(refreshJwtConfig.asProvider()),
+    ThrottlerModule.forRoot([{
+      ttl: 60000,
+      limit: 10,
+    }]),
   ],
   providers: [
     AuthService,

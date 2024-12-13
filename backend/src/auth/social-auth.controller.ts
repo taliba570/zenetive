@@ -1,19 +1,17 @@
-import { Controller, Get, Param, Query } from "@nestjs/common";
-import { SocialAuthService } from "./social-auth.service";
-import { ApiTags } from "@nestjs/swagger";
+import { Controller, Get, Param, Query } from '@nestjs/common';
+import { SocialAuthService } from './social-auth.service';
+import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')
 @Controller('auth/social')
 export class SocialAuthController {
-    constructor(
-        private readonly socialAuthService: SocialAuthService
-    ) {}
+  constructor(private readonly socialAuthService: SocialAuthService) {}
 
-    @Get(':provider/callback')
-    async socialCallback(
-        @Param('provider') provider: string,
-        @Query('code') code: string
-    ) {
-        return this.socialAuthService.handleCallback(provider, code);
-    }
+  @Get(':provider/callback')
+  async socialCallback(
+    @Param('provider') provider: string,
+    @Query('code') code: string,
+  ) {
+    return this.socialAuthService.handleCallback(provider, code);
+  }
 }

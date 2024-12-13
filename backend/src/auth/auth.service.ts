@@ -1,24 +1,32 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PasswordService } from 'src/user/password.service';
 import { EmailService } from '../tools/email/email.service';
 import { UserService } from '../user/user.service';
 import { FirebaseOtpSrevice } from './../tools/firebase/firebase-otp.service';
 import { SignInData } from './dtos/user.dto';
+import { InjectRedis } from '@nestjs-modules/ioredis';
+import { Redis } from 'ioredis';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private firebaseOtpService: FirebaseOtpSrevice,
+    private configService: ConfigService,
     private emailService: EmailService,
     private passwordService: PasswordService,
+    @InjectRedis() private redisService: Redis,
   ) {}
-  private readonly port = process.env.PORT || 3000;
-  private readonly baseURL = process.env.BASE_URL || `http://localhost:${this.port}`;
 
   async validateUser(email: string, password: string): Promise<SignInData> {
-    const user = await this.userService.findByEmail( email);
-    
+    const user = await this.userService.findByEmail(email);
+
     if (!user) throw new NotFoundException('User not found');
 
     if (await this.passwordService.comparePassword(password, user.password)) {
@@ -27,30 +35,46 @@ export class AuthService {
         email: user.email,
       };
     } else {
-      throw new BadRequestException('Invalid credentials')
+      throw new BadRequestException('Invalid credentials');
     }
   }
 
   async validateRefreshToken(userId: string, refreshToken: string) {
     const user = await this.userService.findOne(userId);
-    if (!user || !user.hashedRefreshToken) {
+    const hashedRefreshToken = await this.redisService.get(`jwt:${user.id}`);
+
+    if (!user || !hashedRefreshToken) {
       throw new UnauthorizedException('Invalid Refresh Token');
     }
 
-    const isMatched = await this.passwordService.validatehashedString(refreshToken, user.hashedRefreshToken);
+    const isMatched = await this.passwordService.validatehashedString(
+      refreshToken,
+      hashedRefreshToken,
+    );
+
     if (!isMatched) {
       throw new UnauthorizedException('Invalid Refresh Token');
     }
     return {
       id: user.id,
-      email: user.email
-    }
+      email: user.email,
+    };
   }
 
   async signIn(user: SignInData) {
-    const { accessToken, refreshToken } = await this.passwordService.generateToken(user);
-    const hashedRefreshToken = await this.passwordService.hashString(refreshToken);
-    await this.userService.updateHashedRefreshToken(user.id, hashedRefreshToken);
+    const { accessToken, refreshToken } =
+      await this.passwordService.generateToken(user);
+    const hashedRefreshToken =
+      await this.passwordService.hashString(refreshToken);
+
+    const refreshTokenTTL = 30 * 24 * 60 * 60 * 1000;
+    // saves the jwt hashed token in Redis
+    await this.redisService.set(
+      `jwt:${user.id}`,
+      hashedRefreshToken,
+      'PX',
+      refreshTokenTTL,
+    );
 
     return {
       accessToken,
@@ -66,7 +90,7 @@ export class AuthService {
     const token = Math.random().toString(36).substr(2);
     const expirationDate = new Date(Date.now() + 3600 * 1000);
     const user = await this.userService.findOne(userId);
-    
+
     if (!user) {
       throw new NotFoundException('User does not exist!');
     }
@@ -77,7 +101,7 @@ export class AuthService {
 
     await this.userService.setResetPasswordToken(userId, token, expirationDate);
 
-    await this.sendResetPasswordEmail(user.email, token)
+    await this.sendResetPasswordEmail(user.email, token);
 
     return {
       message: 'Password reset link has been sent to your email.',
@@ -89,7 +113,7 @@ export class AuthService {
   }
 
   async forgotPasswordWithOtp(email: string, phoneNumber: string) {
-    const user = await this.userService.findByEmail( email);
+    const user = await this.userService.findByEmail(email);
     if (!user) {
       throw new BadRequestException('User not found');
     }
@@ -120,7 +144,7 @@ export class AuthService {
   }
 
   async sendResetPasswordEmail(email: string, resetToken: string) {
-    const resetLink = `${this.baseURL}/reset-password/${email}/${resetToken}`;
+    const resetLink = `${this.configService.get<string>('BASE_URL')}/reset-password/${email}/${resetToken}`;
 
     const emailContent = `
       <p>You requested to reset your password.</p>
@@ -137,10 +161,7 @@ export class AuthService {
   }
 
   async signOut(userId: string) {
-    const result = await this.userService.updateHashedRefreshToken(userId, null);
-    if (result.modifiedCount > 0) {
-      return true;
-    }
-    return false;
+    await this.redisService.set(`jwt:${userId}`, 'blacklisted', 'PX', 1);
+    return true;
   }
 }
