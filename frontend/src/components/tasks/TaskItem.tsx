@@ -42,8 +42,10 @@ const TaskItem: React.FC<TaskItemProps> = ({
         <h3 className={`text-lg font-semibold ${task.isCompleted ? 'line-through text-gray-500' : 'text-gray-900 dark:text-gray-100'}`}>
           {task.name}
         </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-300">
-          Priority: {task.priority} | Due: {task.dueDate ? humanReadableDate : 'No due date'}
+        <p className="flex flex-row xs:flex-col text-sm text-gray-600 dark:text-gray-300">
+          <p>Priority: {task.priority}</p>
+          <span className='xxs:hidden'>|</span>
+          <p>Due: {task.dueDate ? humanReadableDate : 'No due date'}</p>
         </p>
         <div className="flex space-x-2 mt-2">
           {task?.labels?.map((label) => (

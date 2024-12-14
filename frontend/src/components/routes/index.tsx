@@ -19,6 +19,7 @@ const RoutesConfig: React.FC = () => {
     return savedState ? JSON.parse(savedState) : true;
   });
   const hideHeaderRoutes = ['/signin', '/signup', '/auth/github/callback'];
+  const homepageRoute = ['/'];
   
   const handleSoundNotificationChange = () => {
     setSoundNotification(() => !soundNotification);
