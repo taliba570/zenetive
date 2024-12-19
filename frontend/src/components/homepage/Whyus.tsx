@@ -87,10 +87,13 @@ const Whyus = () => {
                             items.map((eachItem) => (
                                 <div
                                     key={eachItem.id}
-                                    // style={{
-                                    //     background: `linear-gradient(to bottom right, ${eachItem.gradientStart}, ${eachItem.gradientEnd})`
-                                    // }}
-                                    className="bg-[#101010] flex w-56 h-24 text-lg text-center openSans-SemiBold items-center justify-center rounded-xl mt-2"                                    
+                                    style={{
+                                        background: `
+                                          radial-gradient(#141414, #1e1e1e) padding-box,
+                                          linear-gradient(145deg, transparent 44%, #4158d0, #c850c0, #ffcc70) border-box`,
+                                        border: "2px solid transparent",
+                                    }}
+                                    className="border-2 p-4 flex w-56 h-24 text-lg text-center openSans-SemiBold items-center justify-center rounded-xl mt-2"                                    
                                     onMouseEnter={() => showDescription(eachItem.id)}
                                 >
                                     {eachItem.title}
@@ -104,9 +107,6 @@ const Whyus = () => {
                                 key={eachItem.title}
                             >
                                 <div
-                                    // style={{
-                                    //     background: `linear-gradient(to bottom right, ${eachItem.gradientStart}, ${eachItem.gradientEnd})`
-                                    // }}
                                     className="bentoCard flex-col displayDetailCard h-full w-full p-10 rounded-xl overflow-hidden relative"                                 
                                 >
                                     <h3 className='text-2xl drop-shadow-md bg-white text-black w-fit p-2 openSans-SemiBold'>{eachItem.title}</h3>

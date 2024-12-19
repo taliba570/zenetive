@@ -4,6 +4,7 @@ import Features from './Features';
 import HomepageHeader from './Header';
 import Hero from './Hero';
 import Whyus from './Whyus';
+import NewsLetter from './Newsletter';
 
 const HomePage: React.FC = () => {
     return (
@@ -17,12 +18,7 @@ const HomePage: React.FC = () => {
                 <Features />
                 <Whyus />
                 <div className="cta-1">
-                    <div className="container p-4">
-                        <div className="newsletter p-6 bg-red flex flex-col">
-                            <h3 className='text-6xl'>Stay Updated - Subscribe to Our Newsletter!</h3>
-                            <div>Get the latest updates, productivity tips, and exclusive offers straight to your inbox</div>
-                        </div>
-                    </div>
+                    <NewsLetter />
                 </div>
                 <div className="newsletter"></div>
                 <div className="audience"></div>
