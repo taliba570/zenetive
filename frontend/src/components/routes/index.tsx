@@ -18,7 +18,7 @@ const RoutesConfig: React.FC = () => {
     const savedState = localStorage.getItem('soundNotification');
     return savedState ? JSON.parse(savedState) : true;
   });
-  const hideHeaderRoutes = ['/signin', '/signup', '/auth/github/callback'];
+  const hideHeaderRoutes = ['/signin', '/signup', '/auth/github/callback', '/'];
   const homepageRoute = ['/'];
   
   const handleSoundNotificationChange = () => {
@@ -31,7 +31,7 @@ const RoutesConfig: React.FC = () => {
 
   return (
     <div>
-      {/* {!hideHeaderRoutes.includes(location.pathname) && <Header />} */}
+      {!hideHeaderRoutes.includes(location.pathname) && <Header />}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/dashbaord" element={<Home

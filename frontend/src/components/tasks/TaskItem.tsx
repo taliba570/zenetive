@@ -31,7 +31,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
   const humanReadableDate = dueDate.toLocaleDateString('en-US', options);
 
   return (
-    <li key={task._id} className={`
+    <li key={task._id} className={`hover:scale-[1.1] duration-300 ease-in-out
         ${task.priority != null ? 'border-l-8' : ''} 
         ${task.priority === 'LOW' ? 'border-l-green-500' : 
           task.priority === 'MEDIUM' ? 'border-l-yellow-500' : 
