@@ -51,10 +51,10 @@ export class PasswordService {
   }
 
   async generateToken(user) {
-    const payload = { 
-      sub: user.id, 
-      email: user.email, 
-      iss: this.configService.get<string>('jwt.verifyOptions.issuer'), 
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      iss: this.configService.get<string>('jwt.verifyOptions.issuer'),
       aud: this.configService.get<string>('jwt.verifyOptions.audience'),
     };
     const accessToken = await this.jwtService.signAsync(payload);
@@ -73,6 +73,9 @@ export class PasswordService {
   }
 
   async createHmacSignature(message: string, secret: string) {
-    return crypto.createHmac(this.configService.get<string>('app.algorithm'), secret).update(message).digest('hex');
+    return crypto
+      .createHmac(this.configService.get<string>('app.algorithm'), secret)
+      .update(message)
+      .digest('hex');
   }
 }

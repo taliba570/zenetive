@@ -45,7 +45,7 @@ import { TimeHelper } from './commons/helpers/time.helper';
     },
     {
       provide: APP_GUARD,
-      useClass: RequestSignatureGuard
+      useClass: RequestSignatureGuard,
     },
     PasswordService,
     JwtService,

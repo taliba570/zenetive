@@ -9,11 +9,5 @@ export const configOptions: ConfigModuleOptions = {
   isGlobal: true,
   expandVariables: true,
   envFilePath: ['.env'],
-  load: [
-    appConfig, 
-    jwtConfig, 
-    refreshJwtConfig, 
-    dbConfig, 
-    redisConfig,
-  ],
+  load: [appConfig, jwtConfig, refreshJwtConfig, dbConfig, redisConfig],
 };
