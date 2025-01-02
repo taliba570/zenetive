@@ -5,7 +5,7 @@ import { INestApplication } from '@nestjs/common';
 import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
 import { ConfigService } from '@nestjs/config';
-import { CustomLogger } from './logger/custom-logger.service';
+// import { CustomLogger } from './logger/custom-logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -25,8 +25,8 @@ async function bootstrap() {
   app.use(compression());
   bootstrapSwagger(app);
 
-  const customLogger = await app.resolve(CustomLogger);
-  app.useLogger(customLogger);
+  // const customLogger = await app.resolve(CustomLogger);
+  // app.useLogger(customLogger);
 
   await app.listen(port);
 }

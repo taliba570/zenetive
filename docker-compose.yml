@@ -6,6 +6,10 @@ services:
       - "6379:6379"  # Map Redis port to localhost
     networks:
       - app-network
+    volumes:
+      - ./config/redis.conf:/usr/local/etc/redis/redis.conf  # Mount custom Redis config
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]  # Use custom config
+
 
   mongodb:
     image: mongo:latest
@@ -22,6 +26,8 @@ services:
       context: ./backend  # Path to your NestJS backend directory
       dockerfile: Dockerfile
     container_name: backend-container
+    env_file:
+      - ./backend/.env
     ports:
       - "3000:3000"  # Map backend port to localhost
     depends_on:
@@ -32,7 +38,7 @@ services:
     environment:
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      MONGO_URI: mongodb://mongodb:27017/your_database_name
+      MONGO_URI: mongodb://mongodb:27017/zenetive
 
   frontend:
     build:
@@ -40,7 +46,7 @@ services:
       dockerfile: Dockerfile
     container_name: frontend-container
     ports:
-      - "9000:9000"  # Map frontend port to localhost
+      - "8000:8000"  # Map frontend port to localhost
     depends_on:
       - backend      # Ensure the backend starts before the frontend
     networks:
