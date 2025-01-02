@@ -9,9 +9,9 @@ import { TasksModule } from './tasks/tasks.module';
 import { PomodoroSettingsModule } from './settings/pomodoro-settings.module';
 import { TimerModule } from './timer/timer.module';
 import { SoundPreferenceModule } from './sound-preference/sound-preference.module';
-import { CustomLogger } from './logger/custom-logger.service';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { LoggingInterceptor } from './logger/logging.interceptor';
+// import { CustomLogger } from './logger/custom-logger.service';
+import { APP_GUARD } from '@nestjs/core';
+// import { LoggingInterceptor } from './logger/logging.interceptor';
 import { LoggerMiddleware } from './commons/middlewares/logger.middleware';
 import dbConfig from './config/db.config';
 import { configOptions } from './config/config';
@@ -38,14 +38,14 @@ import { TimeHelper } from './commons/helpers/time.helper';
     SoundPreferenceModule,
   ],
   providers: [
-    CustomLogger,
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: LoggingInterceptor,
-    },
+    // CustomLogger,
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: LoggingInterceptor,
+    // },
     {
       provide: APP_GUARD,
-      useClass: RequestSignatureGuard
+      useClass: RequestSignatureGuard,
     },
     PasswordService,
     JwtService,

@@ -15,6 +15,12 @@ module.exports = {
       screens: {
         'xxs': { max: '540px' },
       },
+      boxShadow: {
+        custom: '10px -10px 25px 0 rgba(143, 64, 248, 0.5), -10px 10px 25px 0 rgba(39, 200, 255, 0.5)',
+      },
+      translate: {
+        '-6': '-6px',
+      },
     },
   },
   plugins: [],

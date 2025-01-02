@@ -5,7 +5,7 @@ import { INestApplication } from '@nestjs/common';
 import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
 import { ConfigService } from '@nestjs/config';
-import { CustomLogger } from './logger/custom-logger.service';
+// import { CustomLogger } from './logger/custom-logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,20 +14,20 @@ async function bootstrap() {
   const methods = configService.get<string[]>('app.methods');
   const port = configService.get<number>('app.port');
 
-  // app.enableCors({
-  //   methods: methods,
-  //   origin: function (origin, callback) {
-  //     determineOrigin(origin, callback, whitelistedIPs);
-  //   },
-  // });
+  app.enableCors({
+    methods: methods,
+    origin: function (origin, callback) {
+      determineOrigin(origin, callback, whitelistedIPs);
+    },
+  });
   app.enableCors();
   useBodyParser(app);
   app.use(compression());
   bootstrapSwagger(app);
 
-  const customLogger = await app.resolve(CustomLogger);
-  app.useLogger(customLogger);
- 
+  // const customLogger = await app.resolve(CustomLogger);
+  // app.useLogger(customLogger);
+
   await app.listen(port);
 }
 
@@ -78,32 +78,32 @@ function bootstrapSwagger(app: INestApplication) {
       required: true,
       name: 'x-signature',
       schema: {
-        example: 'x-signature'
-      }
+        example: 'x-signature',
+      },
     })
     .addGlobalParameters({
       in: 'header',
       required: true,
       name: 'x-client-id',
       schema: {
-        example: 'x-client-id'
-      }
+        example: 'x-client-id',
+      },
     })
     .addGlobalParameters({
       in: 'header',
       required: true,
       name: 'x-timestamp',
       schema: {
-        example: new Date().getTime()
-      }
+        example: new Date().getTime(),
+      },
     })
     .addGlobalParameters({
       in: 'header',
       required: true,
       name: 'x-request-nonce',
       schema: {
-        example: 'x-request-nonce'
-      }
+        example: 'x-request-nonce',
+      },
     })
     .addTag('pomodoro')
     .addBearerAuth()

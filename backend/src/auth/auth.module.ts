@@ -22,10 +22,12 @@ import { ThrottlerModule } from '@nestjs/throttler';
     PassportModule,
     JwtModule.registerAsync(jwtConfig.asProvider()),
     JwtModule.registerAsync(refreshJwtConfig.asProvider()),
-    ThrottlerModule.forRoot([{
-      ttl: 60000,
-      limit: 10,
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 10,
+      },
+    ]),
   ],
   providers: [
     AuthService,

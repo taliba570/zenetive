@@ -10,16 +10,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('jwt.secret'),
-      audience: configService.get<string>('JWT_AUDIENCE'),
-      issuer: configService.get<string>('JWT_ISSUER'),
+      audience: configService.get<string>('jwt.verifyOptions.audience'),
+      issuer: configService.get<string>('jwt.verifyOptions.issuer'),
     });
   }
 
   async validate(payload: any) {
-    if (payload.iss !== this.configService.get<string>('JWT_ISSUER')) {
+    if (
+      payload.iss !== this.configService.get<string>('jwt.verifyOptions.issuer')
+    ) {
       throw new UnauthorizedException('Invalid issuer');
     }
-    if (payload.aud !== this.configService.get<string>('JWT_AUDIENCE')) {
+    if (
+      payload.aud !==
+      this.configService.get<string>('jwt.verifyOptions.audience')
+    ) {
       throw new UnauthorizedException('Invalid audience');
     }
     return { id: payload.sub, email: payload.email };

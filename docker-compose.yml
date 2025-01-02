@@ -1,0 +1,60 @@
+services:
+  redis:
+    image: redis:latest
+    container_name: redis-container
+    ports:
+      - "6379:6379"  # Map Redis port to localhost
+    networks:
+      - app-network
+    volumes:
+      - ./config/redis.conf:/usr/local/etc/redis/redis.conf  # Mount custom Redis config
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]  # Use custom config
+
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb-container
+    ports:
+      - "27017:27017"  # Map MongoDB port to localhost
+    networks:
+      - app-network
+    volumes:
+      - mongodb-data:/data/db  # Persistent storage for MongoDB
+
+  backend:
+    build:
+      context: ./backend  # Path to your NestJS backend directory
+      dockerfile: Dockerfile
+    container_name: backend-container
+    env_file:
+      - ./backend/.env
+    ports:
+      - "3000:3000"  # Map backend port to localhost
+    depends_on:
+      - redis        # Ensure Redis starts before the backend
+      - mongodb      # Ensure MongoDB starts before the backend
+    networks:
+      - app-network
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      MONGO_URI: mongodb://mongodb:27017/zenetive
+
+  frontend:
+    build:
+      context: ./frontend  # Path to your frontend directory
+      dockerfile: Dockerfile
+    container_name: frontend-container
+    ports:
+      - "8000:8000"  # Map frontend port to localhost
+    depends_on:
+      - backend      # Ensure the backend starts before the frontend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongodb-data:
